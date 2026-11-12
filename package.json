@@ -1,0 +1,30 @@
+{
+  "name": "dairy-erp-system",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Smart Dairy & Milk Cooperative Management ERP System with FAT/SNF Pricing, POS Counter, Production & Nepali Calendar",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "build": "npm install && npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "dev": "node run.js",
+    "server": "node server/server.js",
+    "client": "npm run dev --prefix client"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^2.5.0"
+  },
+  "keywords": [
+    "dairy",
+    "milk-collection",
+    "cooperative",
+    "nepal-dairy",
+    "fat-snf",
+    "pos",
+    "erp"
+  ],
+  "author": "Dairy ERP Team",
+  "license": "MIT"
+}

@@ -1,0 +1,1320 @@
+{
+  "tenantId": 8,
+  "auditLogs": [],
+  "units": [
+    {
+      "id": 1,
+      "name": "Litre",
+      "nameInNepali": "लिटर",
+      "code": "L",
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "name": "Kilogram",
+      "nameInNepali": "किलो",
+      "code": "KG",
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "name": "Packet",
+      "nameInNepali": "प्याकेट",
+      "code": "PKT",
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "name": "Pouch",
+      "nameInNepali": "पाउच",
+      "code": "PCH",
+      "isDeleted": false
+    },
+    {
+      "id": 5,
+      "name": "Piece",
+      "nameInNepali": "थान",
+      "code": "PC",
+      "isDeleted": false
+    },
+    {
+      "id": 6,
+      "name": "Carton",
+      "nameInNepali": "कार्टुन",
+      "code": "CTN",
+      "isDeleted": false
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "nameInEnglish": "Raw Milk",
+      "nameInNepali": "काँचो दूध",
+      "unitId": 1,
+      "unitName": "Litre",
+      "sellingPrice": 85,
+      "costPrice": 65,
+      "reorderLevel": 50,
+      "description": "ताजा गाई तथा भैँसीको काँचो दूध",
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "nameInEnglish": "Standard Pasteurized Milk",
+      "nameInNepali": "पाश्चराइज्ड प्रशोधित दूध",
+      "unitId": 4,
+      "unitName": "Pouch",
+      "sellingPrice": 50,
+      "costPrice": 38,
+      "reorderLevel": 100,
+      "description": "५०० मिलि पाश्चराइज्ड प्याकेट दूध",
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "nameInEnglish": "Fresh Curd / Dahi",
+      "nameInNepali": "ताजा दही",
+      "unitId": 1,
+      "unitName": "Litre",
+      "sellingPrice": 120,
+      "costPrice": 85,
+      "reorderLevel": 25,
+      "description": "घरेलु स्वादको शुद्ध दही",
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "nameInEnglish": "Fresh Paneer",
+      "nameInNepali": "ताजा पनिर",
+      "unitId": 2,
+      "unitName": "Kilogram",
+      "sellingPrice": 750,
+      "costPrice": 580,
+      "reorderLevel": 15,
+      "description": "नरम र ताजा पनिर",
+      "isDeleted": false
+    },
+    {
+      "id": 5,
+      "nameInEnglish": "Pure Cow Ghee",
+      "nameInNepali": "शुद्ध गाईको घिउ",
+      "unitId": 2,
+      "unitName": "Kilogram",
+      "sellingPrice": 1400,
+      "costPrice": 1100,
+      "reorderLevel": 10,
+      "description": "परम्परागत विधिबाट निर्मित शुद्ध घिउ",
+      "isDeleted": false
+    },
+    {
+      "id": 6,
+      "nameInEnglish": "White Butter / Nauni",
+      "nameInNepali": "ताजा नौनी घिउ",
+      "unitId": 2,
+      "unitName": "Kilogram",
+      "sellingPrice": 950,
+      "costPrice": 750,
+      "reorderLevel": 8,
+      "description": "ताजा नौनी",
+      "isDeleted": false
+    },
+    {
+      "id": 7,
+      "nameInEnglish": "Fresh Cream",
+      "nameInNepali": "ताजा क्रिम",
+      "unitId": 1,
+      "unitName": "Litre",
+      "sellingPrice": 450,
+      "costPrice": 340,
+      "reorderLevel": 10,
+      "description": "बाक्लो दुग्ध क्रिम",
+      "isDeleted": false
+    }
+  ],
+  "productStocks": [
+    {
+      "id": 1,
+      "productId": 1,
+      "batchNumber": "RAW-LOT-2026-01",
+      "quantity": 380,
+      "usedQuantity": 295,
+      "expiryDateUtms": 1794634332788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 2,
+      "productId": 2,
+      "batchNumber": "PAS-LOT-2026-01",
+      "quantity": 280,
+      "usedQuantity": 84,
+      "expiryDateUtms": 1794720732788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 3,
+      "productId": 3,
+      "batchNumber": "DAHI-LOT-2026-01",
+      "quantity": 80,
+      "usedQuantity": 37,
+      "expiryDateUtms": 1794807132788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 4,
+      "productId": 4,
+      "batchNumber": "PAN-LOT-2026-01",
+      "quantity": 24,
+      "usedQuantity": 13,
+      "expiryDateUtms": 1794979932788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 5,
+      "productId": 5,
+      "batchNumber": "GHEE-LOT-2026-01",
+      "quantity": 23,
+      "usedQuantity": 8,
+      "expiryDateUtms": 1810013532788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 6,
+      "productId": 6,
+      "batchNumber": "BUTTER-LOT-2026-01",
+      "quantity": 14,
+      "usedQuantity": 2,
+      "expiryDateUtms": 1795757532788,
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 7,
+      "productId": 7,
+      "batchNumber": "CREAM-LOT-2026-01",
+      "quantity": 18,
+      "usedQuantity": 4,
+      "expiryDateUtms": 1794893532788,
+      "dateTimeUtms": 1794288732788
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "code": 1,
+      "nameInNepali": "राम बहादुर थापा",
+      "nameInEnglish": "Ram Bahadur Thapa",
+      "customerType": 1,
+      "phone": "9841234567",
+      "address": "गौशाला-४, काठमाडौं",
+      "accountNumber": "NABIL-012004592",
+      "remarks": "नियमित बिहानी तथा बेलुकी दूध संकलक कृषक",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1789277532788
+    },
+    {
+      "id": 2,
+      "code": 2,
+      "nameInNepali": "हरि प्रसाद शर्मा",
+      "nameInEnglish": "Hari Prasad Sharma",
+      "customerType": 1,
+      "phone": "9851029384",
+      "address": "चाबहिल-७, काठमाडौं",
+      "accountNumber": "GBIME-99882211",
+      "remarks": "गाई फार्म सञ्चालक",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1790141532788
+    },
+    {
+      "id": 3,
+      "code": 3,
+      "nameInNepali": "सीता माया गुरुङ",
+      "nameInEnglish": "Sita Maya Gurung",
+      "customerType": 1,
+      "phone": "9812938475",
+      "address": "साँखु-२, काठमाडौं",
+      "accountNumber": "NIC-554433221",
+      "remarks": "भैँसी फार्म",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1791005532788
+    },
+    {
+      "id": 4,
+      "code": 4,
+      "nameInNepali": "श्याम सुन्दर यादव",
+      "nameInEnglish": "Shyam Sundar Yadav",
+      "customerType": 1,
+      "phone": "9803456789",
+      "address": "भक्तपुर-९, कमलविनायक",
+      "accountNumber": "PRABHU-887766",
+      "remarks": "दैनिक दूध आपूर्तिकर्ता",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1791869532788
+    },
+    {
+      "id": 5,
+      "code": 5,
+      "nameInNepali": "कृष्ण बहादुर कार्की",
+      "nameInEnglish": "Krishna Bahadur Karki",
+      "customerType": 1,
+      "phone": "9860112233",
+      "address": "बौद्ध-६, काठमाडौं",
+      "accountNumber": "EVEREST-112244",
+      "remarks": "उच्च फ्याट दूध आपूर्तिकर्ता",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1792733532788
+    },
+    {
+      "id": 6,
+      "code": 6,
+      "nameInNepali": "होटल अन्नपूर्ण भ्यु",
+      "nameInEnglish": "Hotel Annapurna View",
+      "customerType": 2,
+      "phone": "01-4499881",
+      "address": "दरबारमार्ग, काठमाडौं",
+      "accountNumber": "HBL-990011",
+      "remarks": "दैनिक दूध, दही र पनिरको थोक खरिदकर्ता",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1790573532788
+    },
+    {
+      "id": 7,
+      "code": 7,
+      "nameInNepali": "पोखरा स्वीट्स एन्ड बेकरी",
+      "nameInEnglish": "Pokhara Sweets & Bakery",
+      "customerType": 2,
+      "phone": "9846011223",
+      "address": "न्यूरोड, काठमाडौं",
+      "accountNumber": "SBI-223344",
+      "remarks": "मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1791437532788
+    },
+    {
+      "id": 8,
+      "code": 8,
+      "nameInNepali": "लेकसाइड क्याफे",
+      "nameInEnglish": "Lakeside Organic Cafe",
+      "customerType": 2,
+      "phone": "9811223344",
+      "address": "झम्सीखेल, ललितपुर",
+      "accountNumber": "NIMB-778899",
+      "remarks": "अर्गानिक दूध तथा दही खरिदकर्ता",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1792301532788
+    },
+    {
+      "id": 9,
+      "code": 9,
+      "nameInNepali": "न्यू किराना तथा डेरी स्टोर",
+      "nameInEnglish": "New Kirana & Dairy Store",
+      "customerType": 3,
+      "phone": "9801998877",
+      "address": "सिनामंगल, काठमाडौं",
+      "accountNumber": "KBL-445566",
+      "remarks": "स्थानीय दुध बिक्रेता तथा संकलन केन्द्र",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1793165532788
+    }
+  ],
+  "milkFatSnfConfig": {
+    "id": 1,
+    "buyingFatPrice": 7.5,
+    "buyingSnfPrice": 4,
+    "sellingFatPrice": 9,
+    "sellingSnfPrice": 5,
+    "sellingPrice": 90,
+    "lastTimeUpdatedUtms": 1794375132788
+  },
+  "milkCollections": [
+    {
+      "id": 1,
+      "farmerId": 1,
+      "quantity": 50,
+      "shift": 0,
+      "fat": 4.6,
+      "snf": 8.3,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 67.7,
+      "totalPrice": 3385,
+      "dateTimeUtms": 1794360732788,
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "farmerId": 2,
+      "quantity": 40,
+      "shift": 0,
+      "fat": 4.2,
+      "snf": 8.1,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 63.9,
+      "totalPrice": 2556,
+      "dateTimeUtms": 1794364332788,
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "farmerId": 3,
+      "quantity": 45,
+      "shift": 0,
+      "fat": 5,
+      "snf": 8.5,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 71.5,
+      "totalPrice": 3217.5,
+      "dateTimeUtms": 1794367932788,
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "farmerId": 1,
+      "quantity": 35,
+      "shift": 1,
+      "fat": 4.5,
+      "snf": 8.2,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 66.55,
+      "totalPrice": 2329.25,
+      "dateTimeUtms": 1794389532788,
+      "isDeleted": false
+    },
+    {
+      "id": 5,
+      "farmerId": 4,
+      "quantity": 30,
+      "shift": 1,
+      "fat": 4.4,
+      "snf": 8,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 65,
+      "totalPrice": 1950,
+      "dateTimeUtms": 1794393132788,
+      "isDeleted": false
+    },
+    {
+      "id": 6,
+      "farmerId": 1,
+      "quantity": 40,
+      "shift": 0,
+      "fat": 4.5,
+      "snf": 8.2,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 66.55,
+      "totalPrice": 2662,
+      "dateTimeUtms": 1794450732788,
+      "isDeleted": false
+    },
+    {
+      "id": 7,
+      "farmerId": 2,
+      "quantity": 32,
+      "shift": 0,
+      "fat": 4.3,
+      "snf": 8.1,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 64.65,
+      "totalPrice": 2068.8,
+      "dateTimeUtms": 1794454332788,
+      "isDeleted": false
+    },
+    {
+      "id": 8,
+      "farmerId": 5,
+      "quantity": 28,
+      "shift": 0,
+      "fat": 4.8,
+      "snf": 8.4,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 69.6,
+      "totalPrice": 1948.8,
+      "dateTimeUtms": 1794457932788,
+      "isDeleted": false
+    }
+  ],
+  "milkCollectionPayments": [
+    {
+      "id": 1,
+      "farmerId": 1,
+      "amount": 5000,
+      "paymentMethod": 0,
+      "referenceNumber": "VCHR-FARM-01",
+      "remarks": "दूध आपूर्ति बापत आंशिक नगद भुक्तानी",
+      "dateTimeUtms": 1794396732788,
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "farmerId": 2,
+      "amount": 3000,
+      "paymentMethod": 2,
+      "referenceNumber": "BANK-TR-8491",
+      "remarks": "बैंक ट्रान्सफर मार्फत भुक्तानी",
+      "dateTimeUtms": 1794400332788,
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "farmerId": 3,
+      "amount": 2000,
+      "paymentMethod": 0,
+      "referenceNumber": "VCHR-FARM-02",
+      "remarks": "नगद आंशिक भुक्तानी",
+      "dateTimeUtms": 1794403932788,
+      "isDeleted": false
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "saleType": 1,
+      "customerId": 6,
+      "customerName": "Hotel Annapurna View",
+      "orderDateTimeUtms": 1794389532788,
+      "totalAmount": 12250,
+      "discountAmount": 250,
+      "netAmount": 12000,
+      "totalPaid": 8500,
+      "remainingAmount": 3500,
+      "paymentMethod": 2,
+      "remarks": "होटल थोक डेलिभरी बिल (Fonepay/Bank)",
+      "orderProducts": [
+        {
+          "productId": 2,
+          "productName": "पाश्चराइज्ड प्रशोधित दूध",
+          "quantity": 35,
+          "unitPrice": 50,
+          "totalPrice": 1750
+        },
+        {
+          "productId": 3,
+          "productName": "ताजा दही",
+          "quantity": 15,
+          "unitPrice": 120,
+          "totalPrice": 1800
+        },
+        {
+          "productId": 4,
+          "productName": "ताजा पनिर",
+          "quantity": 6,
+          "unitPrice": 750,
+          "totalPrice": 4500
+        },
+        {
+          "productId": 5,
+          "productName": "शुद्ध गाईको घिउ",
+          "quantity": 3,
+          "unitPrice": 1400,
+          "totalPrice": 4200
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "saleType": 1,
+      "customerId": 7,
+      "customerName": "Pokhara Sweets & Bakery",
+      "orderDateTimeUtms": 1794411132788,
+      "totalAmount": 10250,
+      "discountAmount": 0,
+      "netAmount": 10250,
+      "totalPaid": 10250,
+      "remainingAmount": 0,
+      "paymentMethod": 0,
+      "remarks": "मिठाई भण्डारको लागि पनिर, घिउ र क्रिम नगद बिक्री",
+      "orderProducts": [
+        {
+          "productId": 4,
+          "productName": "ताजा पनिर",
+          "quantity": 5,
+          "unitPrice": 750,
+          "totalPrice": 3750
+        },
+        {
+          "productId": 5,
+          "productName": "शुद्ध गाईको घिउ",
+          "quantity": 2,
+          "unitPrice": 1400,
+          "totalPrice": 2800
+        },
+        {
+          "productId": 6,
+          "productName": "ताजा नौनी घिउ",
+          "quantity": 2,
+          "unitPrice": 950,
+          "totalPrice": 1900
+        },
+        {
+          "productId": 7,
+          "productName": "ताजा क्रिम",
+          "quantity": 4,
+          "unitPrice": 450,
+          "totalPrice": 1800
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "saleType": 1,
+      "customerId": 8,
+      "customerName": "Lakeside Organic Cafe",
+      "orderDateTimeUtms": 1794432732788,
+      "totalAmount": 5460,
+      "discountAmount": 60,
+      "netAmount": 5400,
+      "totalPaid": 4000,
+      "remainingAmount": 1400,
+      "paymentMethod": 2,
+      "remarks": "क्याफे नियमित आपूर्ति (Fonepay)",
+      "orderProducts": [
+        {
+          "productId": 2,
+          "productName": "पाश्चराइज्ड प्रशोधित दूध",
+          "quantity": 30,
+          "unitPrice": 50,
+          "totalPrice": 1500
+        },
+        {
+          "productId": 3,
+          "productName": "ताजा दही",
+          "quantity": 12,
+          "unitPrice": 120,
+          "totalPrice": 1440
+        },
+        {
+          "productId": 4,
+          "productName": "ताजा पनिर",
+          "quantity": 2,
+          "unitPrice": 750,
+          "totalPrice": 1500
+        },
+        {
+          "productId": 1,
+          "productName": "काँचो दूध",
+          "quantity": 12,
+          "unitPrice": 85,
+          "totalPrice": 1020
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "saleType": 1,
+      "customerId": null,
+      "customerName": "काउन्टर ग्राहक (Walk-in)",
+      "orderDateTimeUtms": 1794450732788,
+      "totalAmount": 6150,
+      "discountAmount": 0,
+      "netAmount": 6150,
+      "totalPaid": 6150,
+      "remainingAmount": 0,
+      "paymentMethod": 0,
+      "remarks": "नगद काउन्टर खुद्रा बिक्री",
+      "orderProducts": [
+        {
+          "productId": 2,
+          "productName": "पाश्चराइज्ड प्रशोधित दूध",
+          "quantity": 15,
+          "unitPrice": 50,
+          "totalPrice": 750
+        },
+        {
+          "productId": 3,
+          "productName": "ताजा दही",
+          "quantity": 10,
+          "unitPrice": 120,
+          "totalPrice": 1200
+        },
+        {
+          "productId": 5,
+          "productName": "शुद्ध गाईको घिउ",
+          "quantity": 3,
+          "unitPrice": 1400,
+          "totalPrice": 4200
+        }
+      ],
+      "isDeleted": false
+    }
+  ],
+  "futureOrders": [
+    {
+      "id": 101,
+      "orderNumber": "ORD-2026-001",
+      "customerId": 7,
+      "customerName": "Pokhara Sweets & Bakery",
+      "orderDateUtms": 1794375132788,
+      "deliveryDateUtms": 1794547932788,
+      "deliveryAddress": "न्यूरोड, काठमाडौं",
+      "status": "Confirmed",
+      "totalAmount": 14850,
+      "paidAmount": 5000,
+      "balanceAmount": 9850,
+      "paymentMethod": 2,
+      "notes": "बिहानी ७ बजेभित्र पनिर र क्रिम डेलिभरी गर्नुपर्ने",
+      "items": [
+        {
+          "productId": 4,
+          "productName": "ताजा पनिर",
+          "quantity": 15,
+          "unitPrice": 750,
+          "totalPrice": 11250
+        },
+        {
+          "productId": 7,
+          "productName": "ताजा क्रिम",
+          "quantity": 8,
+          "unitPrice": 450,
+          "totalPrice": 3600
+        }
+      ],
+      "deliveries": [],
+      "changeLogs": [
+        {
+          "timestamp": 1794375132788,
+          "action": "CREATED",
+          "details": "Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit"
+        }
+      ]
+    }
+  ],
+  "productionBatches": [
+    {
+      "id": 1,
+      "batchNumber": "BATCH-2026-001",
+      "productionDateUtms": 1794382332788,
+      "status": "Completed",
+      "inputRawMilkLiters": 180,
+      "wastageQuantity": 4.5,
+      "leakageLiters": 4.5,
+      "netProcessedMilkLiters": 175.5,
+      "leakagePercentage": 2.5,
+      "yieldRecoveryPercentage": 97.5,
+      "inputFat": 4.8,
+      "inputSnf": 8.4,
+      "location": "Main Processing Plant",
+      "outputItems": [
+        {
+          "productId": 2,
+          "productName": "पाश्चराइज्ड प्रशोधित दूध",
+          "quantity": 160,
+          "unit": "Pouch"
+        },
+        {
+          "productId": 4,
+          "productName": "ताजा पनिर",
+          "quantity": 14,
+          "unit": "Kilogram"
+        },
+        {
+          "productId": 7,
+          "productName": "ताजा क्रिम",
+          "quantity": 8,
+          "unit": "Litre"
+        }
+      ],
+      "remarks": "पाश्चराइजेशन तथा पनिर/क्रिम प्रशोधन सम्पन्न (२.५% प्रशोधन नोक्सानी)",
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "batchNumber": "BATCH-2026-002",
+      "productionDateUtms": 1794425532788,
+      "status": "Completed",
+      "inputRawMilkLiters": 100,
+      "wastageQuantity": 2,
+      "leakageLiters": 2,
+      "netProcessedMilkLiters": 98,
+      "leakagePercentage": 2,
+      "yieldRecoveryPercentage": 98,
+      "inputFat": 4.6,
+      "inputSnf": 8.3,
+      "location": "Fermentation & Ghee Unit",
+      "outputItems": [
+        {
+          "productId": 3,
+          "productName": "ताजा दही",
+          "quantity": 60,
+          "unit": "Litre"
+        },
+        {
+          "productId": 5,
+          "productName": "शुद्ध गाईको घिउ",
+          "quantity": 2,
+          "unit": "Kilogram"
+        },
+        {
+          "productId": 6,
+          "productName": "ताजा नौनी घिउ",
+          "quantity": 4,
+          "unit": "Kilogram"
+        }
+      ],
+      "remarks": "दही, घिउ र नौनी उत्पादन ब्याच सम्पन्न (२.०% प्रशोधन नोक्सानी)",
+      "isDeleted": false
+    }
+  ],
+  "purchases": [
+    {
+      "id": 1,
+      "supplierName": "Himalayan Dairy Suppliers Ltd.",
+      "invoiceNumber": "HDP-2026-9041",
+      "purchaseDateUtms": 1794288732788,
+      "paymentStatus": 1,
+      "paymentMethod": 2,
+      "totalAmount": 6040,
+      "paidAmount": 5000,
+      "location": "Central Warehouse - Bay 2",
+      "remarks": "कच्चा दूध तथा दही स्टक आपूर्ति खरिद",
+      "items": [
+        {
+          "productId": 1,
+          "productName": "Raw Milk",
+          "quantity": 80,
+          "unitPrice": 58,
+          "totalPrice": 4640,
+          "batchNumber": "RAW-LOT-2026-01"
+        },
+        {
+          "productId": 3,
+          "productName": "Fresh Curd / Dahi",
+          "quantity": 20,
+          "unitPrice": 70,
+          "totalPrice": 1400,
+          "batchNumber": "DAHI-LOT-2026-01"
+        }
+      ],
+      "isDeleted": false
+    }
+  ],
+  "stockMovements": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 1,
+      "quantity": 80,
+      "batchNumber": "RAW-LOT-2026-01",
+      "location": "Chilling Vat 1",
+      "reference": "HDP-2026-9041",
+      "remarks": "Supplier Raw Milk Purchase",
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 2,
+      "productId": 3,
+      "productName": "Fresh Curd / Dahi",
+      "movementType": 1,
+      "quantity": 20,
+      "batchNumber": "DAHI-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "HDP-2026-9041",
+      "remarks": "Supplier Curd Purchase",
+      "dateTimeUtms": 1794288732788
+    },
+    {
+      "id": 3,
+      "productId": 2,
+      "productName": "Standard Pasteurized Milk",
+      "movementType": 1,
+      "quantity": 120,
+      "batchNumber": "PAS-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "OPENING-STOCK",
+      "remarks": "Opening Packaged Stock",
+      "dateTimeUtms": 1794292332788
+    },
+    {
+      "id": 4,
+      "productId": 4,
+      "productName": "Fresh Paneer",
+      "movementType": 1,
+      "quantity": 10,
+      "batchNumber": "PAN-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "OPENING-STOCK",
+      "remarks": "Opening Paneer Stock",
+      "dateTimeUtms": 1794292332788
+    },
+    {
+      "id": 5,
+      "productId": 5,
+      "productName": "Pure Cow Ghee",
+      "movementType": 1,
+      "quantity": 21,
+      "batchNumber": "GHEE-LOT-2026-01",
+      "location": "Main Shelf",
+      "reference": "OPENING-STOCK",
+      "remarks": "Opening Ghee Stock",
+      "dateTimeUtms": 1794292332788
+    },
+    {
+      "id": 6,
+      "productId": 6,
+      "productName": "White Butter / Nauni",
+      "movementType": 1,
+      "quantity": 10,
+      "batchNumber": "BUTTER-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "OPENING-STOCK",
+      "remarks": "Opening Butter Stock",
+      "dateTimeUtms": 1794292332788
+    },
+    {
+      "id": 7,
+      "productId": 7,
+      "productName": "Fresh Cream",
+      "movementType": 1,
+      "quantity": 10,
+      "batchNumber": "CREAM-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "OPENING-STOCK",
+      "remarks": "Opening Cream Stock",
+      "dateTimeUtms": 1794292332788
+    },
+    {
+      "id": 8,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 1,
+      "quantity": 300,
+      "batchNumber": "COL-2026",
+      "location": "Chilling Vat 1",
+      "reference": "FARMER-COLLECTIONS",
+      "remarks": "Farmer Raw Milk Collections Intake",
+      "dateTimeUtms": 1794360732788
+    },
+    {
+      "id": 9,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 2,
+      "quantity": 180,
+      "batchNumber": "RAW-LOT-2026-01",
+      "location": "Main Processing Plant",
+      "reference": "BATCH-2026-001",
+      "remarks": "Consumed in Production Batch 1 (4.5 L processing leakage)",
+      "dateTimeUtms": 1794382332788
+    },
+    {
+      "id": 10,
+      "productId": 2,
+      "productName": "Standard Pasteurized Milk",
+      "movementType": 1,
+      "quantity": 160,
+      "batchNumber": "PAS-LOT-2026-01",
+      "location": "Packaging Bay",
+      "reference": "BATCH-2026-001",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794382333788
+    },
+    {
+      "id": 11,
+      "productId": 4,
+      "productName": "Fresh Paneer",
+      "movementType": 1,
+      "quantity": 14,
+      "batchNumber": "PAN-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "BATCH-2026-001",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794382334788
+    },
+    {
+      "id": 12,
+      "productId": 7,
+      "productName": "Fresh Cream",
+      "movementType": 1,
+      "quantity": 8,
+      "batchNumber": "CREAM-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "BATCH-2026-001",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794382335788
+    },
+    {
+      "id": 13,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 2,
+      "quantity": 100,
+      "batchNumber": "RAW-LOT-2026-01",
+      "location": "Fermentation & Ghee Unit",
+      "reference": "BATCH-2026-002",
+      "remarks": "Consumed in Production Batch 2 (2.0 L processing leakage)",
+      "dateTimeUtms": 1794425532788
+    },
+    {
+      "id": 14,
+      "productId": 3,
+      "productName": "Fresh Curd / Dahi",
+      "movementType": 1,
+      "quantity": 60,
+      "batchNumber": "DAHI-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "BATCH-2026-002",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794425533788
+    },
+    {
+      "id": 15,
+      "productId": 5,
+      "productName": "Pure Cow Ghee",
+      "movementType": 1,
+      "quantity": 2,
+      "batchNumber": "GHEE-LOT-2026-01",
+      "location": "Main Shelf",
+      "reference": "BATCH-2026-002",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794425534788
+    },
+    {
+      "id": 16,
+      "productId": 6,
+      "productName": "White Butter / Nauni",
+      "movementType": 1,
+      "quantity": 4,
+      "batchNumber": "BUTTER-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "BATCH-2026-002",
+      "remarks": "Production Batch Output",
+      "dateTimeUtms": 1794425535788
+    },
+    {
+      "id": 17,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 4,
+      "quantity": 3,
+      "batchNumber": "RAW-LOT-2026-01",
+      "location": "Chilling Vat 1",
+      "reference": "LEAK-RAW-01",
+      "remarks": "Can transfer spillage & chilling pipe leakage",
+      "dateTimeUtms": 1794429132788
+    },
+    {
+      "id": 18,
+      "productId": 2,
+      "productName": "Standard Pasteurized Milk",
+      "movementType": 4,
+      "quantity": 4,
+      "batchNumber": "PAS-LOT-2026-01",
+      "location": "Cold Storage",
+      "reference": "LEAK-PCH-01",
+      "remarks": "Burst/leaking milk pouches damaged in handling",
+      "dateTimeUtms": 1794439932788
+    },
+    {
+      "id": 19,
+      "productId": 1,
+      "productName": "Raw Milk",
+      "movementType": 3,
+      "quantity": 12,
+      "batchNumber": "RAW-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALE-3",
+      "remarks": "Direct raw milk sale (#3)",
+      "dateTimeUtms": 1794432732788
+    },
+    {
+      "id": 20,
+      "productId": 2,
+      "productName": "Standard Pasteurized Milk",
+      "movementType": 3,
+      "quantity": 80,
+      "batchNumber": "PAS-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALES-BATCH",
+      "remarks": "POS & Wholesale Sales Outflow",
+      "dateTimeUtms": 1794450732788
+    },
+    {
+      "id": 21,
+      "productId": 3,
+      "productName": "Fresh Curd / Dahi",
+      "movementType": 3,
+      "quantity": 37,
+      "batchNumber": "DAHI-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALES-BATCH",
+      "remarks": "POS & Wholesale Sales Outflow",
+      "dateTimeUtms": 1794450732788
+    },
+    {
+      "id": 22,
+      "productId": 4,
+      "productName": "Fresh Paneer",
+      "movementType": 3,
+      "quantity": 13,
+      "batchNumber": "PAN-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALES-BATCH",
+      "remarks": "POS & Wholesale Sales Outflow",
+      "dateTimeUtms": 1794432732788
+    },
+    {
+      "id": 23,
+      "productId": 5,
+      "productName": "Pure Cow Ghee",
+      "movementType": 3,
+      "quantity": 8,
+      "batchNumber": "GHEE-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALES-BATCH",
+      "remarks": "POS & Wholesale Sales Outflow",
+      "dateTimeUtms": 1794450732788
+    },
+    {
+      "id": 24,
+      "productId": 6,
+      "productName": "White Butter / Nauni",
+      "movementType": 3,
+      "quantity": 2,
+      "batchNumber": "BUTTER-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALE-2",
+      "remarks": "Wholesale Sale (#2)",
+      "dateTimeUtms": 1794411132788
+    },
+    {
+      "id": 25,
+      "productId": 7,
+      "productName": "Fresh Cream",
+      "movementType": 3,
+      "quantity": 4,
+      "batchNumber": "CREAM-LOT-2026-01",
+      "location": "Retail Counter",
+      "reference": "SALE-2",
+      "remarks": "Wholesale Sale (#2)",
+      "dateTimeUtms": 1794411132788
+    }
+  ],
+  "expenses": [
+    {
+      "id": 1,
+      "category": "Electricity",
+      "amount": 1450,
+      "paymentMethod": 2,
+      "recipient": "Nepal Electricity Authority",
+      "referenceNumber": "NEA-OCT-2026",
+      "remarks": "डेरी प्रशोधन प्लान्टको मासिक विद्युत महसुल",
+      "expenseDateUtms": 1794407532788,
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "category": "Transport",
+      "amount": 800,
+      "paymentMethod": 0,
+      "recipient": "Sita Cold Transport",
+      "referenceNumber": "TR-502",
+      "remarks": "रेफ्रिजरेटेड भ्यान ढुवानी खर्च",
+      "expenseDateUtms": 1794414732788,
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "category": "Packaging",
+      "amount": 650,
+      "paymentMethod": 0,
+      "recipient": "Nepal Packaging Industries",
+      "referenceNumber": "PKG-8821",
+      "remarks": "दूध र दही प्याकिङ प्लास्टिक खरिद",
+      "expenseDateUtms": 1794295932788,
+      "isDeleted": false
+    }
+  ],
+  "customerPayments": [
+    {
+      "id": 1,
+      "customerId": 6,
+      "customerName": "Hotel Annapurna View",
+      "orderId": 1,
+      "amount": 2000,
+      "paymentMethod": 2,
+      "referenceNumber": "FP-TXN-998822",
+      "remarks": "होटल अन्नपूर्णको आंशिक बक्यौता भुक्तानी (Fonepay QR)",
+      "paymentDateUtms": 1794418332788,
+      "isDeleted": false
+    }
+  ],
+  "cashBankLedgers": [
+    {
+      "id": 1,
+      "accountType": 2,
+      "transactionType": 2,
+      "amount": 5000,
+      "balanceAfter": 70000,
+      "category": "Supplier Purchase",
+      "description": "Payment for purchase from Himalayan Dairy Suppliers Ltd.",
+      "referenceNumber": "HDP-2026-9041",
+      "referenceType": "Purchase",
+      "transactionDateUtms": 1794288732788,
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "accountType": 1,
+      "transactionType": 2,
+      "amount": 650,
+      "balanceAfter": 24350,
+      "category": "Expense: Packaging",
+      "description": "Operating Expense for Packaging paid to Nepal Packaging Industries",
+      "referenceNumber": "PKG-8821",
+      "referenceType": "Expense",
+      "transactionDateUtms": 1794295932788,
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "accountType": 2,
+      "transactionType": 1,
+      "amount": 5000,
+      "balanceAfter": 75000,
+      "category": "Order Advance Deposit",
+      "description": "Advance deposit for Scheduled Order ORD-2026-001 (Pokhara Sweets & Bakery)",
+      "referenceNumber": "ORD-2026-001",
+      "referenceType": "FutureOrderDeposit",
+      "transactionDateUtms": 1794375132788,
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "accountType": 2,
+      "transactionType": 1,
+      "amount": 8500,
+      "balanceAfter": 83500,
+      "category": "Instant Sale",
+      "description": "Payment received for Instant Sale #1 (Hotel Annapurna View)",
+      "referenceNumber": "SALE-1",
+      "referenceType": "Sale",
+      "transactionDateUtms": 1794389532788,
+      "isDeleted": false
+    },
+    {
+      "id": 5,
+      "accountType": 1,
+      "transactionType": 2,
+      "amount": 5000,
+      "balanceAfter": 19350,
+      "category": "Milk Settlement",
+      "description": "Payment out to Ram Bahadur Thapa (Farmer)",
+      "referenceNumber": "VCHR-FARM-01",
+      "referenceType": "PaymentOut",
+      "transactionDateUtms": 1794396732788,
+      "isDeleted": false
+    },
+    {
+      "id": 6,
+      "accountType": 2,
+      "transactionType": 2,
+      "amount": 3000,
+      "balanceAfter": 80500,
+      "category": "Milk Settlement",
+      "description": "Bank Transfer to Hari Prasad Sharma (Farmer)",
+      "referenceNumber": "BANK-TR-8491",
+      "referenceType": "PaymentOut",
+      "transactionDateUtms": 1794400332788,
+      "isDeleted": false
+    },
+    {
+      "id": 7,
+      "accountType": 1,
+      "transactionType": 2,
+      "amount": 2000,
+      "balanceAfter": 17350,
+      "category": "Milk Settlement",
+      "description": "Payment out to Sita Maya Gurung (Farmer)",
+      "referenceNumber": "VCHR-FARM-02",
+      "referenceType": "PaymentOut",
+      "transactionDateUtms": 1794403932788,
+      "isDeleted": false
+    },
+    {
+      "id": 8,
+      "accountType": 2,
+      "transactionType": 2,
+      "amount": 1450,
+      "balanceAfter": 79050,
+      "category": "Expense: Electricity",
+      "description": "Operating Expense for Electricity paid to NEA",
+      "referenceNumber": "NEA-OCT-2026",
+      "referenceType": "Expense",
+      "transactionDateUtms": 1794407532788,
+      "isDeleted": false
+    },
+    {
+      "id": 9,
+      "accountType": 1,
+      "transactionType": 1,
+      "amount": 10250,
+      "balanceAfter": 27600,
+      "category": "Instant Sale",
+      "description": "Payment received for Instant Sale #2 (Pokhara Sweets)",
+      "referenceNumber": "SALE-2",
+      "referenceType": "Sale",
+      "transactionDateUtms": 1794411132788,
+      "isDeleted": false
+    },
+    {
+      "id": 10,
+      "accountType": 1,
+      "transactionType": 2,
+      "amount": 800,
+      "balanceAfter": 26800,
+      "category": "Expense: Transport",
+      "description": "Operating Expense for Transport paid to Sita Cold Transport",
+      "referenceNumber": "TR-502",
+      "referenceType": "Expense",
+      "transactionDateUtms": 1794414732788,
+      "isDeleted": false
+    },
+    {
+      "id": 11,
+      "accountType": 2,
+      "transactionType": 1,
+      "amount": 2000,
+      "balanceAfter": 81050,
+      "category": "Customer Payment",
+      "description": "Payment received from Hotel Annapurna View (Fonepay)",
+      "referenceNumber": "FP-TXN-998822",
+      "referenceType": "CustomerPayment",
+      "transactionDateUtms": 1794418332788,
+      "isDeleted": false
+    },
+    {
+      "id": 12,
+      "accountType": 2,
+      "transactionType": 1,
+      "amount": 4000,
+      "balanceAfter": 85050,
+      "category": "Instant Sale",
+      "description": "Payment received for Instant Sale #3 (Lakeside Cafe)",
+      "referenceNumber": "SALE-3",
+      "referenceType": "Sale",
+      "transactionDateUtms": 1794432732788,
+      "isDeleted": false
+    },
+    {
+      "id": 13,
+      "accountType": 1,
+      "transactionType": 1,
+      "amount": 6150,
+      "balanceAfter": 32950,
+      "category": "Instant Sale",
+      "description": "Payment received for Instant Sale #4 (Walk-in)",
+      "referenceNumber": "SALE-4",
+      "referenceType": "Sale",
+      "transactionDateUtms": 1794450732788,
+      "isDeleted": false
+    }
+  ]
+}
