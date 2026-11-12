@@ -6,7 +6,9 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "build": "npm install --include=dev && npm --prefix server install && npm --prefix client install --include=dev && npm --prefix client run build && node -e \"const fs=require('fs');fs.rmSync('build',{recursive:true,force:true});fs.cpSync('client/dist','build',{recursive:true});\"",
+    "build:client": "npm --prefix client install --include=dev && npm --prefix client run build && node -e \"const fs=require('fs');fs.rmSync('build',{recursive:true,force:true});fs.cpSync('client/dist','build',{recursive:true});\"",
+    "build": "npm --prefix server install && npm run build:client",
+    "postinstall": "npm run build",
     "dev": "node run.js",
     "server": "node server/server.js",
     "client": "npm run dev --prefix client"
