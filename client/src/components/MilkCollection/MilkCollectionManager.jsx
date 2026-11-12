@@ -18,9 +18,16 @@ import {
   Milk,
   Plus,
   Lock,
-  Unlock
+  Unlock,
+  MessageCircle,
+  Zap
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import {
+  openWhatsAppBill,
+  maybeAutoSendWhatsApp,
+  useWhatsAppAutoSend
+} from '../../utils/whatsappBill';
 
 const DATE_LOCK_STORAGE_KEY = 'dairy_milk_collection_date_lock';
 
@@ -33,6 +40,14 @@ const getNowDateTimeLocal = () => {
   const minutes = String(now.getMinutes()).padStart(2, '0');
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
+
+const getCollectionActivityUtms = (c) => Number(
+  c?.updatedAtUtms ||
+  c?.createdAtUtms ||
+  (Number(c?.id) > 1000000000000 ? Number(c.id) : 0) ||
+  c?.dateTimeUtms ||
+  0
+);
 
 const loadSavedDateLock = () => {
   try {
@@ -51,12 +66,14 @@ export default function MilkCollectionManager({
   collections = [],
   farmers = [],
   config,
+  tenant,
   onRefresh,
   onPrintSlip,
   onInspectFarmer
 }) {
   const { lang, t } = useLanguage();
   const formRef = useRef(null);
+  const [autoWhatsApp, setAutoWhatsApp] = useWhatsAppAutoSend();
 
   // Modal State for "Record Milk Intake" (Image 2)
   const [modalOpen, setModalOpen] = useState(false);
@@ -121,6 +138,7 @@ export default function MilkCollectionManager({
   const [filterStartDate, setFilterStartDate] = useState('');
   const [filterEndDate, setFilterEndDate] = useState('');
   const [filterShift, setFilterShift] = useState('');
+  const [sortBy, setSortBy] = useState('recent');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Rate config values from MilkFatAndSnfConfiguration
@@ -436,13 +454,22 @@ export default function MilkCollectionManager({
 
       if (res.ok) {
         const savedData = await res.json().catch(() => null);
+        const resolvedId = (typeof savedData === 'number' || typeof savedData === 'string') ? savedData : (savedData?.id || inlineEditingId);
+        const slipPayload = {
+          ...payload,
+          id: resolvedId,
+          farmer: selectedFarmer,
+          totalPrice: Number(inlineCurrentTotal)
+        };
+        maybeAutoSendWhatsApp({
+          slipType: 'milk-collection',
+          data: slipPayload,
+          tenant,
+          customers: farmers,
+          lang
+        });
         if (onPrintSlip) {
-          onPrintSlip({
-            ...payload,
-            id: savedData?.id || inlineEditingId,
-            farmer: selectedFarmer,
-            totalPrice: Number(inlineCurrentTotal)
-          });
+          onPrintSlip(slipPayload);
         }
         handleResetInlineForm();
         if (onRefresh) onRefresh();
@@ -610,13 +637,22 @@ export default function MilkCollectionManager({
       if (res.ok) {
         const savedData = await res.json().catch(() => null);
         const farmerObj = farmers.find(f => f.id === Number(modalSelectedFarmerId));
+        const resolvedId = (typeof savedData === 'number' || typeof savedData === 'string') ? savedData : (savedData?.id || modalEditingId);
+        const slipPayload = {
+          ...payload,
+          id: resolvedId,
+          farmer: farmerObj,
+          totalPrice: modalCalculatedTotal
+        };
+        maybeAutoSendWhatsApp({
+          slipType: 'milk-collection',
+          data: slipPayload,
+          tenant,
+          customers: farmers,
+          lang
+        });
         if (onPrintSlip) {
-          onPrintSlip({
-            ...payload,
-            id: savedData?.id || modalEditingId,
-            farmer: farmerObj,
-            totalPrice: modalCalculatedTotal
-          });
+          onPrintSlip(slipPayload);
         }
         setModalOpen(false);
         if (onRefresh) onRefresh();
@@ -677,10 +713,10 @@ export default function MilkCollectionManager({
   const eveningStats = useMemo(() => calculateStats(todayList.filter(c => Number(c.shift) === 1)), [todayList]);
 
   // ----------------------------------------------------
-  // Filtered Collections for Grid Table
+  // Filtered & Sorted Collections for Grid Table
   // ----------------------------------------------------
   const filteredCollections = useMemo(() => {
-    return collections.filter(c => {
+    const filtered = collections.filter(c => {
       if (c.isDeleted) return false;
       if (filterShift !== '' && Number(c.shift) !== Number(filterShift)) return false;
       if (filterStartDate) {
@@ -700,12 +736,34 @@ export default function MilkCollectionManager({
       }
       return true;
     });
-  }, [collections, farmers, filterShift, filterStartDate, filterEndDate, searchQuery]);
+
+    return filtered.sort((a, b) => {
+      if (sortBy === 'date_asc') {
+        return (
+          ((Number(a.dateTimeUtms) || 0) - (Number(b.dateTimeUtms) || 0)) ||
+          (getCollectionActivityUtms(a) - getCollectionActivityUtms(b)) ||
+          (Number(a.id) - Number(b.id))
+        );
+      }
+      if (sortBy === 'date_desc') {
+        return (
+          ((Number(b.dateTimeUtms) || 0) - (Number(a.dateTimeUtms) || 0)) ||
+          (getCollectionActivityUtms(b) - getCollectionActivityUtms(a)) ||
+          (Number(b.id) - Number(a.id))
+        );
+      }
+      return (
+        (getCollectionActivityUtms(b) - getCollectionActivityUtms(a)) ||
+        ((Number(b.dateTimeUtms) || 0) - (Number(a.dateTimeUtms) || 0)) ||
+        (Number(b.id) - Number(a.id))
+      );
+    });
+  }, [collections, farmers, filterShift, filterStartDate, filterEndDate, searchQuery, sortBy]);
 
   return (
     <div className="space-y-5">
       {/* ----------------------------------------------------
-          0. TOP HEADER: Title, Subtitle, Record Milk Intake
+          0. TOP HEADER: Title & Subtitle
           ---------------------------------------------------- */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
         <div>
@@ -717,17 +775,6 @@ export default function MilkCollectionManager({
               ? 'Daily morning & evening milk collection, FAT/SNF automated testing, slips and payments'
               : 'दैनिक बिहानी तथा बेलुकी दूध संकलन, फ्याट/एसएनएफ स्वचालित परीक्षण, रसिद तथा हिसाब मिलान'}
           </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            type="button"
-            onClick={handleOpenAddModal}
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-600/20 cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>{lang === 'en' ? 'Record Milk Intake' : 'दूध संकलन दर्ता'}</span>
-          </button>
         </div>
       </div>
 
@@ -976,16 +1023,31 @@ export default function MilkCollectionManager({
                 </div>
               )}
 
-              {/* Action Buttons: Cancel and Save (Matching Image 1) */}
-              <div className="flex items-center justify-end gap-2.5 pt-2">
+              {/* Action Buttons: Auto-WhatsApp, Cancel and Save (Matching Image 1) */}
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2">
                 <button
                   type="button"
-                  onClick={handleResetInlineForm}
-                  className="flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold rounded-xl text-xs transition cursor-pointer"
+                  onClick={() => setAutoWhatsApp(prev => !prev)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold border transition cursor-pointer ${
+                    autoWhatsApp
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                  }`}
+                  title={lang === 'en' ? 'Automatically send milk slip via WhatsApp on save' : 'सुरक्षित भएपछि स्वतः व्हाट्सएपमा दूध रसिद पठाउनुहोस्'}
                 >
-                  <X className="w-4 h-4" />
-                  <span>{lang === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्'}</span>
+                  <MessageCircle className={`w-3.5 h-3.5 ${autoWhatsApp ? 'text-[#25D366]' : ''}`} />
+                  <span>{lang === 'en' ? `Auto-WhatsApp: ${autoWhatsApp ? 'ON' : 'OFF'}` : `स्वत: व्हाट्सएप: ${autoWhatsApp ? 'चालु' : 'बन्द'}`}</span>
                 </button>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleResetInlineForm}
+                    className="flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold rounded-xl text-xs transition cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>{lang === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्'}</span>
+                  </button>
                 <button
                   type="submit"
                   disabled={inlineLoading}
@@ -994,6 +1056,7 @@ export default function MilkCollectionManager({
                   <Save className="w-4 h-4" />
                   <span>{inlineLoading ? (lang === 'en' ? 'Saving...' : 'बचत गर्दै...') : (lang === 'en' ? 'Save' : 'सुरक्षित गर्नुहोस्')}</span>
                 </button>
+                </div>
               </div>
             </form>
           </div>
@@ -1215,10 +1278,22 @@ export default function MilkCollectionManager({
             <option value="1">{lang === 'en' ? 'Evening' : 'बेलुकी'}</option>
           </select>
 
+          {/* Sort Order Dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            aria-label={lang === 'en' ? 'Sort records' : 'रेकर्ड क्रम'}
+            className="px-3 py-1.5 text-xs font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl outline-none cursor-pointer"
+          >
+            <option value="recent">{lang === 'en' ? 'Sort: Recent Activity' : 'क्रम: हालैको गतिविधि'}</option>
+            <option value="date_desc">{lang === 'en' ? 'Sort: Date (Newest)' : 'क्रम: मिति (नयाँ पहिले)'}</option>
+            <option value="date_asc">{lang === 'en' ? 'Sort: Date (Oldest)' : 'क्रम: मिति (पुरानो पहिले)'}</option>
+          </select>
+
           {/* Reset Filters (if active) */}
-          {(filterStartDate || filterEndDate || filterShift) && (
+          {(filterStartDate || filterEndDate || filterShift || sortBy !== 'recent') && (
             <button
-              onClick={() => { setFilterStartDate(''); setFilterEndDate(''); setFilterShift(''); }}
+              onClick={() => { setFilterStartDate(''); setFilterEndDate(''); setFilterShift(''); setSortBy('recent'); }}
               className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-semibold transition cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -1371,6 +1446,23 @@ export default function MilkCollectionManager({
                       {/* Action */}
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
+                          {/* WhatsApp Slip Share */}
+                          <button
+                            type="button"
+                            onClick={() => openWhatsAppBill({
+                              slipType: 'milk-collection',
+                              data: { ...col, farmer, totalPrice: Number(totalAmt) },
+                              tenant,
+                              customers: farmers,
+                              lang,
+                              askPhoneIfMissing: true
+                            })}
+                            className="p-1.5 text-[#16a34a] hover:text-[#15803d] hover:bg-emerald-50 dark:hover:bg-emerald-950/50 rounded-lg transition cursor-pointer"
+                            title={lang === 'en' ? 'Send Milk Slip on WhatsApp' : 'व्हाट्सएपमा रसिद पठाउनुहोस्'}
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </button>
+
                           {/* Print Slip */}
                           <button
                             type="button"

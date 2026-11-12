@@ -2,6 +2,122 @@
   "tenantId": 1,
   "auditLogs": [
     {
+      "id": 1794469644855,
+      "tenantId": 1,
+      "userId": 3,
+      "username": "staff",
+      "userName": "Counter Operator",
+      "userEmail": "staff@dairy.local",
+      "customerId": 1794469644248,
+      "action": "REGISTER_CUSTOMER",
+      "actionLabelNe": "नयाँ खाता दर्ता",
+      "actionLabelEn": "Registered Account",
+      "category": "Accounts & Directory",
+      "details": "Registered account #10 (Farmer) Rajesh Sada (9801197710)",
+      "referenceId": "#10",
+      "dateTimeUtms": 1794469644250,
+      "dateTimeIso": "2026-11-12T07:47:24.250Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
+      "id": 1794469601857,
+      "tenantId": 1,
+      "userId": 3,
+      "username": "staff",
+      "userName": "Counter Operator",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Counter Operator (@staff) logged in (staff@dairy.local)",
+      "referenceId": "staff",
+      "dateTimeUtms": 1794469601797,
+      "dateTimeIso": "2026-11-12T07:46:41.797Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
+      "id": 1794469458108,
+      "tenantId": 1,
+      "userId": 1,
+      "username": "admin",
+      "userName": "System Admin",
+      "userEmail": "admin@dairy.local",
+      "customerId": 4,
+      "action": "CREATE_FUTURE_ORDER",
+      "actionLabelNe": "अग्रिम अर्डर सिर्जना",
+      "actionLabelEn": "Created Scheduled Order",
+      "category": "Sales & Orders",
+      "details": "Created scheduled order ORD-2026-2 for Shyam Sundar Yadav (Total: रू 6305, Advance Paid: रू 5000)",
+      "referenceId": "ORD-2026-2",
+      "dateTimeUtms": 1794469457713,
+      "dateTimeIso": "2026-11-12T07:44:17.713Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
+      "id": 1794468799309,
+      "tenantId": 1,
+      "userId": 1,
+      "username": "admin",
+      "userName": "System Admin",
+      "userEmail": "admin@dairy.local",
+      "farmerId": 1,
+      "customerId": 1,
+      "action": "RECORD_MILK_COLLECTION",
+      "actionLabelNe": "दूध संकलन प्रविष्टि",
+      "actionLabelEn": "Recorded Milk Intake",
+      "category": "Milk Collection",
+      "details": "Recorded 5 L (Morning) milk from Farmer #1 Ram Bahadur Thapa at रू 66.55/L (Total: रू 332.75)",
+      "referenceId": "#1794468799037",
+      "dateTimeUtms": 1794468799039,
+      "dateTimeIso": "2026-11-12T07:33:19.039Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
+      "id": 1794468771060,
+      "tenantId": 1,
+      "userId": 1,
+      "username": "admin",
+      "userName": "System Admin",
+      "userEmail": "admin@dairy.local",
+      "farmerId": 3,
+      "customerId": 3,
+      "action": "RECORD_MILK_COLLECTION",
+      "actionLabelNe": "दूध संकलन प्रविष्टि",
+      "actionLabelEn": "Recorded Milk Intake",
+      "category": "Milk Collection",
+      "details": "Recorded 1 L (Morning) milk from Farmer #3 Sita Maya Gurung at रू 95/L (Total: रू 95)",
+      "referenceId": "#1794468770233",
+      "dateTimeUtms": 1794468770235,
+      "dateTimeIso": "2026-11-12T07:32:50.235Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
+      "id": 1794468741982,
+      "tenantId": 1,
+      "userId": 1,
+      "username": "admin",
+      "userName": "System Admin",
+      "userEmail": "admin@dairy.local",
+      "farmerId": 1,
+      "customerId": 1,
+      "action": "RECORD_MILK_COLLECTION",
+      "actionLabelNe": "दूध संकलन प्रविष्टि",
+      "actionLabelEn": "Recorded Milk Intake",
+      "category": "Milk Collection",
+      "details": "Recorded 1.22 L (Morning) milk from Farmer #1 Ram Bahadur Thapa at रू 57.5/L (Total: रू 70.15)",
+      "referenceId": "#1794468741521",
+      "dateTimeUtms": 1794468741531,
+      "dateTimeIso": "2026-11-12T07:32:21.531Z",
+      "dateStr": "2026-11-12",
+      "isDeleted": false
+    },
+    {
       "id": 1794462174370,
       "tenantId": 1,
       "userId": 1,
@@ -217,7 +333,7 @@
       "id": 1,
       "productId": 1,
       "batchNumber": "RAW-LOT-2026-01",
-      "quantity": 380,
+      "quantity": 387.22,
       "usedQuantity": 296,
       "expiryDateUtms": 1794569038785,
       "dateTimeUtms": 1794223438785
@@ -394,6 +510,19 @@
       "remarks": "स्थानीय दुध बिक्रेता तथा संकलन केन्द्र",
       "isDeleted": false,
       "creationDateTimeUtms": 1793100238785
+    },
+    {
+      "id": 1794469644248,
+      "code": 10,
+      "nameInNepali": "Rajesh Sada",
+      "nameInEnglish": "Rajesh Sada",
+      "customerType": 1,
+      "phone": "9801197710",
+      "address": " dfmnwebf cd ",
+      "accountNumber": "01405080269506",
+      "remarks": "",
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794469644248
     }
   ],
   "milkFatSnfConfig": {
@@ -516,6 +645,48 @@
       "rate": 69.6,
       "totalPrice": 1948.8,
       "dateTimeUtms": 1794392638785,
+      "isDeleted": false
+    },
+    {
+      "id": 1794468741521,
+      "farmerId": 1,
+      "quantity": 1.22,
+      "shift": 0,
+      "fat": 5,
+      "snf": 5,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 57.5,
+      "totalPrice": 70.15,
+      "dateTimeUtms": 1794468660000,
+      "isDeleted": false
+    },
+    {
+      "id": 1794468770233,
+      "farmerId": 3,
+      "quantity": 1,
+      "shift": 0,
+      "fat": 10,
+      "snf": 5,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 95,
+      "totalPrice": 95,
+      "dateTimeUtms": 1794468660000,
+      "isDeleted": false
+    },
+    {
+      "id": 1794468799037,
+      "farmerId": 1,
+      "quantity": 5,
+      "shift": 0,
+      "fat": 4.5,
+      "snf": 8.2,
+      "fatRate": 7.5,
+      "snfRate": 4,
+      "rate": 66.55,
+      "totalPrice": 332.75,
+      "dateTimeUtms": 1794468660000,
       "isDeleted": false
     }
   ],
@@ -811,6 +982,58 @@
           "timestamp": 1794309838785,
           "action": "CREATED",
           "details": "Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit"
+        }
+      ]
+    },
+    {
+      "id": 1794469457694,
+      "orderNumber": "ORD-2026-2",
+      "customerId": 4,
+      "customerName": "Shyam Sundar Yadav",
+      "orderDateUtms": 1794469457659,
+      "deliveryDateUtms": 1794555780000,
+      "deliveryAddress": "भक्तपुर-९, कमलविनायक",
+      "totalAmount": 6305,
+      "paidAmount": 5000,
+      "paymentMethod": 0,
+      "balanceAmount": 1305,
+      "notes": "",
+      "items": [
+        {
+          "productId": 1,
+          "productName": "Raw Milk",
+          "quantity": 1,
+          "unitPrice": 85,
+          "totalPrice": 85
+        },
+        {
+          "productId": 3,
+          "productName": "Fresh Curd / Dahi",
+          "quantity": 1,
+          "unitPrice": 120,
+          "totalPrice": 120
+        },
+        {
+          "productId": 5,
+          "productName": "Pure Cow Ghee",
+          "quantity": 3,
+          "unitPrice": 1400,
+          "totalPrice": 4200
+        },
+        {
+          "productId": 6,
+          "productName": "White Butter / Nauni",
+          "quantity": 2,
+          "unitPrice": 950,
+          "totalPrice": 1900
+        }
+      ],
+      "status": "Pending",
+      "changeLogs": [
+        {
+          "timestamp": 1794469457694,
+          "action": "CREATED",
+          "details": "Order created with advance deposit of रू 5000"
         }
       ]
     }
@@ -1499,12 +1722,25 @@
       "accountType": 1,
       "transactionType": 1,
       "amount": 25,
-      "balanceAfter": 0,
+      "balanceAfter": 32855,
       "category": "Instant Sale",
       "description": "Payment received for Instant Sale #1794462174206",
       "referenceNumber": "SALE-1794462174206",
       "referenceType": "Sale",
       "transactionDateUtms": 1794462120000,
+      "isDeleted": false
+    },
+    {
+      "id": 1794469457696,
+      "accountType": 1,
+      "transactionType": 1,
+      "amount": 5000,
+      "balanceAfter": 37855,
+      "category": "Order Advance Deposit",
+      "description": "Advance deposit for Scheduled Order ORD-2026-2 (Shyam Sundar Yadav)",
+      "referenceNumber": "ORD-2026-2",
+      "referenceType": "FutureOrderDeposit",
+      "transactionDateUtms": 1794469457695,
       "isDeleted": false
     }
   ]

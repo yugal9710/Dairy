@@ -522,6 +522,13 @@ app.post('/api/Customer', (req, res) => {
     customerType: Number(req.body.customerType) || 1,
     phone: req.body.phone || '',
     address: req.body.address || '',
+    provinceId: req.body.provinceId || '',
+    provinceName: req.body.provinceName || '',
+    districtId: req.body.districtId || '',
+    districtName: req.body.districtName || '',
+    municipalityId: req.body.municipalityId || '',
+    municipalityName: req.body.municipalityName || '',
+    ward: req.body.ward || '',
     accountNumber: req.body.accountNumber || '',
     remarks: req.body.remarks || '',
     isDeleted: false,
@@ -592,13 +599,30 @@ app.delete('/api/Customer/:customerId', (req, res) => {
 // 3. MILK COLLECTION APIS
 // ============================================================================
 
+const getCollectionActivityTs = (c) => Number(
+  c?.updatedAtUtms ||
+  c?.createdAtUtms ||
+  (Number(c?.id) > 1000000000000 ? Number(c.id) : 0) ||
+  c?.dateTimeUtms ||
+  0
+);
+
+const nextCollectionActivityTs = (list = []) => {
+  const now = Date.now();
+  const maxExisting = list.reduce((max, item) => {
+    const ts = Math.max(Number(item?.updatedAtUtms) || 0, Number(item?.createdAtUtms) || 0, Number(item?.id) > 1000000000000 ? Number(item.id) : 0);
+    return ts > max ? ts : max;
+  }, 0);
+  return now > maxExisting ? now : maxExisting + 1;
+};
+
 // GET /api/MilkCollection
 app.get('/api/MilkCollection', (req, res) => {
   const tid = resolveTenantId(req);
   const tData = multiTenantDb.getTenantData(tid);
   let list = tData.milkCollections.filter(c => !c.isDeleted);
 
-  const { customerId, shift, startDateUtms, endDateUtms, filter, maxResultCount = 50, skipCount = 0 } = req.query;
+  const { customerId, shift, startDateUtms, endDateUtms, filter, sortBy = 'recent', maxResultCount = 50, skipCount = 0 } = req.query;
 
   if (customerId) {
     list = list.filter(c => c.farmerId === Number(customerId));
@@ -624,8 +648,26 @@ app.get('/api/MilkCollection', (req, res) => {
     });
   }
 
-  // Sort descending by date
-  list.sort((a, b) => b.dateTimeUtms - a.dateTimeUtms);
+  // Sort descending by recent activity by default, or by collection date if requested
+  if (sortBy === 'date_asc') {
+    list.sort((a, b) =>
+      ((Number(a.dateTimeUtms) || 0) - (Number(b.dateTimeUtms) || 0)) ||
+      (getCollectionActivityTs(a) - getCollectionActivityTs(b)) ||
+      (Number(a.id) - Number(b.id))
+    );
+  } else if (sortBy === 'date_desc') {
+    list.sort((a, b) =>
+      ((Number(b.dateTimeUtms) || 0) - (Number(a.dateTimeUtms) || 0)) ||
+      (getCollectionActivityTs(b) - getCollectionActivityTs(a)) ||
+      (Number(b.id) - Number(a.id))
+    );
+  } else {
+    list.sort((a, b) =>
+      (getCollectionActivityTs(b) - getCollectionActivityTs(a)) ||
+      ((Number(b.dateTimeUtms) || 0) - (Number(a.dateTimeUtms) || 0)) ||
+      (Number(b.id) - Number(a.id))
+    );
+  }
 
   // Attach farmer object
   const items = list
@@ -772,8 +814,9 @@ app.post('/api/MilkCollection', (req, res) => {
       : calculatedRate * quantity
   );
 
+  const activityTs = nextCollectionActivityTs(tData.milkCollections);
   const newCollection = {
-    id: Date.now(),
+    id: activityTs,
     farmerId: Number(custId),
     quantity: round2(quantity),
     shift: shiftVal,
@@ -783,7 +826,9 @@ app.post('/api/MilkCollection', (req, res) => {
     snfRate: round2(effectiveSnfRate),
     rate: calculatedRate,
     totalPrice,
-    dateTimeUtms: Number(DateTimeUtms) || Date.now(),
+    dateTimeUtms: Number(DateTimeUtms) || activityTs,
+    createdAtUtms: activityTs,
+    updatedAtUtms: activityTs,
     isDeleted: false
   };
 
@@ -832,6 +877,7 @@ app.put('/api/MilkCollection/:milkCollectionId', (req, res) => {
   const totalPrice = round2(rate * quantity);
   const qtyDelta = round2(quantity - (Number(existing.quantity) || 0));
 
+  const activityTs = nextCollectionActivityTs(tData.milkCollections);
   tData.milkCollections[idx] = {
     ...existing,
     farmerId: customerId ? Number(customerId) : existing.farmerId,
@@ -843,7 +889,9 @@ app.put('/api/MilkCollection/:milkCollectionId', (req, res) => {
     snfRate: round2(snfRate),
     rate,
     totalPrice,
-    dateTimeUtms: DateTimeUtms ? Number(DateTimeUtms) : existing.dateTimeUtms
+    dateTimeUtms: DateTimeUtms ? Number(DateTimeUtms) : existing.dateTimeUtms,
+    createdAtUtms: existing.createdAtUtms || (Number(existing.id) > 1000000000000 ? Number(existing.id) : existing.dateTimeUtms),
+    updatedAtUtms: activityTs
   };
 
   if (qtyDelta !== 0) {
@@ -985,6 +1033,7 @@ app.get('/api/MilkCollectionPayment', (req, res) => {
         farmer: {
           id: farmer.id,
           code: farmer.code,
+          phone: farmer.phone || '',
           nameInNepali: farmer.nameInNepali,
           nameInEnglish: farmer.nameInEnglish
         }
@@ -1170,7 +1219,7 @@ app.get('/api/Order', (req, res) => {
       const cust = o.customerId ? tData.customers.find(c => c.id === o.customerId) : null;
       return {
         ...o,
-        customer: cust ? { id: cust.id, nameInNepali: cust.nameInNepali, nameInEnglish: cust.nameInEnglish } : null,
+        customer: cust ? { id: cust.id, code: cust.code, phone: cust.phone || '', nameInNepali: cust.nameInNepali, nameInEnglish: cust.nameInEnglish } : null,
         totalProduct: o.orderProducts ? o.orderProducts.length : 0
       };
     });
@@ -1309,9 +1358,13 @@ app.post('/api/Order', (req, res) => {
   const remaining = round2(Math.max(0, netAmount - totalPaid));
 
   let custName = 'काउन्टर ग्राहक (Walk-in)';
+  let custObj = null;
   if (CustomerId) {
     const cust = tData.customers.find(c => c.id === Number(CustomerId));
-    if (cust) custName = cust.nameInEnglish || cust.nameInNepali;
+    if (cust) {
+      custName = cust.nameInEnglish || cust.nameInNepali;
+      custObj = { id: cust.id, code: cust.code, phone: cust.phone || '', nameInNepali: cust.nameInNepali, nameInEnglish: cust.nameInEnglish };
+    }
   }
 
   const newOrder = {
@@ -1319,6 +1372,7 @@ app.post('/api/Order', (req, res) => {
     saleType: 1, // Instant Sale
     customerId: CustomerId ? Number(CustomerId) : null,
     customerName: custName,
+    customer: custObj,
     orderDateTimeUtms: orderTime,
     totalAmount,
     discountAmount: discount,
@@ -3130,6 +3184,6 @@ if (clientDist) {
 }
 
 // Start HTTP Server
-app.listen(PORT, () => {
-  console.log(`🥛 Dairy ERP 2.0 API Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🥛 Dairy ERP 2.0 API Server running on http://0.0.0.0:${PORT}`);
 });

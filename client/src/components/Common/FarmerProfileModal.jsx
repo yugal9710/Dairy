@@ -20,10 +20,12 @@ import {
   CheckCircle,
   AlertCircle,
   Edit,
-  Activity
+  Activity,
+  MessageCircle
 } from 'lucide-react';
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
+import { openWhatsAppBill } from '../../utils/whatsappBill';
 
 function formatDateTime(ts) {
   if (!ts) return { date: '-', time: '' };
@@ -51,6 +53,7 @@ export function FarmerProfileView({
   initialCollections = [],
   initialPayments = [],
   initialAuditLogs = [],
+  tenant,
   onOpenRecordMilk,
   onOpenRecordPayment,
   onEditCustomer,
@@ -392,6 +395,22 @@ export function FarmerProfileView({
               <span>{lang === 'en' ? 'Record Payment' : 'भुक्तानी प्रविष्टि'}</span>
             </button>
           )}
+          <button
+            type="button"
+            onClick={() => openWhatsAppBill({
+              slipType: 'farmer-statement',
+              data: profile,
+              tenant,
+              customers: [profile],
+              lang,
+              askPhoneIfMissing: true
+            })}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#1fb857] text-slate-950 font-extrabold rounded-xl text-xs transition shadow-xs cursor-pointer"
+            title={lang === 'en' ? 'Send Account Statement on WhatsApp' : 'व्हाट्सएपमा खाता विवरण पठाउनुहोस्'}
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span>WhatsApp</span>
+          </button>
           {onPrintStatement && (
             <button
               type="button"
@@ -794,6 +813,21 @@ export function FarmerProfileView({
                             </td>
                             <td className="py-2.5 px-3 text-center whitespace-nowrap">
                               <div className="inline-flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => openWhatsAppBill({
+                                    slipType: 'farmer-slip',
+                                    data: { ...p, farmer: profile },
+                                    tenant,
+                                    customers: [profile],
+                                    lang,
+                                    askPhoneIfMissing: true
+                                  })}
+                                  className="p-1 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 cursor-pointer"
+                                  title={lang === 'en' ? 'Send Voucher on WhatsApp' : 'व्हाट्सएपमा भौचर पठाउनुहोस्'}
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                </button>
                                 {onPrintPaymentSlip && (
                                   <button
                                     type="button"
@@ -899,16 +933,33 @@ export function FarmerProfileView({
                               )}
                             </td>
                             <td className="py-2.5 px-3 text-center whitespace-nowrap">
-                              {onPrintMilkSlip && (
+                              <div className="inline-flex items-center gap-1">
                                 <button
                                   type="button"
-                                  onClick={() => onPrintMilkSlip({ ...c, farmer: profile, totalPrice: totalAmt })}
-                                  className="p-1 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
-                                  title={lang === 'en' ? 'Print Milk Slip' : 'दूध रसिद प्रिन्ट'}
+                                  onClick={() => openWhatsAppBill({
+                                    slipType: 'milk-collection',
+                                    data: { ...c, farmer: profile, totalPrice: totalAmt },
+                                    tenant,
+                                    customers: [profile],
+                                    lang,
+                                    askPhoneIfMissing: true
+                                  })}
+                                  className="p-1 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 cursor-pointer"
+                                  title={lang === 'en' ? 'Send Milk Slip on WhatsApp' : 'व्हाट्सएपमा दूध रसिद पठाउनुहोस्'}
                                 >
-                                  <Printer className="w-3.5 h-3.5" />
+                                  <MessageCircle className="w-3.5 h-3.5" />
                                 </button>
-                              )}
+                                {onPrintMilkSlip && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onPrintMilkSlip({ ...c, farmer: profile, totalPrice: totalAmt })}
+                                    className="p-1 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+                                    title={lang === 'en' ? 'Print Milk Slip' : 'दूध रसिद प्रिन्ट'}
+                                  >
+                                    <Printer className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         );

@@ -15,17 +15,24 @@ import {
   CreditCard,
   Building,
   User,
-  AlertCircle
+  AlertCircle,
+  MessageCircle
 } from 'lucide-react';
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
 import FarmerProfileModal from '../Common/FarmerProfileModal';
+import {
+  openWhatsAppBill,
+  maybeAutoSendWhatsApp,
+  useWhatsAppAutoSend
+} from '../../utils/whatsappBill';
 
 export default function FarmerPaymentManager({
   farmers = [],
   payments = [],
   collections = [],
   auditLogs = [],
+  tenant,
   onRefresh,
   onPrintSlip,
   onPrintPaymentSlip,
@@ -34,6 +41,7 @@ export default function FarmerPaymentManager({
 }) {
   const { lang, t } = useLanguage();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0); // 0: Balances & Ledger, 1: Payment History, 2: Deliveries
+  const [autoWhatsApp, setAutoWhatsApp] = useWhatsAppAutoSend();
 
   // Filtering State
   const [farmerFilter, setFarmerFilter] = useState('');
@@ -219,12 +227,22 @@ export default function FarmerPaymentManager({
 
       if (res.ok) {
         const savedData = await res.json().catch(() => null);
+        const voucherData = savedData
+          ? { ...savedData, farmer: selectedFarmer }
+          : { ...payload, farmer: selectedFarmer };
+        maybeAutoSendWhatsApp({
+          slipType: 'farmer-slip',
+          data: voucherData,
+          tenant,
+          customers: farmers,
+          lang
+        });
         setModalOpen(false);
         if (onRefresh) onRefresh();
 
         if (printSlipAfter) {
           if (onPrintPaymentSlip) {
-            onPrintPaymentSlip(savedData || { ...payload, farmer: selectedFarmer });
+            onPrintPaymentSlip(voucherData);
           } else if (onPrintSlip) {
             onPrintSlip(selectedFarmer);
           }
@@ -604,6 +622,24 @@ export default function FarmerPaymentManager({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+                              openWhatsAppBill({
+                                slipType: 'farmer-statement',
+                                data: f,
+                                tenant,
+                                customers: farmers,
+                                lang,
+                                askPhoneIfMissing: true
+                              });
+                            }}
+                            className="p-1.5 border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 rounded-lg text-[11px] font-semibold transition cursor-pointer"
+                            title={lang === 'en' ? 'Send Statement on WhatsApp' : 'व्हाट्सएपमा विवरण पठाउनुहोस्'}
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                               onPrintSlip && onPrintSlip(f);
                             }}
                             className="px-2 py-1 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg text-[11px] font-semibold transition cursor-pointer"
@@ -757,6 +793,20 @@ export default function FarmerPaymentManager({
 
                       <td className="py-2.5 px-4 text-center">
                         <div className="inline-flex items-center gap-1.5">
+                          <button
+                            onClick={() => openWhatsAppBill({
+                              slipType: 'farmer-slip',
+                              data: { ...p, farmer: f },
+                              tenant,
+                              customers: farmers,
+                              lang,
+                              askPhoneIfMissing: true
+                            })}
+                            className="p-1.5 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 transition cursor-pointer"
+                            title={lang === 'en' ? 'Send Payment Voucher on WhatsApp' : 'व्हाट्सएपमा भुक्तानी भौचर पठाउनुहोस्'}
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                          </button>
                           <button
                             onClick={() => onPrintPaymentSlip ? onPrintPaymentSlip(p) : onPrintSlip && onPrintSlip(f)}
                             className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition cursor-pointer"
@@ -1224,14 +1274,29 @@ export default function FarmerPaymentManager({
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
-                onClick={() => setModalOpen(false)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+                onClick={() => setAutoWhatsApp(prev => !prev)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold border transition cursor-pointer ${
+                  autoWhatsApp
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                    : 'bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                }`}
+                title={lang === 'en' ? 'Automatically send payment voucher on WhatsApp when saved' : 'भुक्तानी सुरक्षित हुँदा स्वतः व्हाट्सएपमा पठाउनुहोस्'}
               >
-                {lang === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्'}
+                <MessageCircle className={`w-3.5 h-3.5 ${autoWhatsApp ? 'text-[#25D366]' : ''}`} />
+                <span>{lang === 'en' ? `Auto-WhatsApp: ${autoWhatsApp ? 'ON' : 'OFF'}` : `स्वत: व्हाट्सएप: ${autoWhatsApp ? 'चालु' : 'बन्द'}`}</span>
               </button>
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  {lang === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्'}
+                </button>
 
               <button
                 type="button"
@@ -1259,6 +1324,7 @@ export default function FarmerPaymentManager({
               >
                 {loading ? (lang === 'en' ? 'Saving...' : 'सुरक्षित गर्दै...') : (lang === 'en' ? 'Save Payment' : 'भुक्तानी सुरक्षित गर्नुहोस्')}
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1273,6 +1339,7 @@ export default function FarmerPaymentManager({
         initialCollections={collections}
         initialPayments={payments}
         initialAuditLogs={auditLogs}
+        tenant={tenant}
         onOpenRecordPayment={(f) => {
           setSelectedFarmerForHistory(null);
           handleOpenPaymentModal(f, false);

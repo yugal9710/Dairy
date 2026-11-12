@@ -12,6 +12,10 @@ import {
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
 import { FarmerProfileView } from '../Common/FarmerProfileModal';
+import NepalAddressFields, {
+  EMPTY_NEPAL_LOCATION,
+  getNextCustomerCode
+} from '../Common/NepalAddressFields';
 
 export default function CustomerManager({
   customers = [],
@@ -34,10 +38,12 @@ export default function CustomerManager({
   const [searchQuery, setSearchQuery] = useState('');
 
   // Form State
+  const [accountCode, setAccountCode] = useState('');
   const [nameInNepali, setNameInNepali] = useState('');
   const [nameInEnglish, setNameInEnglish] = useState('');
   const [customerType, setCustomerType] = useState(1); // 1: Farmer, 2: Buyer, 3: Both
   const [phone, setPhone] = useState('');
+  const [nepalLocation, setNepalLocation] = useState(EMPTY_NEPAL_LOCATION);
   const [address, setAddress] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -46,18 +52,30 @@ export default function CustomerManager({
   const handleOpenModal = (cust = null) => {
     setEditingCustomer(cust);
     if (cust) {
+      setAccountCode(String(cust.code || cust.id || ''));
       setNameInNepali(cust.nameInNepali || '');
       setNameInEnglish(cust.nameInEnglish || '');
       setCustomerType(cust.customerType || 1);
       setPhone(cust.phone || '');
+      setNepalLocation({
+        provinceId: cust.provinceId ? String(cust.provinceId) : '',
+        provinceName: cust.provinceName || '',
+        districtId: cust.districtId ? String(cust.districtId) : '',
+        districtName: cust.districtName || '',
+        municipalityId: cust.municipalityId ? String(cust.municipalityId) : '',
+        municipalityName: cust.municipalityName || '',
+        ward: cust.ward ? String(cust.ward) : ''
+      });
       setAddress(cust.address || '');
       setAccountNumber(cust.accountNumber || '');
       setRemarks(cust.remarks || '');
     } else {
+      setAccountCode(String(getNextCustomerCode(customers)));
       setNameInNepali('');
       setNameInEnglish('');
       setCustomerType(1);
       setPhone('');
+      setNepalLocation(EMPTY_NEPAL_LOCATION);
       setAddress('');
       setAccountNumber('');
       setRemarks('');
@@ -71,10 +89,12 @@ export default function CustomerManager({
 
     try {
       const payload = {
+        ...(accountCode ? { code: Number(accountCode) } : {}),
         nameInNepali,
         nameInEnglish,
         customerType: Number(customerType),
         phone,
+        ...nepalLocation,
         address,
         accountNumber,
         remarks
@@ -299,17 +319,41 @@ export default function CustomerManager({
       {/* Customer Create/Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-4 text-white flex items-center justify-between">
-              <h3 className="font-bold text-base">
-                {editingCustomer ? (lang === 'en' ? 'Edit Account' : 'खाता विवरण सम्पादन') : (lang === 'en' ? 'New Account Registration' : 'नयाँ खाता दर्ता')}
-              </h3>
-              <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-white/20 transition">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden">
+            <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-4 text-white flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5">
+                <h3 className="font-bold text-base">
+                  {editingCustomer ? (lang === 'en' ? 'Edit Account' : 'खाता विवरण सम्पादन') : (lang === 'en' ? 'New Account Registration' : 'नयाँ खाता दर्ता')}
+                </h3>
+                {accountCode && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-mono text-xs font-extrabold">
+                    #{accountCode}
+                  </span>
+                )}
+              </div>
+              <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-white/20 transition cursor-pointer">
                 &times;
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-4">
+            <form onSubmit={handleSave} className="p-6 space-y-4 overflow-y-auto">
+              {/* Generated Account Code Display */}
+              <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                    {editingCustomer
+                      ? (lang === 'en' ? 'Account Code' : 'खाता कोड')
+                      : (lang === 'en' ? 'Generated Account Code' : 'स्वतः सिर्जित खाता कोड')}
+                  </div>
+                  <div className="text-[11px] text-emerald-600 dark:text-emerald-400">
+                    {lang === 'en' ? 'Automatically assigned sequential member ID' : 'प्रणालीद्वारा स्वतः प्रदान गरिएको कोड नम्बर'}
+                  </div>
+                </div>
+                <div className="px-3 py-1 rounded-lg bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 font-mono text-base font-black text-emerald-700 dark:text-emerald-300 shadow-2xs">
+                  #{accountCode}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Name in Nepali' : 'नेपाली नाम'}</label>
                 <input
@@ -369,15 +413,31 @@ export default function CustomerManager({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">{t('address')}</label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder={lang === 'en' ? 'e.g. Gaushala-12, Kathmandu' : 'उदा: गौशाला-१२, काठमाडौं'}
-                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none"
+              {/* Cascading Nepal Province / District / Municipality / Ward */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-3">
+                <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                  {lang === 'en' ? 'Nepal Local-Level Address' : 'नेपालको स्थानीय तह ठेगाना'}
+                </div>
+                <NepalAddressFields
+                  value={nepalLocation}
+                  onChange={(nextLoc, composedAddress) => {
+                    setNepalLocation(nextLoc);
+                    if (composedAddress) setAddress(composedAddress);
+                  }}
+                  lang={lang}
                 />
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    {t('address')} {lang === 'en' ? '(Street / Tole / Full)' : '(टोल / पूरा ठेगाना)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder={lang === 'en' ? 'e.g. Gaushala-12, Kathmandu' : 'उदा: गौशाला-१२, काठमाडौं'}
+                    className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t">

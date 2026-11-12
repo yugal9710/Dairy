@@ -17,16 +17,19 @@ import {
   Printer,
   Trash2,
   Search,
-  CheckSquare
+  CheckSquare,
+  MessageCircle
 } from 'lucide-react';
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
 import { preventNegativeKey, nonNegativeValue } from '../../utils/numberInput';
+import { openWhatsAppBill, maybeAutoSendWhatsApp } from '../../utils/whatsappBill';
 
 export default function OrderManager({
   futureOrders = [],
   customers = [],
   products = [],
+  tenant,
   onRefresh,
   onPrintSlip
 }) {
@@ -270,6 +273,16 @@ export default function OrderManager({
       });
 
       if (res.ok) {
+        const createdOrder = await res.json().catch(() => null);
+        if (createdOrder) {
+          maybeAutoSendWhatsApp({
+            slipType: 'sale-slip',
+            data: buildOrderSlipPayload(createdOrder),
+            tenant,
+            customers,
+            lang
+          });
+        }
         setModalOpen(false);
         setCustomerId('');
         setDeliveryAddress('');
@@ -338,32 +351,45 @@ export default function OrderManager({
     }
   };
 
+  const buildOrderSlipPayload = (ord) => ({
+    id: ord.id,
+    orderNumber: ord.orderNumber,
+    customerId: ord.customerId,
+    customerName: ord.customerName,
+    customer: customers.find(c => c.id === ord.customerId),
+    creationDateTimeUtms: ord.orderDateUtms,
+    deliveryDateUtms: ord.deliveryDateUtms,
+    deliveryAddress: ord.deliveryAddress,
+    totalAmount: ord.totalAmount,
+    paidAmount: ord.paidAmount,
+    totalPaid: ord.paidAmount,
+    remainingAmount: ord.balanceAmount,
+    discountAmount: 0,
+    netAmount: ord.totalAmount,
+    notes: ord.notes,
+    orderProducts: (ord.items || []).map(it => ({
+      productName: it.productName,
+      quantity: it.quantity,
+      unitPrice: it.unitPrice,
+      totalPrice: it.totalPrice || (it.quantity * it.unitPrice)
+    }))
+  });
+
   const handlePrintFutureOrderSlip = (ord) => {
     if (onPrintSlip) {
-      const slipData = {
-        id: ord.id,
-        orderNumber: ord.orderNumber,
-        customerName: ord.customerName,
-        customer: customers.find(c => c.id === ord.customerId),
-        creationDateTimeUtms: ord.orderDateUtms,
-        deliveryDateUtms: ord.deliveryDateUtms,
-        deliveryAddress: ord.deliveryAddress,
-        totalAmount: ord.totalAmount,
-        paidAmount: ord.paidAmount,
-        totalPaid: ord.paidAmount,
-        remainingAmount: ord.balanceAmount,
-        discountAmount: 0,
-        netAmount: ord.totalAmount,
-        notes: ord.notes,
-        orderProducts: (ord.items || []).map(it => ({
-          productName: it.productName,
-          quantity: it.quantity,
-          unitPrice: it.unitPrice,
-          totalPrice: it.totalPrice || (it.quantity * it.unitPrice)
-        }))
-      };
-      onPrintSlip(slipData);
+      onPrintSlip(buildOrderSlipPayload(ord));
     }
+  };
+
+  const handleWhatsAppFutureOrderSlip = (ord) => {
+    openWhatsAppBill({
+      slipType: 'sale-slip',
+      data: buildOrderSlipPayload(ord),
+      tenant,
+      customers,
+      lang,
+      askPhoneIfMissing: true
+    });
   };
 
   const handleUpdateStatus = async (orderId, newStatus) => {
@@ -731,6 +757,14 @@ export default function OrderManager({
                             <span>{lang === 'en' ? 'Pay' : 'तिर्नुहोस्'}</span>
                           </button>
                         )}
+
+                        <button
+                          onClick={() => handleWhatsAppFutureOrderSlip(ord)}
+                          className="p-1.5 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 cursor-pointer transition"
+                          title={lang === 'en' ? 'Send Order Bill on WhatsApp' : 'व्हाट्सएपमा अर्डर बिल पठाउनुहोस्'}
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </button>
 
                         <button
                           onClick={() => handlePrintFutureOrderSlip(ord)}

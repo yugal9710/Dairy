@@ -436,6 +436,7 @@ function DairyMainApp() {
                 collections={collections}
                 farmers={customers.filter(c => c.customerType === 1 || c.customerType === 3)}
                 config={fatSnfConfig}
+                tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintSlip={(col) => handleOpenPrintSlip('milk-collection', col)}
                 onInspectFarmer={handleInspectFarmer}
@@ -455,6 +456,7 @@ function DairyMainApp() {
                 payments={payments}
                 collections={collections}
                 auditLogs={auditLogs}
+                tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintSlip={(farmer) => handleOpenPrintSlip('farmer-statement', farmer)}
                 onPrintPaymentSlip={(payment) => handleOpenPrintSlip('farmer-slip', payment)}
@@ -469,6 +471,7 @@ function DairyMainApp() {
                 inventorySummary={inventorySummary}
                 customers={customers}
                 orders={orders}
+                tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintReceipt={(ord) => handleOpenPrintSlip('sale-slip', ord)}
               />
@@ -479,6 +482,7 @@ function DairyMainApp() {
                 futureOrders={futureOrders}
                 customers={customers}
                 products={products}
+                tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintSlip={(ord) => handleOpenPrintSlip('sale-slip', ord)}
               />
@@ -605,6 +609,7 @@ function DairyMainApp() {
           initialCollections={collections}
           initialPayments={payments}
           initialAuditLogs={auditLogs}
+          tenant={activeTenant}
           onOpenRecordMilk={() => {
             setFarmerProfileState({ isOpen: false, farmer: null, tab: 'all' });
             handleNavigateTab('milk-collection');
@@ -625,6 +630,7 @@ function DairyMainApp() {
           slipType={slipModalData.type}
           data={slipModalData.data}
           tenant={activeTenant}
+          customers={customers}
         />
       </div>
     </ErrorBoundary>
