@@ -3103,14 +3103,29 @@ app.get('/api/Billing', (req, res) => {
   res.json({ totalCount: list.length, items: list });
 });
 
+// Health check endpoint for Render / load balancers
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, status: 'healthy', timestamp: new Date().toISOString() });
+});
+
 // ============================================================================
 // STATIC ASSET SERVING IN PRODUCTION
 // ============================================================================
-const clientDist = path.join(__dirname, '..', 'client', 'dist');
-if (fs.existsSync(clientDist)) {
+const distBuildDir = path.join(__dirname, '..', 'client', 'dist');
+const legacyBuildDir = path.join(__dirname, '..', 'build');
+const clientDist = fs.existsSync(distBuildDir)
+  ? distBuildDir
+  : fs.existsSync(legacyBuildDir)
+    ? legacyBuildDir
+    : null;
+
+if (clientDist) {
   app.use(express.static(clientDist));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'));
+    if (req.path === '/api' || req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    return res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
 

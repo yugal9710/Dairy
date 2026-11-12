@@ -6,10 +6,13 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "build": "npm install && npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "build": "npm install --include=dev && npm --prefix server install && npm --prefix client install --include=dev && npm --prefix client run build && node -e \"const fs=require('fs');fs.rmSync('build',{recursive:true,force:true});fs.cpSync('client/dist','build',{recursive:true});\"",
     "dev": "node run.js",
     "server": "node server/server.js",
     "client": "npm run dev --prefix client"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
