@@ -55,7 +55,7 @@ function DairyMainApp() {
 
   const handleNavigateTab = (tab, subTab) => {
     const roles = currentUser?.roles || ['User'];
-    if (!isTabAllowed(tab, roles)) return;
+    if (!isTabAllowed(tab, roles, currentUser)) return;
     setActiveTab(tab);
     if (subTab) setSettingsSubTab(subTab);
   };
@@ -136,7 +136,7 @@ function DairyMainApp() {
         'x-user-name': encodeURIComponent(currentUser?.name || 'System Admin'),
         'x-username': encodeURIComponent(getDerivedUsername(currentUser)),
         'x-user-id': String(currentUser?.id || 1),
-        'x-user-email': currentUser?.email || 'admin@dairy.local'
+        'x-user-email': currentUser?.email || ''
       };
 
       const [
@@ -266,7 +266,7 @@ function DairyMainApp() {
 
   useEffect(() => {
     const roles = currentUser?.roles || ['User'];
-    if (!isTabAllowed(activeTab, roles)) {
+    if (!isTabAllowed(activeTab, roles, currentUser)) {
       setActiveTab('dashboard');
     }
   }, [activeTab, currentUser]);
@@ -526,6 +526,7 @@ function DairyMainApp() {
 
             {activeTab === 'customers' && (
               <CustomerManager
+                tenant={activeTenant}
                 customers={customers}
                 collections={collections}
                 payments={payments}

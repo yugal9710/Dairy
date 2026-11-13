@@ -25,10 +25,12 @@ export default function SettingsManager({
 
   // User Form
   const [userModalOpen, setUserModalOpen] = useState(false);
+  const [userUsername, setUserUsername] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('Password123');
   const [userRole, setUserRole] = useState('User');
+  const [userError, setUserError] = useState('');
 
   // Renewal Modal
   const [renewModalOpen, setRenewModalOpen] = useState(false);
@@ -70,13 +72,15 @@ export default function SettingsManager({
 
   const handleAddUser = async (e) => {
     e.preventDefault();
-    if (!userEmail || !userName) return;
+    if (!userUsername || !userName) return;
+    setUserError('');
 
     try {
       const res = await fetch('/api/UserManager', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          username: userUsername,
           email: userEmail,
           name: userName,
           password: userPassword,
@@ -84,15 +88,21 @@ export default function SettingsManager({
           tenantId: tenant?.id || 1
         })
       });
+      const data = await res.json();
 
       if (res.ok) {
         setUserModalOpen(false);
+        setUserUsername('');
         setUserEmail('');
         setUserName('');
+        setUserError('');
         if (onRefresh) onRefresh();
+      } else {
+        setUserError(data.error || data.message || 'Failed to create user');
       }
     } catch (e) {
       console.error(e);
+      setUserError('Unable to reach server');
     }
   };
 
@@ -273,7 +283,7 @@ export default function SettingsManager({
             <thead className="bg-slate-50 text-slate-600 uppercase font-bold border-b">
               <tr>
                 <th className="py-3 px-4">{lang === 'en' ? 'Name' : 'नाम'}</th>
-                <th className="py-3 px-4">{lang === 'en' ? 'Email' : 'इमेल'}</th>
+                <th className="py-3 px-4">{lang === 'en' ? 'Username' : 'प्रयोगकर्ता नाम'}</th>
                 <th className="py-3 px-4">{lang === 'en' ? 'Role' : 'भूमिका'}</th>
                 <th className="py-3 px-4 text-center">{t('status')}</th>
                 <th className="py-3 px-4 text-center">{t('action')}</th>
@@ -283,7 +293,12 @@ export default function SettingsManager({
               {users.map(u => (
                 <tr key={u.id} className="hover:bg-slate-50">
                   <td className="py-2.5 px-4 font-bold text-slate-800">{u.name}</td>
-                  <td className="py-2.5 px-4 font-mono text-slate-600">{u.email}</td>
+                  <td className="py-2.5 px-4 font-mono text-slate-600">
+                    <span className="font-bold text-slate-800">
+                      @{u.username || (u.email ? u.email.split('@')[0] : 'user')}
+                    </span>
+                    {u.email && <span className="block text-[10px] text-slate-400">{u.email}</span>}
+                  </td>
                   <td className="py-2.5 px-4">
                     <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-800">
                       {Array.isArray(u.roles) ? u.roles.join(', ') : u.role}
@@ -369,6 +384,11 @@ export default function SettingsManager({
               </button>
             </div>
             <form onSubmit={handleAddUser} className="p-6 space-y-4">
+              {userError && (
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                  {userError}
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Full Name' : 'पूरा नाम'}</label>
                 <input
@@ -380,13 +400,24 @@ export default function SettingsManager({
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Email' : 'इमेल'}</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Username *' : 'प्रयोगकर्ता नाम *'}</label>
+                <input
+                  type="text"
+                  value={userUsername}
+                  onChange={(e) => setUserUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, '').toLowerCase())}
+                  placeholder="e.g. counter1"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none font-mono"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Email (Optional)' : 'इमेल (ऐच्छिक)'}</label>
                 <input
                   type="email"
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="Optional"
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none"
-                  required
                 />
               </div>
               <div>

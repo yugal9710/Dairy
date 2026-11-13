@@ -76,6 +76,7 @@ export default function TenantProfileModal({
   const [editingUser, setEditingUser] = useState(null);
   const [userForm, setUserForm] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     phone: '',
@@ -335,7 +336,7 @@ export default function TenantProfileModal({
       showToast(lang === 'en' ? 'User account saved successfully!' : 'प्रयोगकर्ता खाता सुरक्षित भयो !');
       setShowUserModal(false);
       setEditingUser(null);
-      setUserForm({ name: '', email: '', password: '', phone: '', role: 'Admin' });
+      setUserForm({ name: '', username: '', email: '', password: '', phone: '', role: 'Admin' });
       fetchTenantProfile();
     } catch (err) {
       showToast(err.message, 'error');
@@ -832,7 +833,7 @@ export default function TenantProfileModal({
                       type="button"
                       onClick={() => {
                         setEditingUser(null);
-                        setUserForm({ name: '', email: '', password: '', phone: '', role: 'Admin' });
+                        setUserForm({ name: '', username: '', email: '', password: '', phone: '', role: 'Admin' });
                         setShowUserModal(true);
                       }}
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition cursor-pointer"
@@ -848,7 +849,7 @@ export default function TenantProfileModal({
                       <thead className="bg-slate-50 dark:bg-slate-800/70 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold uppercase">
                         <tr>
                           <th className="p-3">Staff Name</th>
-                          <th className="p-3">Email / Username</th>
+                          <th className="p-3">Username</th>
                           <th className="p-3">Role</th>
                           <th className="p-3 text-center">Status</th>
                           <th className="p-3 text-center">Actions</th>
@@ -858,7 +859,12 @@ export default function TenantProfileModal({
                         {(profile?.users || []).map(u => (
                           <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                             <td className="p-3 font-bold text-slate-800 dark:text-slate-200">{u.name}</td>
-                            <td className="p-3 font-mono text-slate-600 dark:text-slate-400">{u.email}</td>
+                            <td className="p-3 font-mono text-slate-600 dark:text-slate-400">
+                              <span className="font-bold text-slate-800 dark:text-slate-200">
+                                @{u.username || (u.email ? u.email.split('@')[0] : 'user')}
+                              </span>
+                              {u.email && <span className="block text-[10px] text-slate-400">{u.email}</span>}
+                            </td>
                             <td className="p-3">
                               <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold rounded-lg text-[10px]">
                                 {(u.roles || []).join(', ') || 'User'}
@@ -907,18 +913,21 @@ export default function TenantProfileModal({
                             />
                           </div>
                           <div>
-                            <label className="block font-bold mb-1">Login Email</label>
+                            <label className="block font-bold mb-1">Username *</label>
                             <input
-                              type="email"
-                              value={userForm.email}
-                              onChange={(e) => setUserForm(prev => ({ ...prev, email: e.target.value }))}
-                              placeholder="hari@dairy.local"
-                              className="w-full px-3 py-2 border rounded-xl font-bold bg-white dark:bg-slate-800"
+                              type="text"
+                              value={userForm.username}
+                              onChange={(e) => setUserForm(prev => ({
+                                ...prev,
+                                username: e.target.value.replace(/[^a-zA-Z0-9._-]/g, '').toLowerCase()
+                              }))}
+                              placeholder="e.g. hari.staff"
+                              className="w-full px-3 py-2 border rounded-xl font-mono font-bold bg-white dark:bg-slate-800"
                               required
                             />
                           </div>
                           <div>
-                            <label className="block font-bold mb-1">Temporary Password</label>
+                            <label className="block font-bold mb-1">Temporary Password *</label>
                             <input
                               type="password"
                               value={userForm.password}
@@ -926,6 +935,16 @@ export default function TenantProfileModal({
                               placeholder="Staff@123"
                               className="w-full px-3 py-2 border rounded-xl font-bold bg-white dark:bg-slate-800"
                               required
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-bold mb-1">Email (Optional)</label>
+                            <input
+                              type="email"
+                              value={userForm.email}
+                              onChange={(e) => setUserForm(prev => ({ ...prev, email: e.target.value }))}
+                              placeholder="Optional"
+                              className="w-full px-3 py-2 border rounded-xl font-bold bg-white dark:bg-slate-800"
                             />
                           </div>
                           <div>
@@ -1022,65 +1041,79 @@ export default function TenantProfileModal({
               {/* TAB 6: DANGER ZONE */}
               {activeTab === 'danger' && (
                 <div className="space-y-6">
-                  {/* Status Toggle Box */}
-                  <div className="p-4 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-xs text-amber-900 dark:text-amber-200">
-                        {profile?.tenant?.status === 'Active' ? 'Suspend Cooperative Access' : 'Reactivate Cooperative Access'}
+                  {Number(tenantId) === 1 || profile?.tenant?.isPrimary ? (
+                    <div className="p-4 rounded-2xl border border-blue-200 dark:border-blue-900 bg-blue-50/60 dark:bg-blue-950/30">
+                      <h4 className="font-bold text-xs text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+                        <Shield className="w-4 h-4 text-blue-600" />
+                        <span>Primary Developer Account Protected</span>
                       </h4>
-                      <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">
-                        {profile?.tenant?.status === 'Active'
-                          ? 'Prevent staff from recording milk collections or POS sales until reactivated.'
-                          : 'Restore full operational access for this dairy cooperative.'}
+                      <p className="text-[11px] text-blue-700 dark:text-blue-300 mt-1">
+                        This is the primary developer cooperative account (#1). It is permanently protected and cannot be suspended or deleted.
                       </p>
                     </div>
+                  ) : (
+                    <>
+                      {/* Status Toggle Box */}
+                      <div className="p-4 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
+                        <div>
+                          <h4 className="font-bold text-xs text-amber-900 dark:text-amber-200">
+                            {profile?.tenant?.status === 'Active' ? 'Suspend Cooperative Access' : 'Reactivate Cooperative Access'}
+                          </h4>
+                          <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">
+                            {profile?.tenant?.status === 'Active'
+                              ? 'Prevent staff from recording milk collections or POS sales until reactivated.'
+                              : 'Restore full operational access for this dairy cooperative.'}
+                          </p>
+                        </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleToggleTenantStatus(profile?.tenant?.status === 'Active' ? 'Suspended' : 'Active')}
-                      className={`px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-                        profile?.tenant?.status === 'Active'
-                          ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                          : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                      }`}
-                    >
-                      {profile?.tenant?.status === 'Active' ? 'Suspend Access' : 'Re-activate'}
-                    </button>
-                  </div>
-
-                  {/* Permanent Deletion Box */}
-                  <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-3">
-                    <h4 className="font-bold text-xs text-rose-900 dark:text-rose-200 flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-rose-600" />
-                      <span>Permanent Cooperative Deletion</span>
-                    </h4>
-                    <p className="text-[11px] text-rose-700 dark:text-rose-300">
-                      Deleting this cooperative will permanently archive all farmers, milk intake records, and invoices. This action cannot be undone.
-                    </p>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Type <span className="font-mono text-rose-600 font-black">{profile?.tenant?.slug}</span> to confirm:
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={deleteConfirmInput}
-                          onChange={(e) => setDeleteConfirmInput(e.target.value)}
-                          placeholder={profile?.tenant?.slug}
-                          className="px-3 py-1.5 text-xs border border-rose-300 dark:border-rose-800 rounded-xl font-mono flex-1 bg-white dark:bg-slate-800"
-                        />
                         <button
                           type="button"
-                          disabled={deleteConfirmInput !== profile?.tenant?.slug || processing}
-                          onClick={handleDeleteTenant}
-                          className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-40 cursor-pointer"
+                          onClick={() => handleToggleTenantStatus(profile?.tenant?.status === 'Active' ? 'Suspended' : 'Active')}
+                          className={`px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
+                            profile?.tenant?.status === 'Active'
+                              ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                              : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                          }`}
                         >
-                          Delete Cooperative
+                          {profile?.tenant?.status === 'Active' ? 'Suspend Access' : 'Re-activate'}
                         </button>
                       </div>
-                    </div>
-                  </div>
+
+                      {/* Permanent Deletion Box */}
+                      <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-3">
+                        <h4 className="font-bold text-xs text-rose-900 dark:text-rose-200 flex items-center gap-1.5">
+                          <AlertTriangle className="w-4 h-4 text-rose-600" />
+                          <span>Permanent Cooperative Deletion</span>
+                        </h4>
+                        <p className="text-[11px] text-rose-700 dark:text-rose-300">
+                          Deleting this cooperative will permanently archive all farmers, milk intake records, and invoices. This action cannot be undone.
+                        </p>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            Type <span className="font-mono text-rose-600 font-black">{profile?.tenant?.slug}</span> to confirm:
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={deleteConfirmInput}
+                              onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                              placeholder={profile?.tenant?.slug}
+                              className="px-3 py-1.5 text-xs border border-rose-300 dark:border-rose-800 rounded-xl font-mono flex-1 bg-white dark:bg-slate-800"
+                            />
+                            <button
+                              type="button"
+                              disabled={deleteConfirmInput !== profile?.tenant?.slug || processing}
+                              onClick={handleDeleteTenant}
+                              className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-40 cursor-pointer"
+                            >
+                              Delete Cooperative
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
             </>

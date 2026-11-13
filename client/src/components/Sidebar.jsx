@@ -113,7 +113,7 @@ export default function Sidebar({
           {MENU_CATEGORIES.map((cat, cIdx) => {
             const catModules = cat.moduleIds
               .map(id => SYSTEM_MODULES.find(m => m.id === id))
-              .filter(m => m && isTabAllowed(m.id, userRoles));
+              .filter(m => m && isTabAllowed(m.id, userRoles, currentUser));
 
             if (catModules.length === 0) return null;
 

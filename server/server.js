@@ -213,15 +213,15 @@ app.post('/api/AuditLog', (req, res) => {
 
 // POST /api/auth/login
 app.post('/api/auth/login', (req, res) => {
-  const { email, username, password, tenantSlug } = req.body;
-  const identifier = email || username;
+  const { email, username, identifier: rawIdentifier, password, tenantSlug } = req.body;
+  const identifier = (username || email || rawIdentifier || '').trim();
   if (!identifier || !password) {
-    return res.status(400).json({ error: 'Username/Email and password are required' });
+    return res.status(400).json({ error: 'Username and password are required' });
   }
 
   const session = multiTenantDb.authenticate(identifier, password, tenantSlug);
   if (!session) {
-    return res.status(401).json({ error: 'INVALID_CREDENTIALS', message: 'Invalid email or password' });
+    return res.status(401).json({ error: 'INVALID_CREDENTIALS', message: 'Invalid username or password' });
   }
 
   recordActivity(req, {
@@ -231,7 +231,7 @@ app.post('/api/auth/login', (req, res) => {
     category: 'Security & Auth',
     actionLabelNe: 'प्रयोगकर्ता लगइन',
     actionLabelEn: 'User Logged In',
-    details: `User ${session.user.name} (@${session.user.username}) logged in (${session.user.email})`,
+    details: `User ${session.user.name} (@${session.user.username}) logged in${session.user.email ? ` (${session.user.email})` : ''}`,
     referenceId: session.user.username || session.user.email
   });
   res.json(session);
@@ -239,8 +239,8 @@ app.post('/api/auth/login', (req, res) => {
 
 // POST /user/password-login
 app.post('/user/password-login', (req, res) => {
-  const { email, username, password } = req.body;
-  const session = multiTenantDb.authenticate(email || username, password);
+  const { email, username, identifier: rawIdentifier, password } = req.body;
+  const session = multiTenantDb.authenticate(username || email || rawIdentifier, password);
   if (!session) {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
@@ -251,7 +251,7 @@ app.post('/user/password-login', (req, res) => {
     category: 'Security & Auth',
     actionLabelNe: 'प्रयोगकर्ता लगइन',
     actionLabelEn: 'User Logged In',
-    details: `User ${session.user.name} (@${session.user.username}) logged in (${session.user.email})`,
+    details: `User ${session.user.name} (@${session.user.username}) logged in${session.user.email ? ` (${session.user.email})` : ''}`,
     referenceId: session.user.username || session.user.email
   });
   res.json(session);
@@ -483,7 +483,15 @@ app.get('/api/Customer/withLastProductQualityInfo', (req, res) => {
 app.get('/api/Customer/code/:code', (req, res) => {
   const tid = resolveTenantId(req);
   const tData = multiTenantDb.getTenantData(tid);
-  const cust = tData.customers.find(c => (Number(c.code) === Number(req.params.code) || String(c.code) === String(req.params.code)) && !c.isDeleted);
+  const target = String(req.params.code).trim().toLowerCase();
+  const cust = tData.customers.find(c => {
+    if (c.isDeleted) return false;
+    const cCode = String(c.code ?? c.id ?? '').trim().toLowerCase();
+    if (cCode === target) return true;
+    const numMatch = cCode.match(/(\d+)$/);
+    if (numMatch && (numMatch[1] === target || String(parseInt(numMatch[1], 10)) === target)) return true;
+    return false;
+  });
   if (!cust) return res.status(404).json({ error: 'Customer not found with code ' + req.params.code });
   res.json(multiTenantDb.calculateCustomerKPIs(cust, tData));
 });
@@ -510,17 +518,26 @@ app.post('/api/Customer', (req, res) => {
   const tid = resolveTenantId(req);
   const tData = multiTenantDb.getTenantData(tid);
 
-  const nextCode = tData.customers.length > 0
-    ? Math.max(...tData.customers.map(c => Number(c.code) || 0)) + 1
-    : 1;
+  let finalCode = '';
+  if (req.body.code !== undefined && req.body.code !== null && String(req.body.code).trim() !== '') {
+    finalCode = String(req.body.code).trim().toUpperCase();
+  } else {
+    finalCode = multiTenantDb.getNextCustomerCode(tid);
+  }
+
+  const rawPhone = String(req.body.phone || '').trim();
+  const cleanPhone = rawPhone.replace(/\D/g, '').slice(0, 10);
+  if (rawPhone && cleanPhone.length !== 10) {
+    return res.status(400).json({ error: 'Phone number must be exactly 10 digits without letters, spaces, or special characters.' });
+  }
 
   const newCustomer = {
     id: Date.now(),
-    code: req.body.code ? Number(req.body.code) : nextCode,
+    code: finalCode,
     nameInNepali: req.body.nameInNepali || '',
     nameInEnglish: req.body.nameInEnglish || '',
     customerType: Number(req.body.customerType) || 1,
-    phone: req.body.phone || '',
+    phone: cleanPhone,
     address: req.body.address || '',
     provinceId: req.body.provinceId || '',
     provinceName: req.body.provinceName || '',
@@ -556,9 +573,19 @@ app.put('/api/Customer/:customerId', (req, res) => {
   const idx = tData.customers.findIndex(c => c.id === Number(req.params.customerId));
   if (idx === -1) return res.status(404).json({ error: 'Customer not found' });
 
+  const updateData = { ...req.body };
+  if (updateData.phone !== undefined) {
+    const rawPhone = String(updateData.phone || '').trim();
+    const cleanPhone = rawPhone.replace(/\D/g, '').slice(0, 10);
+    if (rawPhone && cleanPhone.length !== 10) {
+      return res.status(400).json({ error: 'Phone number must be exactly 10 digits without letters, spaces, or special characters.' });
+    }
+    updateData.phone = cleanPhone;
+  }
+
   tData.customers[idx] = {
     ...tData.customers[idx],
-    ...req.body,
+    ...updateData,
     id: Number(req.params.customerId),
     lastUpdatedDateTimeUtms: Date.now()
   };
@@ -2562,18 +2589,22 @@ app.put('/api/platform/tenants/:id', (req, res) => {
 
 // Update Tenant Status (Active / Suspended / Offboarding)
 app.put('/api/platform/tenants/:id/status', (req, res) => {
-  const { status } = req.body;
-  const updated = multiTenantDb.updateTenantStatus(req.params.id, status);
-  if (!updated) return res.status(404).json({ error: 'Tenant not found' });
-  recordActivity(req, {
-    action: 'PLATFORM_TENANT_STATUS',
-    category: 'System Configuration',
-    actionLabelNe: 'सहकारी स्थिति परिवर्तन',
-    actionLabelEn: 'Updated Cooperative Status',
-    details: `Changed cooperative status to ${status} for #${req.params.id}`,
-    referenceId: `#${req.params.id}`
-  });
-  res.json(updated);
+  try {
+    const { status } = req.body;
+    const updated = multiTenantDb.updateTenantStatus(req.params.id, status);
+    if (!updated) return res.status(404).json({ error: 'Tenant not found' });
+    recordActivity(req, {
+      action: 'PLATFORM_TENANT_STATUS',
+      category: 'System Configuration',
+      actionLabelNe: 'सहकारी स्थिति परिवर्तन',
+      actionLabelEn: 'Updated Cooperative Status',
+      details: `Changed cooperative status to ${status} for #${req.params.id}`,
+      referenceId: `#${req.params.id}`
+    });
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // Delete Tenant
@@ -3061,7 +3092,14 @@ app.delete('/api/Unit/:unitId', (req, res) => {
 
 // GET /api/UserManager
 app.get('/api/UserManager', (req, res) => {
-  const list = multiTenantDb.platform.users.filter(u => !u.isDeleted);
+  const hasTenantHeader = req.headers['x-tenant-id'] !== undefined;
+  const tid = hasTenantHeader ? resolveTenantId(req) : null;
+  const list = multiTenantDb.platform.users
+    .filter(u => !u.isDeleted && (tid === null || Number(u.tenantId) === Number(tid)))
+    .map(({ passwordHash, ...safeUser }) => ({
+      ...safeUser,
+      username: deriveUserHandle(safeUser.username, safeUser.email, safeUser.name)
+    }));
   res.json({ totalCount: list.length, items: list });
 });
 
@@ -3076,19 +3114,29 @@ app.get('/api/UserManager/UserRole', (req, res) => {
 
 // POST /api/UserManager
 app.post('/api/UserManager', (req, res) => {
-  const { email, username, name, password = 'Password123', roles = ['User'], tenantId } = req.body;
-  if (!email || !name) return res.status(400).json({ error: 'Email and name required' });
+  const { email = '', username, name, password = 'Password123', roles = ['User'], tenantId } = req.body;
+  const rawIdentifier = (username || email || '').trim();
+  if (!rawIdentifier || !name || !String(name).trim()) {
+    return res.status(400).json({ error: 'Username and name are required' });
+  }
 
   const resolvedTenantId = Number(tenantId) || resolveTenantId(req);
-  const resolvedEmail = email.trim().toLowerCase();
-  const resolvedUsername = deriveUserHandle(username, resolvedEmail, name);
+  const resolvedEmail = String(email || '').trim().toLowerCase();
+  let resolvedUsername;
+  try {
+    resolvedUsername = multiTenantDb.assertUniqueUsername(
+      deriveUserHandle(username, resolvedEmail, name)
+    );
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
 
   const newUser = {
     id: Date.now(),
     tenantId: resolvedTenantId,
     username: resolvedUsername,
     email: resolvedEmail,
-    name: name.trim(),
+    name: String(name).trim(),
     passwordHash: hashPassword(password),
     roles: Array.isArray(roles) ? roles : [roles],
     isActive: true,
@@ -3106,7 +3154,8 @@ app.post('/api/UserManager', (req, res) => {
     details: `Created user ${newUser.name} (@${newUser.username}, roles: ${newUser.roles.join(', ')})`,
     referenceId: `USR-${newUser.id}`
   });
-  res.status(201).json(newUser);
+  const { passwordHash, ...safeUser } = newUser;
+  res.status(201).json(safeUser);
 });
 
 // POST /api/UserManager/reset-password

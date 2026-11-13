@@ -83,7 +83,7 @@ export function installAuthFetchInterceptor() {
         baseHeaders.set('x-username', encodeURIComponent(getDerivedUsername(u)));
       }
       if (!baseHeaders.has('x-user-email')) {
-        baseHeaders.set('x-user-email', u.email || 'staff@dairy.local');
+        baseHeaders.set('x-user-email', u.email || '');
       }
     }
 

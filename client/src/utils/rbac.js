@@ -195,7 +195,7 @@ export const SYSTEM_MODULES = [
     description: 'Multi-cooperative SaaS control panel, plans, custom domains, renewals & platform audit logs',
     icon: Server,
     color: 'slate',
-    defaultRoles: ['SuperAdmin']
+    defaultRoles: ['Developer']
   }
 ];
 
@@ -204,7 +204,11 @@ export function getModuleLabel(module, lang = 'ne') {
   return lang === 'en' ? (module.labelEn || module.label) : (module.labelNe || module.label);
 }
 
-export function isTabAllowed(tabId, userRoles = ['User']) {
+export function isTabAllowed(tabId, userRoles = ['User'], user = null) {
+  // Developer Console requires isDeveloper flag, not just a role
+  if (tabId === 'platform') {
+    return !!(user && user.isDeveloper);
+  }
   if (userRoles.includes('SuperAdmin')) return true;
   const mod = SYSTEM_MODULES.find(m => m.id === tabId);
   if (!mod) return true;

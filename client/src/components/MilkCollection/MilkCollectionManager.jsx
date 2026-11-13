@@ -278,8 +278,17 @@ export default function MilkCollectionManager({
       setInlineNoticeType('warning');
       return;
     }
-    const cleanCode = String(codeStr).trim();
-    const matched = farmers.find(f => String(f.code) === cleanCode || String(f.id) === cleanCode);
+    const cleanCode = String(codeStr).trim().toUpperCase();
+    const matched = farmers.find(f => {
+      const fCode = String(f.code || '').trim().toUpperCase();
+      const fId = String(f.id);
+      if (fCode === cleanCode || fId === cleanCode) return true;
+      const numMatch = fCode.match(/(\d+)$/);
+      if (numMatch && (numMatch[1] === cleanCode || String(parseInt(numMatch[1], 10)) === cleanCode)) {
+        return true;
+      }
+      return false;
+    });
     if (matched) {
       if (selectedFarmer && Number(selectedFarmer.id) !== Number(matched.id) && !inlineEditingId) {
         setFat('');
@@ -533,7 +542,17 @@ export default function MilkCollectionManager({
 
   const handleModalFarmerCodeChange = (code) => {
     setModalFarmerCode(code);
-    const matched = farmers.find(f => String(f.code) === code.trim());
+    const cleanCode = String(code || '').trim().toUpperCase();
+    const matched = farmers.find(f => {
+      const fCode = String(f.code || '').trim().toUpperCase();
+      const fId = String(f.id);
+      if (fCode === cleanCode || fId === cleanCode) return true;
+      const numMatch = fCode.match(/(\d+)$/);
+      if (numMatch && (numMatch[1] === cleanCode || String(parseInt(numMatch[1], 10)) === cleanCode)) {
+        return true;
+      }
+      return false;
+    });
     if (matched) {
       if (String(matched.id) !== String(modalSelectedFarmerId) && !modalEditingId) {
         setModalFat('');
@@ -793,18 +812,16 @@ export default function MilkCollectionManager({
                     {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
                   </label>
                   <input
-                    type="number"
-                    min="1"
+                    type="text"
                     value={farmerCode}
-                    onKeyDown={preventNegativeKey}
                     onChange={(e) => {
-                      const val = sanitizeNonNegative(e.target.value);
+                      const val = e.target.value;
                       setFarmerCode(val);
                       lookupFarmerInline(val);
                     }}
                     onBlur={() => lookupFarmerInline(farmerCode)}
-                    placeholder="1"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-semibold transition"
+                    placeholder={lang === 'en' ? 'e.g. JS001 or 1' : 'उदा: JS001 वा १'}
+                    className="w-full px-3.5 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-semibold transition uppercase"
                     required
                   />
                 </div>
@@ -916,11 +933,11 @@ export default function MilkCollectionManager({
                 </div>
               </div>
 
-              {/* Row 3: totalSnfPrice | DateTimeLocal | Shift */}
+              {/* Row 3: Total SNF Price | Date & Time | Shift */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'totalSnfPrice' : 'एस.एन.एफ. रकम प्रति लिटर'}
+                    {lang === 'en' ? 'Total SNF Price' : 'एस.एन.एफ. रकम प्रति लिटर'}
                   </label>
                   <input
                     type="text"
@@ -935,7 +952,7 @@ export default function MilkCollectionManager({
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {lang === 'en' ? 'DateTimeLocal' : 'मिति र समय'}
+                      {lang === 'en' ? 'Date & Time' : 'मिति र समय'}
                     </label>
                     <button
                       type="button"
@@ -1538,13 +1555,11 @@ export default function MilkCollectionManager({
                     {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
                   </label>
                   <input
-                    type="number"
-                    min="1"
+                    type="text"
                     value={modalFarmerCode}
-                    onKeyDown={preventNegativeKey}
-                    onChange={(e) => handleModalFarmerCodeChange(sanitizeNonNegative(e.target.value))}
-                    placeholder="1"
-                    className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold"
+                    onChange={(e) => handleModalFarmerCodeChange(e.target.value)}
+                    placeholder={lang === 'en' ? 'e.g. JS001 or 1' : 'उदा: JS001 वा १'}
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold uppercase"
                     required
                   />
                 </div>

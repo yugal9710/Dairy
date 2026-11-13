@@ -19,6 +19,7 @@ import {
   Server
 } from 'lucide-react';
 import { getTodayBS } from '../utils/nepaliDate';
+import { getDerivedUsername } from '../utils/fetchAuth';
 import { useLanguage } from '../context/LanguageContext';
 import ThemeSwitcher from './Common/ThemeSwitcher';
 
@@ -266,7 +267,7 @@ export default function Navbar({
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">
-                        {currentUser?.email || 'admin@dairy.local'}
+                        @{getDerivedUsername(currentUser)}{currentUser?.email ? ` • ${currentUser.email}` : ''}
                       </div>
                     </div>
                   </div>

@@ -34,13 +34,128 @@ const MUNICIPALITY_TYPE_LABELS = {
   }
 };
 
-export function getNextCustomerCode(customers = []) {
-  if (!Array.isArray(customers) || customers.length === 0) return 1;
-  const maxCode = customers.reduce((max, c) => {
-    const num = Number(c?.code);
-    return Number.isFinite(num) && num > max ? num : max;
-  }, 0);
-  return maxCode + 1;
+const DEVANAGARI_CONSONANT_MAP = {
+  'क': 'K', 'ख': 'K', 'ग': 'G', 'घ': 'G', 'ङ': 'N',
+  'च': 'C', 'छ': 'C', 'ज': 'J', 'झ': 'J', 'ञ': 'N',
+  'ट': 'T', 'ठ': 'T', 'ड': 'D', 'ढ': 'D', 'ण': 'N',
+  'त': 'T', 'थ': 'T', 'द': 'D', 'ध': 'D', 'न': 'N',
+  'प': 'P', 'फ': 'P', 'ब': 'B', 'भ': 'B', 'म': 'M',
+  'य': 'Y', 'र': 'R', 'ल': 'L', 'व': 'V',
+  'श': 'S', 'ष': 'S', 'स': 'S', 'ह': 'H',
+  'अ': 'A', 'आ': 'A', 'इ': 'I', 'ई': 'I', 'उ': 'U', 'ऊ': 'U',
+  'ए': 'E', 'ऐ': 'A', 'ओ': 'O', 'औ': 'O'
+};
+
+export function getCompanyCodePrefix(companyOrTenant) {
+  if (!companyOrTenant) return 'JS';
+
+  let raw = '';
+  if (typeof companyOrTenant === 'string') {
+    raw = companyOrTenant.trim();
+  } else if (typeof companyOrTenant === 'object') {
+    raw = (
+      companyOrTenant.codePrefix ||
+      companyOrTenant.companyName ||
+      companyOrTenant.nameInEnglish ||
+      companyOrTenant.englishName ||
+      companyOrTenant.organizationName ||
+      companyOrTenant.name ||
+      ''
+    ).trim();
+  }
+
+  if (!raw) return 'JS';
+
+  // 1. If Latin / English letters are present
+  const latinWords = raw.replace(/[^a-zA-Z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
+  if (latinWords.length > 0) {
+    // If first word is exactly 2 letters (e.g. "JS", "SF", "KD")
+    if (latinWords[0].length === 2) {
+      return latinWords[0].toUpperCase();
+    }
+    // If multi-word (e.g. "Janaki Sweets" -> JS, "Sana Kisan" -> SK, "Dairy Nepal" -> DN)
+    if (latinWords.length >= 2) {
+      return (latinWords[0][0] + latinWords[1][0]).toUpperCase();
+    }
+    // Single word with at least 2 letters (e.g. "Janaki" -> JA, "Himalayan" -> HI, "sfacl" -> SF)
+    if (latinWords[0].length >= 2) {
+      return latinWords[0].slice(0, 2).toUpperCase();
+    }
+  }
+
+  // 2. If object has a slug/short name in English (e.g. tenant.name = "sfacl" -> "SF")
+  if (typeof companyOrTenant === 'object' && companyOrTenant.name) {
+    const slugLetters = String(companyOrTenant.name).replace(/[^a-zA-Z]/g, '');
+    if (slugLetters.length >= 2) {
+      return slugLetters.slice(0, 2).toUpperCase();
+    }
+  }
+
+  // 3. Devanagari transliteration mapping for first letters of Nepali words
+  // e.g. "साना किसान" -> S + K = "SK", "जनकपुर सहकारी" -> J + S = "JS"
+  const devWords = raw.split(/\s+/).filter(Boolean);
+  if (devWords.length >= 2) {
+    const c1 = DEVANAGARI_CONSONANT_MAP[devWords[0][0]] || '';
+    const c2 = DEVANAGARI_CONSONANT_MAP[devWords[1][0]] || '';
+    if (c1 && c2) return (c1 + c2).toUpperCase();
+    if (c1) return (c1 + 'S').toUpperCase();
+  } else if (devWords.length === 1) {
+    const c1 = DEVANAGARI_CONSONANT_MAP[devWords[0][0]] || '';
+    if (c1) return (c1 + 'S').toUpperCase();
+  }
+
+  return 'JS';
+}
+
+export function formatCustomerCode(prefix, num) {
+  const p = String(prefix || 'JS').trim().toUpperCase();
+  const n = Number(num) || 1;
+  const padded = String(n).padStart(3, '0');
+  return `${p}${padded}`;
+}
+
+export function getNextCustomerCode(customers = [], companyOrTenant = null) {
+  const prefix = getCompanyCodePrefix(companyOrTenant);
+  if (!Array.isArray(customers) || customers.length === 0) {
+    return formatCustomerCode(prefix, 1);
+  }
+
+  let maxNum = 0;
+  let hasPrefixMatch = false;
+
+  for (const c of customers) {
+    if (!c || c.isDeleted) continue;
+    const raw = String(c.code ?? c.id ?? '').trim().toUpperCase();
+    if (raw.startsWith(prefix)) {
+      hasPrefixMatch = true;
+      const numPart = raw.slice(prefix.length);
+      const val = parseInt(numPart, 10);
+      if (Number.isFinite(val) && val > maxNum) {
+        maxNum = val;
+      }
+    }
+  }
+
+  if (hasPrefixMatch) {
+    return formatCustomerCode(prefix, maxNum + 1);
+  }
+
+  // If no customer has this prefix yet, check legacy numeric codes (e.g. 1..10)
+  let maxLegacyNum = 0;
+  for (const c of customers) {
+    if (!c || c.isDeleted) continue;
+    const raw = String(c.code ?? c.id ?? '').trim();
+    const match = raw.match(/(\d+)$/);
+    if (match) {
+      const val = parseInt(match[1], 10);
+      if (Number.isFinite(val) && val > maxLegacyNum) {
+        maxLegacyNum = val;
+      }
+    }
+  }
+
+  const nextNum = maxLegacyNum > 0 ? maxLegacyNum + 1 : 1;
+  return formatCustomerCode(prefix, nextNum);
 }
 
 function getMunicipalityFullLabel(mun, lang = 'en') {
@@ -67,18 +182,84 @@ export function composeNepalAddress(location = {}, lang = 'en') {
   return [munWithWard, distLabel, provLabel].filter(Boolean).join(', ');
 }
 
+// Official administrative mapping correcting misaligned district IDs in dataset
+const RAW_TO_REAL_DISTRICT_MAP = {
+  // Madhesh (15-22):
+  15: 18, // Parsa
+  16: 15, // Bara
+  17: 19, // Rautahat
+  18: 21, // Sarlahi
+  19: 22, // Siraha
+  20: 16, // Dhanusha
+  21: 20, // Saptari
+  22: 17, // Mahottari
+
+  // Lumbini (47-58):
+  47: 52, // Kapilvastu
+  48: 53, // Parasi
+  49: 58, // Rupandehi
+  50: 47, // Arghakhanchi
+  51: 51, // Gulmi
+  52: 54, // Palpa
+  53: 50, // Dang
+  54: 55, // Pyuthan
+  55: 56, // Rolpa
+  56: 57, // Rukum East
+  57: 48, // Banke
+  58: 49, // Bardiya
+
+  // Karnali (59-68):
+  59: 66, // Rukum West
+  60: 67, // Salyan
+  61: 60, // Dolpa
+  62: 61, // Humla
+  63: 63, // Jumla
+  64: 64, // Kalikot
+  65: 65, // Mugu
+  66: 68, // Surkhet
+  67: 59, // Dailekh
+  68: 62, // Jajarkot
+
+  // Sudurpashchim (69-77):
+  69: 74, // Darchula
+  70: 71, // Bajhang
+  71: 72, // Bajura
+  72: 70, // Baitadi
+  73: 75, // Doti
+  74: 69, // Achham
+  75: 73, // Dadeldhura
+  76: 77, // Kanchanpur
+  77: 76  // Kailali
+};
+
+const REAL_TO_RAW_DISTRICT_MAP = {};
+for (let i = 1; i <= 77; i++) {
+  const real = RAW_TO_REAL_DISTRICT_MAP[i] || i;
+  REAL_TO_RAW_DISTRICT_MAP[real] = i;
+}
+
 export default function NepalAddressFields({ value = EMPTY_NEPAL_LOCATION, onChange, lang = 'en', compact = false }) {
   const provinces = useMemo(() => getProvinces(), []);
 
   const districts = useMemo(() => {
     if (!value?.provinceId) return [];
-    return [...getDistricts(Number(value.provinceId))].sort((a, b) => a.name.localeCompare(b.name));
-  }, [value?.provinceId]);
+    return [...getDistricts(Number(value.provinceId))].sort((a, b) => {
+      const nameA = lang === 'ne' ? (a.name_np || a.name) : a.name;
+      const nameB = lang === 'ne' ? (b.name_np || b.name) : b.name;
+      return nameA.localeCompare(nameB);
+    });
+  }, [value?.provinceId, lang]);
 
   const municipalities = useMemo(() => {
     if (!value?.districtId) return [];
-    return [...getMunicipalities(Number(value.districtId))].sort((a, b) => a.name.localeCompare(b.name));
-  }, [value?.districtId]);
+    const realDistId = Number(value.districtId);
+    const rawDistId = REAL_TO_RAW_DISTRICT_MAP[realDistId] || realDistId;
+    return [...getMunicipalities(rawDistId)].sort((a, b) => {
+      const nameA = lang === 'ne' ? (a.name_np || a.name) : a.name;
+      const nameB = lang === 'ne' ? (b.name_np || b.name) : b.name;
+      return nameA.localeCompare(nameB);
+    });
+  }, [value?.districtId, lang]);
 
   const wards = useMemo(() => {
     if (!value?.municipalityId) return [];

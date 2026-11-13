@@ -362,6 +362,10 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
   };
 
   const handleToggleTenantStatus = async (tenantId, currentStatus) => {
+    if (Number(tenantId) === 1) {
+      alert('The primary developer account (#1) cannot be suspended.');
+      return;
+    }
     const newStatus = currentStatus === 'Active' ? 'Suspended' : 'Active';
     try {
       const res = await fetch(`/api/platform/tenants/${tenantId}/status`, {
@@ -1309,18 +1313,25 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                               >
                                 <Edit className="w-3.5 h-3.5" />
                               </button>
-                              <button
-                                type="button"
-                                onClick={() => handleToggleTenantStatus(t.id, t.status)}
-                                className={`text-xs font-semibold px-2 py-1.5 rounded-lg border transition inline-flex items-center cursor-pointer ${
-                                  t.status === 'Active'
-                                    ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
-                                }`}
-                                title={t.status === 'Active' ? 'Suspend cooperative operations' : 'Activate cooperative operations'}
-                              >
-                                <span>{t.status === 'Active' ? 'Suspend' : 'Activate'}</span>
-                              </button>
+                              {Number(t.id) === 1 || t.isPrimary ? (
+                                <span className="text-xs font-semibold px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 inline-flex items-center">
+                                  Primary (Protected)
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleTenantStatus(t.id, t.status)}
+                                  disabled={actionProcessing}
+                                  className={`text-xs font-semibold px-2 py-1.5 rounded-lg border transition inline-flex items-center cursor-pointer ${
+                                    t.status === 'Active'
+                                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                                      : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+                                  }`}
+                                  title={t.status === 'Active' ? 'Suspend cooperative operations' : 'Activate cooperative operations'}
+                                >
+                                  <span>{t.status === 'Active' ? 'Suspend' : 'Activate'}</span>
+                                </button>
+                              )}
                               {Number(t.id) !== 1 && (
                                 <button
                                   type="button"
@@ -1953,15 +1964,14 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                   <input
                     type="text"
                     required
-                    pattern="[a-zA-Z0-9]+"
+                    pattern="[a-zA-Z0-9._-]+"
                     placeholder="e.g. chitwanadmin"
                     value={newCoop.adminUsername}
                     onChange={(e) => {
-                      const clean = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                      const clean = e.target.value.replace(/[^a-zA-Z0-9._-]/g, '');
                       setNewCoop({
                         ...newCoop,
-                        adminUsername: clean,
-                        adminEmail: clean ? `${clean.toLowerCase()}@dairy.local` : ''
+                        adminUsername: clean
                       });
                     }}
                     className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono"
@@ -2063,8 +2073,26 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                     <Key className="w-3.5 h-3.5 text-amber-600" />
                     <span>Cooperative Admin Credentials</span>
                   </span>
+                  {!editingTenant.adminUser && (
+                    <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                      Set username & password to create admin login
+                    </span>
+                  )}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Admin Username</label>
+                    <input
+                      type="text"
+                      value={editForm.adminUsername}
+                      onChange={(e) => setEditForm({
+                        ...editForm,
+                        adminUsername: e.target.value.replace(/[^a-zA-Z0-9._-]/g, '').toLowerCase()
+                      })}
+                      placeholder="e.g. himaladmin"
+                      className="w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono"
+                    />
+                  </div>
                   <div>
                     <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Admin Name</label>
                     <input
@@ -2075,13 +2103,25 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Reset Password (Optional)</label>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      {editingTenant.adminUser ? 'Reset Password (Optional)' : 'Admin Password'}
+                    </label>
                     <input
                       type="text"
                       value={editForm.adminPassword}
                       onChange={(e) => setEditForm({ ...editForm, adminPassword: e.target.value })}
-                      placeholder="Leave blank to keep current password"
+                      placeholder={editingTenant.adminUser ? 'Leave blank to keep current password' : 'Default: Admin@123'}
                       className="w-full p-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-white dark:bg-slate-800 font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Admin Email (Optional)</label>
+                    <input
+                      type="email"
+                      value={editForm.adminEmail}
+                      onChange={(e) => setEditForm({ ...editForm, adminEmail: e.target.value })}
+                      placeholder="Optional"
+                      className="w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"
                     />
                   </div>
                 </div>
@@ -2143,14 +2183,24 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                 </div>
                 <div>
                   <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Status</label>
-                  <select
-                    value={editForm.status}
-                    onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold"
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
+                  {Number(editForm.id) === 1 ? (
+                    <input
+                      type="text"
+                      value="Active (Primary Protected)"
+                      disabled
+                      readOnly
+                      className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold cursor-not-allowed"
+                    />
+                  ) : (
+                    <select
+                      value={editForm.status}
+                      onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold"
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Suspended">Suspended</option>
+                    </select>
+                  )}
                 </div>
               </div>
 

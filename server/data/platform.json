@@ -18,9 +18,30 @@
       "organizationName": "किसान दुध संकलन तथा प्रशोधन केन्द्र",
       "address": "इम्लिबजार, महोत्तरी",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1809849418428,
+      "expirationDateTimeUtms": 1809820800000,
       "subscriptionAmount": 30000,
-      "isDeleted": false
+      "isDeleted": false,
+      "phone": "9841000000",
+      "managerName": "Cooperative Manager",
+      "status": "Active",
+      "planId": "plan-starter",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": false,
+        "futureOrders": false,
+        "dairyProcessing": false,
+        "nepaliBS": true,
+        "smsAlerts": false
+      },
+      "subscription": {
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "totalAmountDue": 30000,
+        "expiryDate": "2027-05-09T00:00:00.000Z"
+      }
     },
     {
       "id": 3,
@@ -51,9 +72,30 @@
       "organizationName": "हिमालयन अर्गानिक डेरी फार्म",
       "address": "धुलिखेल-३, काभ्रे",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1820217418428,
+      "expirationDateTimeUtms": 1820188800000,
       "subscriptionAmount": 28000,
-      "isDeleted": false
+      "isDeleted": false,
+      "phone": "9841000000",
+      "managerName": "Cooperative Manager",
+      "status": "Active",
+      "planId": "plan-starter",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": false,
+        "futureOrders": false,
+        "dairyProcessing": false,
+        "nepaliBS": true,
+        "smsAlerts": false
+      },
+      "subscription": {
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "totalAmountDue": 28000,
+        "expiryDate": "2027-09-06T00:00:00.000Z"
+      }
     },
     {
       "id": 6,
@@ -177,6 +219,21 @@
       "isActive": true,
       "isDeleted": false,
       "creationDateTimeUtms": 1793502249000
+    },
+    {
+      "id": 6,
+      "tenantId": 2,
+      "username": "kisan",
+      "email": "",
+      "name": "Cooperative Manager",
+      "passwordHash": "ea02d7cab2fc7d8d985e504a00e02980029254ee4a40dea4ec6ec4fe1fdc59b47e29ce38f96695393c62e8fc93e3d81871e23ecb08ac260194d5f6dfbfe70e64",
+      "roles": [
+        "SuperAdmin",
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794503474642
     }
   ],
   "billings": [
@@ -191,6 +248,116 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "paudit-1794503474642-440",
+      "timestamp": "2026-11-12T17:11:14.643Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 2,
+      "details": "Updated cooperative profile \"किसान दुध संकलन तथा प्रशोधन केन्द्र\" (Plan: plan-starter, Status: Active)"
+    },
+    {
+      "id": "paudit-1794501353591-277",
+      "timestamp": "2026-11-12T16:35:53.592Z",
+      "action": "TENANT_DELETED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Permanently removed cooperative \"Test UI Dairy Coop\" (#11) and cleaned associated records"
+    },
+    {
+      "id": "paudit-1794482896664-471",
+      "timestamp": "2026-11-12T11:28:16.664Z",
+      "action": "TENANT_USER_CREATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Created staff user UI Cashier (@uicoopstaff) with role User"
+    },
+    {
+      "id": "paudit-1794482643762-532",
+      "timestamp": "2026-11-12T11:24:03.763Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Provisioned cooperative \"Test UI Dairy Coop\" (test-ui-coop.dairynepal.com) on Cooperative Professional"
+    },
+    {
+      "id": "paudit-1794480463730-991",
+      "timestamp": "2026-11-12T10:47:43.730Z",
+      "action": "TENANT_DELETED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 12,
+      "details": "Permanently removed cooperative \"Test Coop Beta\" (#12) and cleaned associated records"
+    },
+    {
+      "id": "paudit-1794480463717-778",
+      "timestamp": "2026-11-12T10:47:43.717Z",
+      "action": "TENANT_DELETED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Permanently removed cooperative \"Test Coop Alpha\" (#11) and cleaned associated records"
+    },
+    {
+      "id": "paudit-1794480463591-842",
+      "timestamp": "2026-11-12T10:47:43.592Z",
+      "action": "TENANT_USER_CREATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Created staff user Alpha Cashier (@alpha.cashier) with role User"
+    },
+    {
+      "id": "paudit-1794480463569-468",
+      "timestamp": "2026-11-12T10:47:43.569Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 12,
+      "details": "Provisioned cooperative \"Test Coop Beta\" (test-beta-tmp.dairynepal.com) on Cooperative Starter"
+    },
+    {
+      "id": "paudit-1794480463552-502",
+      "timestamp": "2026-11-12T10:47:43.552Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 11,
+      "details": "Provisioned cooperative \"Test Coop Alpha\" (test-alpha-tmp.dairynepal.com) on Cooperative Starter"
+    },
+    {
+      "id": "paudit-1794479588844-95",
+      "timestamp": "2026-11-12T10:33:08.844Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 5,
+      "details": "Updated cooperative profile \"हिमालयन अर्गानिक डेरी फार्म\" (Plan: plan-starter, Status: Active)"
+    },
+    {
+      "id": "paudit-1794479531493-569",
+      "timestamp": "2026-11-12T10:32:11.493Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 5,
+      "details": "Updated cooperative profile \"हिमालयन अर्गानिक डेरी फार्म\" (Plan: plan-starter, Status: Active)"
+    },
     {
       "id": "paudit-1794367403491-949",
       "timestamp": "2026-11-11T03:23:23.491Z",

@@ -10,6 +10,7 @@ import {
   Milk
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { getDerivedUsername } from '../../utils/fetchAuth';
 
 export default function LoginModal({
   isOpen,
@@ -21,7 +22,7 @@ export default function LoginModal({
 }) {
   const { lang, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,8 +31,9 @@ export default function LoginModal({
 
   const handleLogin = async (e) => {
     if (e) e.preventDefault();
-    if (!email || !password) {
-      setError(lang === 'en' ? 'Email and password are required.' : 'इमेल र पासवर्ड अनिवार्य छ ।');
+    const cleanId = username.trim();
+    if (!cleanId || !password) {
+      setError(lang === 'en' ? 'Username and password are required.' : 'प्रयोगकर्ता नाम र पासवर्ड अनिवार्य छ ।');
       return;
     }
 
@@ -42,27 +44,23 @@ export default function LoginModal({
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, tenantSlug: activeTenant?.name })
+        body: JSON.stringify({ username: cleanId, password })
       });
       const data = await res.json();
 
       if (res.ok && data.success) {
+        setUsername('');
+        setPassword('');
         if (onLoginSuccess) onLoginSuccess(data);
         onClose();
       } else {
-        setError(data.message || (lang === 'en' ? 'Login failed. Please enter valid credentials.' : 'लगइन असफल भयो । कृपया सही विवरण प्रविष्ट गर्नुहोस् ।'));
+        setError(data.message || (lang === 'en' ? 'Invalid username or password.' : 'लगइन असफल भयो । कृपया सही विवरण प्रविष्ट गर्नुहोस् ।'));
       }
     } catch (err) {
       setError(lang === 'en' ? 'Unable to reach server.' : 'सर्भरसँग सम्पर्क हुन सकेन ।');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickFill = (uEmail, uPass) => {
-    setEmail(uEmail);
-    setPassword(uPass);
-    setError(null);
   };
 
   return (
@@ -85,7 +83,8 @@ export default function LoginModal({
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 flex items-center justify-between text-xs">
               <div>
                 <span className="text-slate-500">{lang === 'en' ? 'Signed in as: ' : 'हालको लगइन: '}</span>
-                <strong className="text-emerald-800">{currentUser.name}</strong> ({currentUser.email})
+                <strong className="text-emerald-800">{currentUser.name}</strong>{' '}
+                <span className="font-mono text-emerald-700">(@{getDerivedUsername(currentUser)})</span>
               </div>
               <button
                 onClick={onLogout}
@@ -105,14 +104,17 @@ export default function LoginModal({
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">{lang === 'en' ? 'Email / Username' : 'इमेल / प्रयोगकर्ता'}</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {lang === 'en' ? 'Username' : 'प्रयोगकर्ता नाम'}
+              </label>
               <div className="relative">
                 <input
                   type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@dairy.local"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder={lang === 'en' ? 'e.g. admin or chitwanadmin' : 'प्रयोगकर्ता नाम लेख्नुहोस्'}
                   className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                  autoComplete="username"
                 />
                 <User className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               </div>
@@ -127,6 +129,7 @@ export default function LoginModal({
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full pl-9 pr-9 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                  autoComplete="current-password"
                 />
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <button
@@ -148,47 +151,6 @@ export default function LoginModal({
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick-fill Demo Accounts */}
-          <div className="mt-6 pt-4 border-t border-slate-100">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-              {lang === 'en' ? 'Quick Test Accounts:' : 'द्रुत परीक्षण खाताहरू:'}
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin@dairy.local', 'Admin@123')}
-                className="p-2 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition"
-              >
-                <div className="font-bold text-slate-800">{lang === 'en' ? 'Admin' : 'प्रशासक'}</div>
-                <div className="text-[10px] text-slate-500 font-mono">admin@dairy.local</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('manager@dairy.local', 'Manager@123')}
-                className="p-2 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition"
-              >
-                <div className="font-bold text-slate-800">{lang === 'en' ? 'Manager' : 'प्रबन्धक'}</div>
-                <div className="text-[10px] text-slate-500 font-mono">manager@dairy.local</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('staff@dairy.local', 'Staff@123')}
-                className="p-2 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition"
-              >
-                <div className="font-bold text-slate-800">{lang === 'en' ? 'Staff' : 'कर्मचारी'}</div>
-                <div className="text-[10px] text-slate-500 font-mono">staff@dairy.local</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('bipin.paul@dairy.local', 'Admin@123')}
-                className="p-2 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition"
-              >
-                <div className="font-bold text-slate-800">SuperAdmin</div>
-                <div className="text-[10px] text-slate-500 font-mono">bipin.paul@...</div>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Modal Footer */}

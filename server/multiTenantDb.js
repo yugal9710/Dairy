@@ -129,12 +129,20 @@ const DEFAULT_TENANTS = [
 ];
 
 // Initial Platform Users
+function normalizeUsername(raw = '') {
+  return String(raw || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, '')
+    .replace(/^[._-]+|[._-]+$/g, '');
+}
+
 function deriveUsername(user = {}) {
   if (user.username && String(user.username).trim()) {
-    return String(user.username).trim().toLowerCase();
+    return normalizeUsername(user.username) || String(user.username).trim().toLowerCase();
   }
   if (user.email && String(user.email).includes('@')) {
-    return String(user.email).split('@')[0].trim().toLowerCase();
+    return normalizeUsername(String(user.email).split('@')[0]) || 'user';
   }
   if (user.name && String(user.name).trim()) {
     return String(user.name).trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '.').replace(/^\.+|\.+$/g, '') || 'user';
@@ -151,6 +159,8 @@ const DEFAULT_USERS = [
     name: 'System Admin',
     passwordHash: hashPassword('Admin@123'),
     roles: ['SuperAdmin', 'Admin'],
+    isDeveloper: true,
+    isPrimaryDeveloper: true,
     isActive: true,
     isDeleted: false,
     creationDateTimeUtms: 1793502249000
@@ -1003,28 +1013,54 @@ class MultiTenantDatabase {
     };
   }
 
+  assertUniqueUsername(username, excludeUserId = null) {
+    const clean = normalizeUsername(username);
+    if (!clean) {
+      throw new Error('Username is required.');
+    }
+    const conflict = (this.platform.users || []).find(u =>
+      !u.isDeleted &&
+      (excludeUserId === null || Number(u.id) !== Number(excludeUserId)) &&
+      deriveUsername(u) === clean
+    );
+    if (conflict) {
+      throw new Error(`Username "${clean}" is already in use.`);
+    }
+    return clean;
+  }
+
   // Authentication
   authenticate(emailOrUsername, password, tenantSlug = null) {
     const raw = (emailOrUsername || '').trim().toLowerCase();
-    const cleanUser = raw.split('@')[0];
+    if (!raw || !password) return null;
 
-    const user = this.platform.users.find(u => {
-      if (u.isDeleted || !u.isActive) return false;
-      const uEmail = (u.email || '').toLowerCase();
-      const uUsername = (u.username || '').toLowerCase();
-      const uClean = uEmail.split('@')[0];
-      return uEmail === raw || uUsername === raw || uClean === raw || uClean === cleanUser;
+    const cleanUser = normalizeUsername(raw);
+    const activeUsers = (this.platform.users || []).filter(u => !u.isDeleted && u.isActive !== false);
+
+    // Prefer exact username or exact email match first, then email local-part fallback
+    const exactMatches = activeUsers.filter(u => {
+      const uUsername = (u.username || '').trim().toLowerCase();
+      const uEmail = (u.email || '').trim().toLowerCase();
+      return (uUsername && uUsername === raw) || (uEmail && uEmail === raw);
     });
 
-    if (!user) return null;
-    if (!verifyPassword(password, user.passwordHash)) {
-      return null;
-    }
+    const fallbackMatches = activeUsers.filter(u => {
+      const uEmail = (u.email || '').trim().toLowerCase();
+      const uClean = uEmail.includes('@') ? uEmail.split('@')[0] : '';
+      return Boolean(uClean) && (uClean === raw || uClean === cleanUser);
+    });
 
-    let tenant = this.platform.tenants.find(t => t.id === user.tenantId);
+    const candidates = exactMatches.length > 0 ? exactMatches : fallbackMatches;
+    const user = candidates.find(u => verifyPassword(password, u.passwordHash));
+    if (!user) return null;
+
+    let tenant = this.platform.tenants.find(t => t.id === user.tenantId && !t.isDeleted);
     if (tenantSlug) {
-      const match = this.platform.tenants.find(t => t.name === tenantSlug);
-      if (match) tenant = match;
+      const match = this.platform.tenants.find(t => t.name === tenantSlug && !t.isDeleted);
+      const isPlatformSuperAdmin = Number(user.tenantId) === 1 && (user.roles || []).includes('SuperAdmin');
+      if (match && (match.id === user.tenantId || isPlatformSuperAdmin)) {
+        tenant = match;
+      }
     }
     if (!tenant) tenant = this.platform.tenants[0];
 
@@ -1036,9 +1072,11 @@ class MultiTenantDatabase {
       user: {
         id: user.id,
         username: resolvedUsername,
-        email: user.email,
+        email: user.email || '',
         name: user.name,
         roles: user.roles,
+        isDeveloper: !!user.isDeveloper,
+        isPrimaryDeveloper: !!user.isPrimaryDeveloper,
         tenantId: tenant.id,
         tenantName: tenant.name,
         organizationName: tenant.organizationName
@@ -1076,6 +1114,106 @@ class MultiTenantDatabase {
       totalPaid: totalOrderPaid,
       outstandingBalance
     };
+  }
+
+  getCompanyCodePrefix(tenantIdOrObj) {
+    let tenant = null;
+    if (typeof tenantIdOrObj === 'object' && tenantIdOrObj !== null) {
+      tenant = tenantIdOrObj;
+    } else if (tenantIdOrObj !== undefined && tenantIdOrObj !== null) {
+      tenant = this.getTenantById(tenantIdOrObj);
+    }
+    if (!tenant) return 'JS';
+
+    const raw = (
+      tenant.codePrefix ||
+      tenant.companyName ||
+      tenant.nameInEnglish ||
+      tenant.englishName ||
+      tenant.organizationName ||
+      tenant.name ||
+      ''
+    ).trim();
+
+    const latinWords = raw.replace(/[^a-zA-Z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
+    if (latinWords.length > 0) {
+      if (latinWords[0].length === 2) return latinWords[0].toUpperCase();
+      if (latinWords.length >= 2) return (latinWords[0][0] + latinWords[1][0]).toUpperCase();
+      if (latinWords[0].length >= 2) return latinWords[0].slice(0, 2).toUpperCase();
+    }
+
+    if (tenant.name) {
+      const slugLetters = String(tenant.name).replace(/[^a-zA-Z]/g, '');
+      if (slugLetters.length >= 2) return slugLetters.slice(0, 2).toUpperCase();
+    }
+
+    const devanagariMap = {
+      'क': 'K', 'ख': 'K', 'ग': 'G', 'घ': 'G', 'ङ': 'N',
+      'च': 'C', 'छ': 'C', 'ज': 'J', 'झ': 'J', 'ञ': 'N',
+      'ट': 'T', 'ठ': 'T', 'ड': 'D', 'ढ': 'D', 'ण': 'N',
+      'त': 'T', 'थ': 'T', 'द': 'D', 'ध': 'D', 'न': 'N',
+      'प': 'P', 'फ': 'P', 'ब': 'B', 'भ': 'B', 'म': 'M',
+      'य': 'Y', 'र': 'R', 'ल': 'L', 'व': 'V',
+      'श': 'S', 'ष': 'S', 'स': 'S', 'ह': 'H',
+      'अ': 'A', 'आ': 'A', 'इ': 'I', 'ई': 'I', 'उ': 'U',
+      'ए': 'E', 'ओ': 'O'
+    };
+
+    const devWords = raw.split(/\s+/).filter(Boolean);
+    if (devWords.length >= 2) {
+      const c1 = devanagariMap[devWords[0][0]] || '';
+      const c2 = devanagariMap[devWords[1][0]] || '';
+      if (c1 && c2) return (c1 + c2).toUpperCase();
+      if (c1) return (c1 + 'S').toUpperCase();
+    } else if (devWords.length === 1) {
+      const c1 = devanagariMap[devWords[0][0]] || '';
+      if (c1) return (c1 + 'S').toUpperCase();
+    }
+
+    return 'JS';
+  }
+
+  getNextCustomerCode(tenantId) {
+    const tid = Number(tenantId) || 1;
+    const prefix = this.getCompanyCodePrefix(tid);
+    const tData = this.getTenantData(tid);
+    const customers = tData.customers || [];
+
+    let maxNum = 0;
+    let hasPrefixMatch = false;
+
+    for (const c of customers) {
+      if (!c || c.isDeleted) continue;
+      const raw = String(c.code ?? c.id ?? '').trim().toUpperCase();
+      if (raw.startsWith(prefix)) {
+        hasPrefixMatch = true;
+        const numPart = raw.slice(prefix.length);
+        const val = parseInt(numPart, 10);
+        if (Number.isFinite(val) && val > maxNum) {
+          maxNum = val;
+        }
+      }
+    }
+
+    if (hasPrefixMatch) {
+      return `${prefix}${String(maxNum + 1).padStart(3, '0')}`;
+    }
+
+    let maxLegacyNum = 0;
+    for (const c of customers) {
+      if (!c || c.isDeleted) continue;
+      const raw = String(c.code ?? c.id ?? '').trim();
+      const match = raw.match(/(\d+)$/);
+      if (match) {
+        const val = parseInt(match[1], 10);
+        if (Number.isFinite(val) && val > maxLegacyNum) {
+          maxLegacyNum = val;
+        }
+      }
+    }
+
+    const nextNum = maxLegacyNum > 0 ? maxLegacyNum + 1 : 1;
+    return `${prefix}${String(nextNum).padStart(3, '0')}`;
   }
 
   // Dashboard & Profit-Loss Analytics
@@ -1623,8 +1761,8 @@ class MultiTenantDatabase {
         adminUser: adminUser ? {
           id: adminUser.id,
           name: adminUser.name,
-          username: adminUser.email ? adminUser.email.split('@')[0] : 'admin',
-          email: adminUser.email
+          username: deriveUsername(adminUser),
+          email: adminUser.email || ''
         } : null,
         modules: t.modules || (sub ? sub.modules : { milkCollection: true, pos: true, inventory: true })
       };
@@ -1759,20 +1897,28 @@ class MultiTenantDatabase {
       sslStatus: 'active'
     });
 
-    // Create Initial Admin User if provided
+    // Create Initial Admin User if provided (email is optional)
     let createdAdmin = null;
-    if (data.adminUsername || data.adminEmail) {
+    if (data.adminUsername || data.adminEmail || data.adminPassword) {
       const adminPass = data.adminPassword || 'Admin@123';
       const nextUserId = (this.platform.users || []).length > 0
         ? Math.max(...this.platform.users.map(u => Number(u.id) || 0)) + 1
         : 1;
 
-      const resolvedEmail = data.adminEmail || `${data.adminUsername || cleanSlug}@dairy.local`;
+      const resolvedEmail = (data.adminEmail || '').trim().toLowerCase();
+      const candidateUsername = deriveUsername({
+        username: data.adminUsername,
+        email: resolvedEmail,
+        name: data.adminName || data.managerName || cleanSlug
+      });
+      const resolvedUsername = this.assertUniqueUsername(candidateUsername);
+
       createdAdmin = {
         id: nextUserId,
         tenantId: newTenant.id,
-        email: resolvedEmail.toLowerCase(),
-        name: data.adminName || data.managerName || `${newTenant.organizationName} Admin`,
+        username: resolvedUsername,
+        email: resolvedEmail,
+        name: (data.adminName || data.managerName || `${newTenant.organizationName} Admin`).trim(),
         passwordHash: hashPassword(adminPass),
         roles: ['SuperAdmin', 'Admin'],
         isActive: true,
@@ -1909,14 +2055,46 @@ class MultiTenantDatabase {
       tenant.modules = { ...(tenant.modules || {}), farmerLedger: Boolean(updates.enableFarmerLedger) };
     }
 
-    // Update admin user if credentials provided
-    if (updates.adminPassword || updates.adminName || updates.adminEmail || updates.adminUsername) {
-      const admin = (this.platform.users || []).find(u => u.tenantId === tenant.id && (u.roles || []).includes('SuperAdmin'));
+    // Update or create admin user if credentials provided (email is optional)
+    if (updates.adminPassword || updates.adminName || updates.adminEmail !== undefined || updates.adminUsername) {
+      const admin = (this.platform.users || []).find(
+        u => !u.isDeleted && Number(u.tenantId) === Number(tenant.id) &&
+          ((u.roles || []).includes('SuperAdmin') || (u.roles || []).includes('Admin'))
+      );
       if (admin) {
         if (updates.adminPassword) admin.passwordHash = hashPassword(updates.adminPassword);
-        if (updates.adminName) admin.name = updates.adminName;
-        if (updates.adminEmail) admin.email = updates.adminEmail;
-        else if (updates.adminUsername) admin.email = `${updates.adminUsername.toLowerCase()}@dairy.local`;
+        if (updates.adminName) admin.name = updates.adminName.trim();
+        if (updates.adminUsername) {
+          admin.username = this.assertUniqueUsername(updates.adminUsername, admin.id);
+        } else if (!admin.username) {
+          admin.username = deriveUsername(admin);
+        }
+        if (updates.adminEmail !== undefined) {
+          admin.email = String(updates.adminEmail || '').trim().toLowerCase();
+        }
+      } else if (updates.adminUsername || updates.adminPassword || updates.adminEmail || updates.adminName) {
+        const nextUserId = (this.platform.users || []).length > 0
+          ? Math.max(...this.platform.users.map(u => Number(u.id) || 0)) + 1
+          : 1;
+        const resolvedEmail = String(updates.adminEmail || '').trim().toLowerCase();
+        const candidateUsername = deriveUsername({
+          username: updates.adminUsername,
+          email: resolvedEmail,
+          name: updates.adminName || updates.managerName || tenant.name
+        });
+        const resolvedUsername = this.assertUniqueUsername(candidateUsername);
+        this.platform.users.push({
+          id: nextUserId,
+          tenantId: tenant.id,
+          username: resolvedUsername,
+          email: resolvedEmail,
+          name: (updates.adminName || updates.managerName || `${tenant.organizationName} Admin`).trim(),
+          passwordHash: hashPassword(updates.adminPassword || 'Admin@123'),
+          roles: ['SuperAdmin', 'Admin'],
+          isActive: true,
+          isDeleted: false,
+          creationDateTimeUtms: Date.now()
+        });
       }
     }
 
@@ -1931,6 +2109,10 @@ class MultiTenantDatabase {
   updateTenantStatus(id, status) {
     const tenant = this.getTenantById(id);
     if (!tenant) return null;
+    // Primary developer tenant cannot be suspended
+    if (Number(id) === 1 && status === 'Suspended') {
+      throw new Error('The primary developer tenant cannot be suspended.');
+    }
     tenant.status = status;
     this.logPlatformAction({
       action: 'TENANT_STATUS_CHANGED',
@@ -2088,17 +2270,22 @@ class MultiTenantDatabase {
       ? Math.max(...this.platform.users.map(u => Number(u.id) || 0)) + 1
       : 1;
 
-    const resolvedEmail = (data.email || `staff_${nextUserId}@dairy.local`).toLowerCase();
-    const resolvedUsername = deriveUsername({ username: data.username, email: resolvedEmail, name: data.name });
+    const resolvedEmail = String(data.email || '').trim().toLowerCase();
+    const candidateUsername = deriveUsername({
+      username: data.username,
+      email: resolvedEmail,
+      name: data.name || `staff_${nextUserId}`
+    });
+    const resolvedUsername = this.assertUniqueUsername(candidateUsername);
 
     const newUser = {
       id: nextUserId,
       tenantId: Number(tenantId),
       username: resolvedUsername,
-      name: data.name || 'Staff User',
+      name: (data.name || resolvedUsername || 'Staff User').trim(),
       email: resolvedEmail,
       passwordHash: hashPassword(data.password || 'Staff@123'),
-      roles: data.role ? [data.role] : ['User'],
+      roles: data.role ? [data.role] : (Array.isArray(data.roles) ? data.roles : ['User']),
       isActive: true,
       isDeleted: false,
       creationDateTimeUtms: Date.now()
@@ -2108,7 +2295,7 @@ class MultiTenantDatabase {
     this.logPlatformAction({
       action: 'TENANT_USER_CREATED',
       tenantId: Number(tenantId),
-      details: `Created staff user ${newUser.name} (@${newUser.username} / ${newUser.email}) with role ${newUser.roles.join(', ')}`
+      details: `Created staff user ${newUser.name} (@${newUser.username}${newUser.email ? ` / ${newUser.email}` : ''}) with role ${newUser.roles.join(', ')}`
     });
     const { passwordHash, ...safeUser } = newUser;
     return safeUser;
@@ -2118,10 +2305,13 @@ class MultiTenantDatabase {
     const user = (this.platform.users || []).find(u => u.id === Number(userId) && u.tenantId === Number(tenantId));
     if (!user) return null;
 
-    if (data.name) user.name = data.name;
-    if (data.email) user.email = data.email.toLowerCase();
-    if (data.username) user.username = deriveUsername({ username: data.username, email: user.email, name: user.name });
-    else if (!user.username) user.username = deriveUsername(user);
+    if (data.name) user.name = data.name.trim();
+    if (data.email !== undefined) user.email = String(data.email || '').trim().toLowerCase();
+    if (data.username) {
+      user.username = this.assertUniqueUsername(data.username, user.id);
+    } else if (!user.username) {
+      user.username = deriveUsername(user);
+    }
     if (data.role) user.roles = [data.role];
     if (data.password) user.passwordHash = hashPassword(data.password);
     if (data.isActive !== undefined) user.isActive = Boolean(data.isActive);
