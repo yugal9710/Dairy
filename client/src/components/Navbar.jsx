@@ -21,6 +21,7 @@ import {
 import { getTodayBS } from '../utils/nepaliDate';
 import { getDerivedUsername } from '../utils/fetchAuth';
 import { useLanguage } from '../context/LanguageContext';
+import { isOwnerUser } from '../utils/rbac';
 import ThemeSwitcher from './Common/ThemeSwitcher';
 
 export default function Navbar({
@@ -178,10 +179,10 @@ export default function Navbar({
                       </button>
                     ))}
                   </div>
-                  {currentUser?.roles?.includes('SuperAdmin') && onNavigateTab && (
+                  {isOwnerUser(currentUser, activeTenant) && onNavigateTab && (
                     <div className="mt-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 px-2 pb-1 flex items-center justify-between gap-2">
                       <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-                        {lang === 'en' ? 'Platform Super Admin' : 'प्लेटफर्म सुपर एडमिन'}
+                        {lang === 'en' ? 'Platform Owner' : 'मुख्य सञ्चालक पृष्ठ'}
                       </span>
                       <button
                         type="button"
@@ -189,7 +190,7 @@ export default function Navbar({
                           onNavigateTab('platform');
                           setTenantDropdownOpen(false);
                         }}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 text-white text-[11px] font-bold transition cursor-pointer"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold transition cursor-pointer shadow-xs"
                       >
                         <Server className="w-3 h-3" />
                         <span>{lang === 'en' ? 'Developer Console' : 'डेभलपर कन्सोल'}</span>
@@ -411,30 +412,35 @@ export default function Navbar({
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all shrink-0" />
                   </button>
 
-                  {/* Developer Console (SuperAdmin Only) */}
-                  {currentUser?.roles?.includes('SuperAdmin') && onNavigateTab && (
+                  {/* Developer Console (Platform Owner Only) */}
+                  {isOwnerUser(currentUser, activeTenant) && onNavigateTab && (
                     <button
                       type="button"
                       onClick={() => {
                         setSettingsOpen(false);
                         onNavigateTab('platform');
                       }}
-                      className="w-full text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-between group cursor-pointer"
+                      className="w-full text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-900 dark:hover:text-emerald-200 transition flex items-center justify-between group cursor-pointer"
                     >
                       <div className="flex items-center space-x-2.5 min-w-0">
-                        <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white transition shadow-2xs">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0 group-hover:bg-emerald-700 group-hover:text-white transition shadow-2xs">
                           <Server className="w-3.5 h-3.5" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <span className="text-xs font-bold block truncate">
-                            {lang === 'en' ? 'Developer Console' : 'डेभलपर कन्सोल'}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold truncate">
+                              {lang === 'en' ? 'Developer Console' : 'डेभलपर कन्सोल'}
+                            </span>
+                            <span className="text-[9px] px-1.5 py-0.2 rounded font-black bg-emerald-600 text-white">
+                              {lang === 'en' ? 'PRIMARY' : 'मुख्य'}
+                            </span>
+                          </div>
                           <span className="text-[10px] text-slate-400 block truncate">
-                            {lang === 'en' ? 'SaaS cooperatives, plans & renewals' : 'सहकारी टेनेन्ट, प्लान तथा नवीकरण'}
+                            {lang === 'en' ? 'Primary SaaS owner console & tenant controls' : 'मुख्य सञ्चालक पृष्ठ तथा सहकारी नियन्त्रण'}
                           </span>
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all shrink-0" />
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition-all shrink-0" />
                     </button>
                   )}
 

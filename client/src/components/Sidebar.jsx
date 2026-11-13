@@ -5,7 +5,7 @@ import {
   X,
   Milk
 } from 'lucide-react';
-import { SYSTEM_MODULES, isTabAllowed, getModuleLabel } from '../utils/rbac';
+import { SYSTEM_MODULES, isTabAllowed, getModuleLabel, isOwnerUser } from '../utils/rbac';
 import { useLanguage } from '../context/LanguageContext';
 
 export const MENU_CATEGORIES = [
@@ -51,6 +51,7 @@ export default function Sidebar({
   activeTab,
   onTabChange,
   currentUser,
+  activeTenant,
   counts = {},
   isCollapsed = false,
   onToggleCollapse,
@@ -59,6 +60,21 @@ export default function Sidebar({
 }) {
   const userRoles = currentUser?.roles || ['User'];
   const { lang, t } = useLanguage();
+  const isOwner = isOwnerUser(currentUser, activeTenant);
+
+  // When owner is logged in on the primary tenant (sfacl), Developer Console is PRIMARY at the top
+  const categories = isOwner
+    ? [
+        {
+          id: 'platform-primary',
+          titleNe: 'मुख्य सञ्चालक कन्सोल (Owner)',
+          titleEn: 'Primary Owner Console',
+          moduleIds: ['platform'],
+          isPrimary: true
+        },
+        ...MENU_CATEGORIES.filter(c => c.id !== 'platform-admin')
+      ]
+    : MENU_CATEGORIES.filter(c => c.id !== 'platform-admin');
 
   // Keyboard shortcut Ctrl+B or Cmd+B to toggle sidebar collapse
   useEffect(() => {
@@ -110,10 +126,10 @@ export default function Sidebar({
 
         {/* Navigation List grouped by Categories */}
         <div className="flex-1 py-2 px-2 overflow-y-auto space-y-2.5">
-          {MENU_CATEGORIES.map((cat, cIdx) => {
+          {categories.map((cat, cIdx) => {
             const catModules = cat.moduleIds
               .map(id => SYSTEM_MODULES.find(m => m.id === id))
-              .filter(m => m && isTabAllowed(m.id, userRoles, currentUser));
+              .filter(m => m && isTabAllowed(m.id, userRoles, activeTenant, currentUser));
 
             if (catModules.length === 0) return null;
 
@@ -124,10 +140,15 @@ export default function Sidebar({
               >
                 {/* Category Heading (Hidden when collapsed) */}
                 {!isCollapsed && (
-                  <div className="px-2.5 pb-1 pt-0.5">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
+                  <div className="px-2.5 pb-1 pt-0.5 flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase tracking-wider select-none ${cat.isPrimary ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-slate-400 dark:text-slate-500'}`}>
                       {lang === 'en' ? cat.titleEn : cat.titleNe}
                     </span>
+                    {cat.isPrimary && (
+                      <span className="text-[9px] px-1.5 py-0.2 rounded-full font-black bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                        {lang === 'en' ? 'OWNER' : 'सञ्चालक'}
+                      </span>
+                    )}
                   </div>
                 )}
 
@@ -137,6 +158,7 @@ export default function Sidebar({
                     const Icon = module.icon;
                     const count = counts[module.id];
                     const displayLabel = getModuleLabel(module, lang);
+                    const isPlatformModule = module.id === 'platform';
 
                     if (isCollapsed) {
                       return (
@@ -149,19 +171,25 @@ export default function Sidebar({
                             }}
                             className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
                               isActive
-                                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold'
-                                : 'text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                ? (isPlatformModule
+                                    ? 'bg-gradient-to-tr from-emerald-700 via-teal-700 to-emerald-600 text-white shadow-md shadow-emerald-700/30 ring-2 ring-emerald-400 font-bold'
+                                    : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold')
+                                : (isPlatformModule
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
+                                    : 'text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800')
                             }`}
-                            title={displayLabel}
+                            title={`${displayLabel}${isPlatformModule ? ' (Primary Owner Console)' : ''}`}
                             aria-label={displayLabel}
                           >
                             <Icon className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : ''}`} />
 
-                            {count !== undefined && count > 0 && (
+                            {count !== undefined && count > 0 ? (
                               <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-emerald-600 text-white text-[9px] font-extrabold flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-2xs">
                                 {count}
                               </span>
-                            )}
+                            ) : isPlatformModule ? (
+                              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 animate-pulse" />
+                            ) : null}
                           </button>
                         </div>
                       );
@@ -177,14 +205,22 @@ export default function Sidebar({
                         }}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition group text-left relative cursor-pointer ${
                           isActive
-                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-bold'
-                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                            ? (isPlatformModule
+                                ? 'bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600 text-white shadow-md shadow-emerald-700/25 font-bold ring-1 ring-emerald-400/50'
+                                : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-bold')
+                            : (isPlatformModule
+                                ? 'bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border border-emerald-200/90 dark:border-emerald-800/80 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white')
                         }`}
                         title={displayLabel}
                       >
                         <Icon
                           className={`w-4 h-4 shrink-0 transition-transform ${
-                            isActive ? 'text-white scale-110' : 'text-slate-500 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400'
+                            isActive
+                              ? 'text-white scale-110'
+                              : isPlatformModule
+                                ? 'text-emerald-700 dark:text-emerald-400 group-hover:scale-110'
+                                : 'text-slate-500 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400'
                           }`}
                         />
 
@@ -198,15 +234,15 @@ export default function Sidebar({
                             >
                               {count}
                             </span>
-                          ) : module.id === 'platform' ? (
+                          ) : isPlatformModule ? (
                             <span
-                              className={`text-[9px] px-1.5 py-0.5 rounded font-black tracking-wider ml-1.5 ${
+                              className={`text-[9px] px-1.5 py-0.5 rounded font-black tracking-wider ml-1.5 shadow-2xs ${
                                 isActive
                                   ? 'bg-white/20 text-white'
-                                  : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                                  : 'bg-emerald-700 text-white'
                               }`}
                             >
-                              DEV
+                              {lang === 'en' ? 'PRIMARY' : 'मुख्य'}
                             </span>
                           ) : null}
                         </div>

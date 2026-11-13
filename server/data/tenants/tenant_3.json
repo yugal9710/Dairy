@@ -1,6 +1,223 @@
 {
   "tenantId": 3,
-  "auditLogs": [],
+  "auditLogs": [
+    {
+      "id": 1794592574720,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794592574042,
+      "dateTimeIso": "2026-11-13T17:56:14.042Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794592574565,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794592574038,
+      "dateTimeIso": "2026-11-13T17:56:14.038Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578857436,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794578856843,
+      "dateTimeIso": "2026-11-13T14:07:36.843Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578857530,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794578856839,
+      "dateTimeIso": "2026-11-13T14:07:36.839Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578692519,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794578691747,
+      "dateTimeIso": "2026-11-13T14:04:51.747Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578692041,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794578691744,
+      "dateTimeIso": "2026-11-13T14:04:51.744Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578397668,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794578397230,
+      "dateTimeIso": "2026-11-13T13:59:57.230Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794578397504,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794578397224,
+      "dateTimeIso": "2026-11-13T13:59:57.224Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794567947598,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794567946760,
+      "dateTimeIso": "2026-11-13T11:05:46.760Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794567947178,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794567946754,
+      "dateTimeIso": "2026-11-13T11:05:46.754Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794567861154,
+      "tenantId": 3,
+      "userId": 7,
+      "username": "anna.staff",
+      "userName": "Annapurna Staff",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Staff (@anna.staff) logged in",
+      "referenceId": "anna.staff",
+      "dateTimeUtms": 1794567860847,
+      "dateTimeIso": "2026-11-13T11:04:20.847Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    },
+    {
+      "id": 1794567861444,
+      "tenantId": 3,
+      "userId": 6,
+      "username": "anna.admin",
+      "userName": "Annapurna Admin",
+      "userEmail": "staff@dairy.local",
+      "action": "USER_LOGIN",
+      "actionLabelNe": "प्रयोगकर्ता लगइन",
+      "actionLabelEn": "User Logged In",
+      "category": "Security & Auth",
+      "details": "User Annapurna Admin (@anna.admin) logged in",
+      "referenceId": "anna.admin",
+      "dateTimeUtms": 1794567860842,
+      "dateTimeIso": "2026-11-13T11:04:20.842Z",
+      "dateStr": "2026-11-13",
+      "isDeleted": false
+    }
+  ],
   "units": [
     {
       "id": 1,
@@ -138,8 +355,8 @@
       "batchNumber": "RAW-LOT-2026-01",
       "quantity": 380,
       "usedQuantity": 295,
-      "expiryDateUtms": 1794634332772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1794739241935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 2,
@@ -147,8 +364,8 @@
       "batchNumber": "PAS-LOT-2026-01",
       "quantity": 280,
       "usedQuantity": 84,
-      "expiryDateUtms": 1794720732772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1794825641935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 3,
@@ -156,8 +373,8 @@
       "batchNumber": "DAHI-LOT-2026-01",
       "quantity": 80,
       "usedQuantity": 37,
-      "expiryDateUtms": 1794807132772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1794912041935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 4,
@@ -165,8 +382,8 @@
       "batchNumber": "PAN-LOT-2026-01",
       "quantity": 24,
       "usedQuantity": 13,
-      "expiryDateUtms": 1794979932772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1795084841935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 5,
@@ -174,8 +391,8 @@
       "batchNumber": "GHEE-LOT-2026-01",
       "quantity": 23,
       "usedQuantity": 8,
-      "expiryDateUtms": 1810013532772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1810118441935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 6,
@@ -183,8 +400,8 @@
       "batchNumber": "BUTTER-LOT-2026-01",
       "quantity": 14,
       "usedQuantity": 2,
-      "expiryDateUtms": 1795757532772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1795862441935,
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 7,
@@ -192,75 +409,75 @@
       "batchNumber": "CREAM-LOT-2026-01",
       "quantity": 18,
       "usedQuantity": 4,
-      "expiryDateUtms": 1794893532772,
-      "dateTimeUtms": 1794288732772
+      "expiryDateUtms": 1794998441935,
+      "dateTimeUtms": 1794393641935
     }
   ],
   "customers": [
     {
       "id": 1,
       "code": 1,
-      "nameInNepali": "राम बहादुर थापा",
-      "nameInEnglish": "Ram Bahadur Thapa",
+      "nameInNepali": "टेक बहादुर पुन",
+      "nameInEnglish": "Tek Bahadur Pun",
       "customerType": 1,
-      "phone": "9841234567",
-      "address": "गौशाला-४, काठमाडौं",
-      "accountNumber": "NABIL-012004592",
-      "remarks": "नियमित बिहानी तथा बेलुकी दूध संकलक कृषक",
+      "phone": "9846012345",
+      "address": "पोखरा-१५, कास्की",
+      "accountNumber": "NABIL-0610012",
+      "remarks": "नियमित दूध संकलक कृषक",
       "isDeleted": false,
-      "creationDateTimeUtms": 1789277532772
+      "creationDateTimeUtms": 1789382441935
     },
     {
       "id": 2,
       "code": 2,
-      "nameInNepali": "हरि प्रसाद शर्मा",
-      "nameInEnglish": "Hari Prasad Sharma",
+      "nameInNepali": "सुनिता देवी गुरुङ",
+      "nameInEnglish": "Sunita Devi Gurung",
       "customerType": 1,
-      "phone": "9851029384",
-      "address": "चाबहिल-७, काठमाडौं",
-      "accountNumber": "GBIME-99882211",
+      "phone": "9856029384",
+      "address": "पोखरा-८, कास्की",
+      "accountNumber": "GBIME-776622",
       "remarks": "गाई फार्म सञ्चालक",
       "isDeleted": false,
-      "creationDateTimeUtms": 1790141532772
+      "creationDateTimeUtms": 1790246441935
     },
     {
       "id": 3,
       "code": 3,
-      "nameInNepali": "सीता माया गुरुङ",
-      "nameInEnglish": "Sita Maya Gurung",
+      "nameInNepali": "नारायण प्रसाद पौडेल",
+      "nameInEnglish": "Narayan Prasad Poudel",
       "customerType": 1,
-      "phone": "9812938475",
-      "address": "साँखु-२, काठमाडौं",
-      "accountNumber": "NIC-554433221",
+      "phone": "9816938475",
+      "address": "हेम्जा-२, कास्की",
+      "accountNumber": "NIC-44332211",
       "remarks": "भैँसी फार्म",
       "isDeleted": false,
-      "creationDateTimeUtms": 1791005532772
+      "creationDateTimeUtms": 1791110441935
     },
     {
       "id": 4,
       "code": 4,
-      "nameInNepali": "श्याम सुन्दर यादव",
-      "nameInEnglish": "Shyam Sundar Yadav",
+      "nameInNepali": "माया देवी थापा",
+      "nameInEnglish": "Maya Devi Thapa",
       "customerType": 1,
-      "phone": "9803456789",
-      "address": "भक्तपुर-९, कमलविनायक",
-      "accountNumber": "PRABHU-887766",
+      "phone": "9806456789",
+      "address": "लेखनाथ-४, कास्की",
+      "accountNumber": "PRABHU-665544",
       "remarks": "दैनिक दूध आपूर्तिकर्ता",
       "isDeleted": false,
-      "creationDateTimeUtms": 1791869532772
+      "creationDateTimeUtms": 1791974441935
     },
     {
       "id": 5,
       "code": 5,
-      "nameInNepali": "कृष्ण बहादुर कार्की",
-      "nameInEnglish": "Krishna Bahadur Karki",
+      "nameInNepali": "केदार नाथ आचार्य",
+      "nameInEnglish": "Kedar Nath Acharya",
       "customerType": 1,
-      "phone": "9860112233",
-      "address": "बौद्ध-६, काठमाडौं",
-      "accountNumber": "EVEREST-112244",
+      "phone": "9866112233",
+      "address": "सराङकोट-१, कास्की",
+      "accountNumber": "EVEREST-887766",
       "remarks": "उच्च फ्याट दूध आपूर्तिकर्ता",
       "isDeleted": false,
-      "creationDateTimeUtms": 1792733532772
+      "creationDateTimeUtms": 1792838441935
     },
     {
       "id": 6,
@@ -268,12 +485,12 @@
       "nameInNepali": "होटल अन्नपूर्ण भ्यु",
       "nameInEnglish": "Hotel Annapurna View",
       "customerType": 2,
-      "phone": "01-4499881",
-      "address": "दरबारमार्ग, काठमाडौं",
+      "phone": "061-460111",
+      "address": "लेकसाइड, पोखरा",
       "accountNumber": "HBL-990011",
       "remarks": "दैनिक दूध, दही र पनिरको थोक खरिदकर्ता",
       "isDeleted": false,
-      "creationDateTimeUtms": 1790573532772
+      "creationDateTimeUtms": 1790678441935
     },
     {
       "id": 7,
@@ -282,37 +499,37 @@
       "nameInEnglish": "Pokhara Sweets & Bakery",
       "customerType": 2,
       "phone": "9846011223",
-      "address": "न्यूरोड, काठमाडौं",
+      "address": "न्यूरोड, पोखरा",
       "accountNumber": "SBI-223344",
       "remarks": "मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता",
       "isDeleted": false,
-      "creationDateTimeUtms": 1791437532772
+      "creationDateTimeUtms": 1791542441935
     },
     {
       "id": 8,
       "code": 8,
-      "nameInNepali": "लेकसाइड क्याफे",
-      "nameInEnglish": "Lakeside Organic Cafe",
+      "nameInNepali": "फेवा लेकसाइड क्याफे",
+      "nameInEnglish": "Fewa Lakeside Cafe",
       "customerType": 2,
-      "phone": "9811223344",
-      "address": "झम्सीखेल, ललितपुर",
+      "phone": "9816223344",
+      "address": "लेकसाइड, पोखरा",
       "accountNumber": "NIMB-778899",
       "remarks": "अर्गानिक दूध तथा दही खरिदकर्ता",
       "isDeleted": false,
-      "creationDateTimeUtms": 1792301532772
+      "creationDateTimeUtms": 1792406441935
     },
     {
       "id": 9,
       "code": 9,
-      "nameInNepali": "न्यू किराना तथा डेरी स्टोर",
-      "nameInEnglish": "New Kirana & Dairy Store",
+      "nameInNepali": "पोखरा डेरी कर्नर",
+      "nameInEnglish": "Pokhara Dairy Corner",
       "customerType": 3,
-      "phone": "9801998877",
-      "address": "सिनामंगल, काठमाडौं",
+      "phone": "9806998877",
+      "address": "पृथ्वीचोक, पोखरा",
       "accountNumber": "KBL-445566",
       "remarks": "स्थानीय दुध बिक्रेता तथा संकलन केन्द्र",
       "isDeleted": false,
-      "creationDateTimeUtms": 1793165532772
+      "creationDateTimeUtms": 1793270441935
     }
   ],
   "milkFatSnfConfig": {
@@ -322,7 +539,7 @@
     "sellingFatPrice": 9,
     "sellingSnfPrice": 5,
     "sellingPrice": 90,
-    "lastTimeUpdatedUtms": 1794375132772
+    "lastTimeUpdatedUtms": 1794480041935
   },
   "milkCollections": [
     {
@@ -336,7 +553,7 @@
       "snfRate": 4,
       "rate": 67.7,
       "totalPrice": 3385,
-      "dateTimeUtms": 1794360732772,
+      "dateTimeUtms": 1794465641935,
       "isDeleted": false
     },
     {
@@ -350,7 +567,7 @@
       "snfRate": 4,
       "rate": 63.9,
       "totalPrice": 2556,
-      "dateTimeUtms": 1794364332772,
+      "dateTimeUtms": 1794469241935,
       "isDeleted": false
     },
     {
@@ -364,7 +581,7 @@
       "snfRate": 4,
       "rate": 71.5,
       "totalPrice": 3217.5,
-      "dateTimeUtms": 1794367932772,
+      "dateTimeUtms": 1794472841935,
       "isDeleted": false
     },
     {
@@ -378,7 +595,7 @@
       "snfRate": 4,
       "rate": 66.55,
       "totalPrice": 2329.25,
-      "dateTimeUtms": 1794389532772,
+      "dateTimeUtms": 1794494441935,
       "isDeleted": false
     },
     {
@@ -392,7 +609,7 @@
       "snfRate": 4,
       "rate": 65,
       "totalPrice": 1950,
-      "dateTimeUtms": 1794393132772,
+      "dateTimeUtms": 1794498041935,
       "isDeleted": false
     },
     {
@@ -406,7 +623,7 @@
       "snfRate": 4,
       "rate": 66.55,
       "totalPrice": 2662,
-      "dateTimeUtms": 1794450732772,
+      "dateTimeUtms": 1794555641935,
       "isDeleted": false
     },
     {
@@ -420,7 +637,7 @@
       "snfRate": 4,
       "rate": 64.65,
       "totalPrice": 2068.8,
-      "dateTimeUtms": 1794454332772,
+      "dateTimeUtms": 1794559241935,
       "isDeleted": false
     },
     {
@@ -434,7 +651,7 @@
       "snfRate": 4,
       "rate": 69.6,
       "totalPrice": 1948.8,
-      "dateTimeUtms": 1794457932772,
+      "dateTimeUtms": 1794562841935,
       "isDeleted": false
     }
   ],
@@ -446,7 +663,7 @@
       "paymentMethod": 0,
       "referenceNumber": "VCHR-FARM-01",
       "remarks": "दूध आपूर्ति बापत आंशिक नगद भुक्तानी",
-      "dateTimeUtms": 1794396732772,
+      "dateTimeUtms": 1794501641935,
       "isDeleted": false
     },
     {
@@ -456,7 +673,7 @@
       "paymentMethod": 2,
       "referenceNumber": "BANK-TR-8491",
       "remarks": "बैंक ट्रान्सफर मार्फत भुक्तानी",
-      "dateTimeUtms": 1794400332772,
+      "dateTimeUtms": 1794505241935,
       "isDeleted": false
     },
     {
@@ -466,7 +683,7 @@
       "paymentMethod": 0,
       "referenceNumber": "VCHR-FARM-02",
       "remarks": "नगद आंशिक भुक्तानी",
-      "dateTimeUtms": 1794403932772,
+      "dateTimeUtms": 1794508841935,
       "isDeleted": false
     }
   ],
@@ -476,7 +693,7 @@
       "saleType": 1,
       "customerId": 6,
       "customerName": "Hotel Annapurna View",
-      "orderDateTimeUtms": 1794389532772,
+      "orderDateTimeUtms": 1794494441935,
       "totalAmount": 12250,
       "discountAmount": 250,
       "netAmount": 12000,
@@ -521,7 +738,7 @@
       "saleType": 1,
       "customerId": 7,
       "customerName": "Pokhara Sweets & Bakery",
-      "orderDateTimeUtms": 1794411132772,
+      "orderDateTimeUtms": 1794516041935,
       "totalAmount": 10250,
       "discountAmount": 0,
       "netAmount": 10250,
@@ -565,8 +782,8 @@
       "id": 3,
       "saleType": 1,
       "customerId": 8,
-      "customerName": "Lakeside Organic Cafe",
-      "orderDateTimeUtms": 1794432732772,
+      "customerName": "Fewa Lakeside Cafe",
+      "orderDateTimeUtms": 1794537641935,
       "totalAmount": 5460,
       "discountAmount": 60,
       "netAmount": 5400,
@@ -611,7 +828,7 @@
       "saleType": 1,
       "customerId": null,
       "customerName": "काउन्टर ग्राहक (Walk-in)",
-      "orderDateTimeUtms": 1794450732772,
+      "orderDateTimeUtms": 1794555641935,
       "totalAmount": 6150,
       "discountAmount": 0,
       "netAmount": 6150,
@@ -651,9 +868,9 @@
       "orderNumber": "ORD-2026-001",
       "customerId": 7,
       "customerName": "Pokhara Sweets & Bakery",
-      "orderDateUtms": 1794375132772,
-      "deliveryDateUtms": 1794547932772,
-      "deliveryAddress": "न्यूरोड, काठमाडौं",
+      "orderDateUtms": 1794480041935,
+      "deliveryDateUtms": 1794652841935,
+      "deliveryAddress": "न्यूरोड, पोखरा",
       "status": "Confirmed",
       "totalAmount": 14850,
       "paidAmount": 5000,
@@ -679,9 +896,9 @@
       "deliveries": [],
       "changeLogs": [
         {
-          "timestamp": 1794375132772,
+          "timestamp": 1794480041935,
           "action": "CREATED",
-          "details": "Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit"
+          "details": "Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit (Pokhara Sweets & Bakery)"
         }
       ]
     }
@@ -690,7 +907,7 @@
     {
       "id": 1,
       "batchNumber": "BATCH-2026-001",
-      "productionDateUtms": 1794382332772,
+      "productionDateUtms": 1794487241935,
       "status": "Completed",
       "inputRawMilkLiters": 180,
       "wastageQuantity": 4.5,
@@ -727,7 +944,7 @@
     {
       "id": 2,
       "batchNumber": "BATCH-2026-002",
-      "productionDateUtms": 1794425532772,
+      "productionDateUtms": 1794530441935,
       "status": "Completed",
       "inputRawMilkLiters": 100,
       "wastageQuantity": 2,
@@ -767,7 +984,7 @@
       "id": 1,
       "supplierName": "Himalayan Dairy Suppliers Ltd.",
       "invoiceNumber": "HDP-2026-9041",
-      "purchaseDateUtms": 1794288732772,
+      "purchaseDateUtms": 1794393641935,
       "paymentStatus": 1,
       "paymentMethod": 2,
       "totalAmount": 6040,
@@ -806,7 +1023,7 @@
       "location": "Chilling Vat 1",
       "reference": "HDP-2026-9041",
       "remarks": "Supplier Raw Milk Purchase",
-      "dateTimeUtms": 1794288732772
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 2,
@@ -818,7 +1035,7 @@
       "location": "Cold Storage",
       "reference": "HDP-2026-9041",
       "remarks": "Supplier Curd Purchase",
-      "dateTimeUtms": 1794288732772
+      "dateTimeUtms": 1794393641935
     },
     {
       "id": 3,
@@ -830,7 +1047,7 @@
       "location": "Cold Storage",
       "reference": "OPENING-STOCK",
       "remarks": "Opening Packaged Stock",
-      "dateTimeUtms": 1794292332772
+      "dateTimeUtms": 1794397241935
     },
     {
       "id": 4,
@@ -842,7 +1059,7 @@
       "location": "Cold Storage",
       "reference": "OPENING-STOCK",
       "remarks": "Opening Paneer Stock",
-      "dateTimeUtms": 1794292332772
+      "dateTimeUtms": 1794397241935
     },
     {
       "id": 5,
@@ -854,7 +1071,7 @@
       "location": "Main Shelf",
       "reference": "OPENING-STOCK",
       "remarks": "Opening Ghee Stock",
-      "dateTimeUtms": 1794292332772
+      "dateTimeUtms": 1794397241935
     },
     {
       "id": 6,
@@ -866,7 +1083,7 @@
       "location": "Cold Storage",
       "reference": "OPENING-STOCK",
       "remarks": "Opening Butter Stock",
-      "dateTimeUtms": 1794292332772
+      "dateTimeUtms": 1794397241935
     },
     {
       "id": 7,
@@ -878,7 +1095,7 @@
       "location": "Cold Storage",
       "reference": "OPENING-STOCK",
       "remarks": "Opening Cream Stock",
-      "dateTimeUtms": 1794292332772
+      "dateTimeUtms": 1794397241935
     },
     {
       "id": 8,
@@ -890,7 +1107,7 @@
       "location": "Chilling Vat 1",
       "reference": "FARMER-COLLECTIONS",
       "remarks": "Farmer Raw Milk Collections Intake",
-      "dateTimeUtms": 1794360732772
+      "dateTimeUtms": 1794465641935
     },
     {
       "id": 9,
@@ -902,7 +1119,7 @@
       "location": "Main Processing Plant",
       "reference": "BATCH-2026-001",
       "remarks": "Consumed in Production Batch 1 (4.5 L processing leakage)",
-      "dateTimeUtms": 1794382332772
+      "dateTimeUtms": 1794487241935
     },
     {
       "id": 10,
@@ -914,7 +1131,7 @@
       "location": "Packaging Bay",
       "reference": "BATCH-2026-001",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794382333772
+      "dateTimeUtms": 1794487242935
     },
     {
       "id": 11,
@@ -926,7 +1143,7 @@
       "location": "Cold Storage",
       "reference": "BATCH-2026-001",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794382334772
+      "dateTimeUtms": 1794487243935
     },
     {
       "id": 12,
@@ -938,7 +1155,7 @@
       "location": "Cold Storage",
       "reference": "BATCH-2026-001",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794382335772
+      "dateTimeUtms": 1794487244935
     },
     {
       "id": 13,
@@ -950,7 +1167,7 @@
       "location": "Fermentation & Ghee Unit",
       "reference": "BATCH-2026-002",
       "remarks": "Consumed in Production Batch 2 (2.0 L processing leakage)",
-      "dateTimeUtms": 1794425532772
+      "dateTimeUtms": 1794530441935
     },
     {
       "id": 14,
@@ -962,7 +1179,7 @@
       "location": "Cold Storage",
       "reference": "BATCH-2026-002",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794425533772
+      "dateTimeUtms": 1794530442935
     },
     {
       "id": 15,
@@ -974,7 +1191,7 @@
       "location": "Main Shelf",
       "reference": "BATCH-2026-002",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794425534772
+      "dateTimeUtms": 1794530443935
     },
     {
       "id": 16,
@@ -986,7 +1203,7 @@
       "location": "Cold Storage",
       "reference": "BATCH-2026-002",
       "remarks": "Production Batch Output",
-      "dateTimeUtms": 1794425535772
+      "dateTimeUtms": 1794530444935
     },
     {
       "id": 17,
@@ -998,7 +1215,7 @@
       "location": "Chilling Vat 1",
       "reference": "LEAK-RAW-01",
       "remarks": "Can transfer spillage & chilling pipe leakage",
-      "dateTimeUtms": 1794429132772
+      "dateTimeUtms": 1794534041935
     },
     {
       "id": 18,
@@ -1010,7 +1227,7 @@
       "location": "Cold Storage",
       "reference": "LEAK-PCH-01",
       "remarks": "Burst/leaking milk pouches damaged in handling",
-      "dateTimeUtms": 1794439932772
+      "dateTimeUtms": 1794544841935
     },
     {
       "id": 19,
@@ -1022,7 +1239,7 @@
       "location": "Retail Counter",
       "reference": "SALE-3",
       "remarks": "Direct raw milk sale (#3)",
-      "dateTimeUtms": 1794432732772
+      "dateTimeUtms": 1794537641935
     },
     {
       "id": 20,
@@ -1034,7 +1251,7 @@
       "location": "Retail Counter",
       "reference": "SALES-BATCH",
       "remarks": "POS & Wholesale Sales Outflow",
-      "dateTimeUtms": 1794450732772
+      "dateTimeUtms": 1794555641935
     },
     {
       "id": 21,
@@ -1046,7 +1263,7 @@
       "location": "Retail Counter",
       "reference": "SALES-BATCH",
       "remarks": "POS & Wholesale Sales Outflow",
-      "dateTimeUtms": 1794450732772
+      "dateTimeUtms": 1794555641935
     },
     {
       "id": 22,
@@ -1058,7 +1275,7 @@
       "location": "Retail Counter",
       "reference": "SALES-BATCH",
       "remarks": "POS & Wholesale Sales Outflow",
-      "dateTimeUtms": 1794432732772
+      "dateTimeUtms": 1794537641935
     },
     {
       "id": 23,
@@ -1070,7 +1287,7 @@
       "location": "Retail Counter",
       "reference": "SALES-BATCH",
       "remarks": "POS & Wholesale Sales Outflow",
-      "dateTimeUtms": 1794450732772
+      "dateTimeUtms": 1794555641935
     },
     {
       "id": 24,
@@ -1082,7 +1299,7 @@
       "location": "Retail Counter",
       "reference": "SALE-2",
       "remarks": "Wholesale Sale (#2)",
-      "dateTimeUtms": 1794411132772
+      "dateTimeUtms": 1794516041935
     },
     {
       "id": 25,
@@ -1094,7 +1311,7 @@
       "location": "Retail Counter",
       "reference": "SALE-2",
       "remarks": "Wholesale Sale (#2)",
-      "dateTimeUtms": 1794411132772
+      "dateTimeUtms": 1794516041935
     }
   ],
   "expenses": [
@@ -1106,7 +1323,7 @@
       "recipient": "Nepal Electricity Authority",
       "referenceNumber": "NEA-OCT-2026",
       "remarks": "डेरी प्रशोधन प्लान्टको मासिक विद्युत महसुल",
-      "expenseDateUtms": 1794407532772,
+      "expenseDateUtms": 1794512441935,
       "isDeleted": false
     },
     {
@@ -1117,7 +1334,7 @@
       "recipient": "Sita Cold Transport",
       "referenceNumber": "TR-502",
       "remarks": "रेफ्रिजरेटेड भ्यान ढुवानी खर्च",
-      "expenseDateUtms": 1794414732772,
+      "expenseDateUtms": 1794519641935,
       "isDeleted": false
     },
     {
@@ -1128,7 +1345,7 @@
       "recipient": "Nepal Packaging Industries",
       "referenceNumber": "PKG-8821",
       "remarks": "दूध र दही प्याकिङ प्लास्टिक खरिद",
-      "expenseDateUtms": 1794295932772,
+      "expenseDateUtms": 1794400841935,
       "isDeleted": false
     }
   ],
@@ -1141,8 +1358,8 @@
       "amount": 2000,
       "paymentMethod": 2,
       "referenceNumber": "FP-TXN-998822",
-      "remarks": "होटल अन्नपूर्णको आंशिक बक्यौता भुक्तानी (Fonepay QR)",
-      "paymentDateUtms": 1794418332772,
+      "remarks": "होटल अन्नपूर्ण भ्युको आंशिक बक्यौता भुक्तानी (Fonepay QR)",
+      "paymentDateUtms": 1794523241935,
       "isDeleted": false
     }
   ],
@@ -1157,7 +1374,7 @@
       "description": "Payment for purchase from Himalayan Dairy Suppliers Ltd.",
       "referenceNumber": "HDP-2026-9041",
       "referenceType": "Purchase",
-      "transactionDateUtms": 1794288732772,
+      "transactionDateUtms": 1794393641935,
       "isDeleted": false
     },
     {
@@ -1170,7 +1387,7 @@
       "description": "Operating Expense for Packaging paid to Nepal Packaging Industries",
       "referenceNumber": "PKG-8821",
       "referenceType": "Expense",
-      "transactionDateUtms": 1794295932772,
+      "transactionDateUtms": 1794400841935,
       "isDeleted": false
     },
     {
@@ -1183,7 +1400,7 @@
       "description": "Advance deposit for Scheduled Order ORD-2026-001 (Pokhara Sweets & Bakery)",
       "referenceNumber": "ORD-2026-001",
       "referenceType": "FutureOrderDeposit",
-      "transactionDateUtms": 1794375132772,
+      "transactionDateUtms": 1794480041935,
       "isDeleted": false
     },
     {
@@ -1196,7 +1413,7 @@
       "description": "Payment received for Instant Sale #1 (Hotel Annapurna View)",
       "referenceNumber": "SALE-1",
       "referenceType": "Sale",
-      "transactionDateUtms": 1794389532772,
+      "transactionDateUtms": 1794494441935,
       "isDeleted": false
     },
     {
@@ -1206,10 +1423,10 @@
       "amount": 5000,
       "balanceAfter": 19350,
       "category": "Milk Settlement",
-      "description": "Payment out to Ram Bahadur Thapa (Farmer)",
+      "description": "Payment out to Tek Bahadur Pun (Farmer)",
       "referenceNumber": "VCHR-FARM-01",
       "referenceType": "PaymentOut",
-      "transactionDateUtms": 1794396732772,
+      "transactionDateUtms": 1794501641935,
       "isDeleted": false
     },
     {
@@ -1219,10 +1436,10 @@
       "amount": 3000,
       "balanceAfter": 80500,
       "category": "Milk Settlement",
-      "description": "Bank Transfer to Hari Prasad Sharma (Farmer)",
+      "description": "Bank Transfer to Sunita Devi Gurung (Farmer)",
       "referenceNumber": "BANK-TR-8491",
       "referenceType": "PaymentOut",
-      "transactionDateUtms": 1794400332772,
+      "transactionDateUtms": 1794505241935,
       "isDeleted": false
     },
     {
@@ -1232,10 +1449,10 @@
       "amount": 2000,
       "balanceAfter": 17350,
       "category": "Milk Settlement",
-      "description": "Payment out to Sita Maya Gurung (Farmer)",
+      "description": "Payment out to Narayan Prasad Poudel (Farmer)",
       "referenceNumber": "VCHR-FARM-02",
       "referenceType": "PaymentOut",
-      "transactionDateUtms": 1794403932772,
+      "transactionDateUtms": 1794508841935,
       "isDeleted": false
     },
     {
@@ -1248,7 +1465,7 @@
       "description": "Operating Expense for Electricity paid to NEA",
       "referenceNumber": "NEA-OCT-2026",
       "referenceType": "Expense",
-      "transactionDateUtms": 1794407532772,
+      "transactionDateUtms": 1794512441935,
       "isDeleted": false
     },
     {
@@ -1258,10 +1475,10 @@
       "amount": 10250,
       "balanceAfter": 27600,
       "category": "Instant Sale",
-      "description": "Payment received for Instant Sale #2 (Pokhara Sweets)",
+      "description": "Payment received for Instant Sale #2 (Pokhara Sweets & Bakery)",
       "referenceNumber": "SALE-2",
       "referenceType": "Sale",
-      "transactionDateUtms": 1794411132772,
+      "transactionDateUtms": 1794516041935,
       "isDeleted": false
     },
     {
@@ -1274,7 +1491,7 @@
       "description": "Operating Expense for Transport paid to Sita Cold Transport",
       "referenceNumber": "TR-502",
       "referenceType": "Expense",
-      "transactionDateUtms": 1794414732772,
+      "transactionDateUtms": 1794519641935,
       "isDeleted": false
     },
     {
@@ -1287,7 +1504,7 @@
       "description": "Payment received from Hotel Annapurna View (Fonepay)",
       "referenceNumber": "FP-TXN-998822",
       "referenceType": "CustomerPayment",
-      "transactionDateUtms": 1794418332772,
+      "transactionDateUtms": 1794523241935,
       "isDeleted": false
     },
     {
@@ -1297,10 +1514,10 @@
       "amount": 4000,
       "balanceAfter": 85050,
       "category": "Instant Sale",
-      "description": "Payment received for Instant Sale #3 (Lakeside Cafe)",
+      "description": "Payment received for Instant Sale #3 (Fewa Lakeside Cafe)",
       "referenceNumber": "SALE-3",
       "referenceType": "Sale",
-      "transactionDateUtms": 1794432732772,
+      "transactionDateUtms": 1794537641935,
       "isDeleted": false
     },
     {
@@ -1313,7 +1530,7 @@
       "description": "Payment received for Instant Sale #4 (Walk-in)",
       "referenceNumber": "SALE-4",
       "referenceType": "Sale",
-      "transactionDateUtms": 1794450732772,
+      "transactionDateUtms": 1794555641935,
       "isDeleted": false
     }
   ]

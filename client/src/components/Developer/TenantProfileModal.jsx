@@ -1041,79 +1041,65 @@ export default function TenantProfileModal({
               {/* TAB 6: DANGER ZONE */}
               {activeTab === 'danger' && (
                 <div className="space-y-6">
-                  {Number(tenantId) === 1 || profile?.tenant?.isPrimary ? (
-                    <div className="p-4 rounded-2xl border border-blue-200 dark:border-blue-900 bg-blue-50/60 dark:bg-blue-950/30">
-                      <h4 className="font-bold text-xs text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
-                        <Shield className="w-4 h-4 text-blue-600" />
-                        <span>Primary Developer Account Protected</span>
+                  {/* Status Toggle Box */}
+                  <div className="p-4 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-xs text-amber-900 dark:text-amber-200">
+                        {profile?.tenant?.status === 'Active' ? 'Suspend Cooperative Access' : 'Reactivate Cooperative Access'}
                       </h4>
-                      <p className="text-[11px] text-blue-700 dark:text-blue-300 mt-1">
-                        This is the primary developer cooperative account (#1). It is permanently protected and cannot be suspended or deleted.
+                      <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">
+                        {profile?.tenant?.status === 'Active'
+                          ? 'Prevent staff from recording milk collections or POS sales until reactivated.'
+                          : 'Restore full operational access for this dairy cooperative.'}
                       </p>
                     </div>
-                  ) : (
-                    <>
-                      {/* Status Toggle Box */}
-                      <div className="p-4 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
-                        <div>
-                          <h4 className="font-bold text-xs text-amber-900 dark:text-amber-200">
-                            {profile?.tenant?.status === 'Active' ? 'Suspend Cooperative Access' : 'Reactivate Cooperative Access'}
-                          </h4>
-                          <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">
-                            {profile?.tenant?.status === 'Active'
-                              ? 'Prevent staff from recording milk collections or POS sales until reactivated.'
-                              : 'Restore full operational access for this dairy cooperative.'}
-                          </p>
-                        </div>
 
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTenantStatus(profile?.tenant?.status === 'Active' ? 'Suspended' : 'Active')}
+                      className={`px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
+                        profile?.tenant?.status === 'Active'
+                          ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      }`}
+                    >
+                      {profile?.tenant?.status === 'Active' ? 'Suspend Access' : 'Re-activate'}
+                    </button>
+                  </div>
+
+                  {/* Permanent Deletion Box */}
+                  <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-3">
+                    <h4 className="font-bold text-xs text-rose-900 dark:text-rose-200 flex items-center gap-1.5">
+                      <AlertTriangle className="w-4 h-4 text-rose-600" />
+                      <span>Permanent Cooperative Deletion</span>
+                    </h4>
+                    <p className="text-[11px] text-rose-700 dark:text-rose-300">
+                      Deleting this cooperative will permanently archive all farmers, milk intake records, and invoices. This action cannot be undone.
+                    </p>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Type <span className="font-mono text-rose-600 font-black">{profile?.tenant?.slug}</span> to confirm:
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={deleteConfirmInput}
+                          onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                          placeholder={profile?.tenant?.slug}
+                          className="px-3 py-1.5 text-xs border border-rose-300 dark:border-rose-800 rounded-xl font-mono flex-1 bg-white dark:bg-slate-800"
+                        />
                         <button
                           type="button"
-                          onClick={() => handleToggleTenantStatus(profile?.tenant?.status === 'Active' ? 'Suspended' : 'Active')}
-                          className={`px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-                            profile?.tenant?.status === 'Active'
-                              ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                              : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                          }`}
+                          disabled={deleteConfirmInput !== profile?.tenant?.slug || processing}
+                          onClick={handleDeleteTenant}
+                          className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-40 cursor-pointer"
                         >
-                          {profile?.tenant?.status === 'Active' ? 'Suspend Access' : 'Re-activate'}
+                          Delete Cooperative
                         </button>
                       </div>
-
-                      {/* Permanent Deletion Box */}
-                      <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-3">
-                        <h4 className="font-bold text-xs text-rose-900 dark:text-rose-200 flex items-center gap-1.5">
-                          <AlertTriangle className="w-4 h-4 text-rose-600" />
-                          <span>Permanent Cooperative Deletion</span>
-                        </h4>
-                        <p className="text-[11px] text-rose-700 dark:text-rose-300">
-                          Deleting this cooperative will permanently archive all farmers, milk intake records, and invoices. This action cannot be undone.
-                        </p>
-
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            Type <span className="font-mono text-rose-600 font-black">{profile?.tenant?.slug}</span> to confirm:
-                          </label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={deleteConfirmInput}
-                              onChange={(e) => setDeleteConfirmInput(e.target.value)}
-                              placeholder={profile?.tenant?.slug}
-                              className="px-3 py-1.5 text-xs border border-rose-300 dark:border-rose-800 rounded-xl font-mono flex-1 bg-white dark:bg-slate-800"
-                            />
-                            <button
-                              type="button"
-                              disabled={deleteConfirmInput !== profile?.tenant?.slug || processing}
-                              onClick={handleDeleteTenant}
-                              className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-40 cursor-pointer"
-                            >
-                              Delete Cooperative
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                    </div>
+                  </div>
                 </div>
               )}
             </>

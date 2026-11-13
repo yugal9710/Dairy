@@ -87,12 +87,29 @@ export function installAuthFetchInterceptor() {
       }
     }
 
+    const handleResponse = (res) => {
+      if (res && res.status === 401 && !rawUrl.includes('/api/auth/login')) {
+        // Session expired or unauthorized: reset session and date/time locks
+        try {
+          window.localStorage.removeItem('dairy_token');
+          window.localStorage.removeItem('dairy_user');
+          window.localStorage.removeItem('dairy_milk_collection_date_lock');
+          window.localStorage.setItem('dairy_reset_datetime_on_next_login', 'true');
+        } catch (_) {}
+        authContext.token = '';
+        authContext.user = null;
+        window.dispatchEvent(new CustomEvent('dairy:session_expired'));
+        window.dispatchEvent(new CustomEvent('dairy:reset_collection_datetime'));
+      }
+      return res;
+    };
+
     if (typeof Request !== 'undefined' && input instanceof Request) {
       const nextReq = new Request(input, { ...init, headers: baseHeaders });
-      return originalFetch(nextReq);
+      return originalFetch(nextReq).then(handleResponse);
     }
 
-    return originalFetch(input, { ...init, headers: baseHeaders });
+    return originalFetch(input, { ...init, headers: baseHeaders }).then(handleResponse);
   };
 }
 

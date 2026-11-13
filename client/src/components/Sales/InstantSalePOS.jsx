@@ -72,7 +72,7 @@ export default function InstantSalePOS({
   const [newCustType, setNewCustType] = useState(2); // 2: Buyer / Customer
   const [savingCust, setSavingCust] = useState(false);
 
-  const nextQuickCustCode = useMemo(() => getNextCustomerCode(customers, tenant), [customers, tenant]);
+  const nextQuickCustCode = useMemo(() => getNextCustomerCode(customers), [customers]);
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -255,11 +255,6 @@ export default function InstantSalePOS({
   const handleCreateCustomer = async (e) => {
     e.preventDefault();
     if (!newCustName.trim()) return;
-
-    if (newCustPhone && newCustPhone.length !== 10) {
-      alert(lang === 'en' ? 'Phone number must be exactly 10 digits.' : 'फोन नम्बर ठ्याक्कै १० अंकको हुनुपर्छ ।');
-      return;
-    }
 
     setSavingCust(true);
     try {
@@ -1109,37 +1104,15 @@ export default function InstantSalePOS({
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                    {lang === 'en' ? 'Phone Number' : 'सम्पर्क फोन'}
-                  </label>
-                  {newCustPhone.length > 0 && newCustPhone.length < 10 && (
-                    <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
-                      {newCustPhone.length}/10 digits
-                    </span>
-                  )}
-                  {newCustPhone.length === 10 && (
-                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
-                      ✓ 10 digits
-                    </span>
-                  )}
-                </div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {lang === 'en' ? 'Phone Number' : 'सम्पर्क फोन'}
+                </label>
                 <input
                   type="tel"
-                  inputMode="numeric"
-                  pattern="[0-9]{10}"
-                  maxLength={10}
                   placeholder="98XXXXXXXX"
                   value={newCustPhone}
-                  onKeyDown={(e) => {
-                    if (
-                      ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', 'Home', 'End'].includes(e.key) ||
-                      e.ctrlKey || e.metaKey
-                    ) return;
-                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
-                  }}
-                  onChange={(e) => setNewCustPhone(String(e.target.value || '').replace(/\D/g, '').slice(0, 10))}
-                  className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-sky-500 outline-none font-mono"
+                  onChange={(e) => setNewCustPhone(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-sky-500 outline-none"
                 />
               </div>
 

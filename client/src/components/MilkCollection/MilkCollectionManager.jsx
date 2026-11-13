@@ -9,6 +9,7 @@ import {
   Search,
   Calendar,
   RotateCcw,
+  RotateCw,
   UserCheck,
   Check,
   CheckCircle2,
@@ -51,6 +52,11 @@ const getCollectionActivityUtms = (c) => Number(
 
 const loadSavedDateLock = () => {
   try {
+    if (localStorage.getItem('dairy_reset_datetime_on_next_login') === 'true') {
+      localStorage.removeItem('dairy_reset_datetime_on_next_login');
+      localStorage.removeItem(DATE_LOCK_STORAGE_KEY);
+      return { locked: false, dateTimeLocal: '' };
+    }
     const raw = localStorage.getItem(DATE_LOCK_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
@@ -67,6 +73,7 @@ export default function MilkCollectionManager({
   farmers = [],
   config,
   tenant,
+  currentUser,
   onRefresh,
   onPrintSlip,
   onInspectFarmer
@@ -91,6 +98,49 @@ export default function MilkCollectionManager({
   const [quantity, setQuantity] = useState('');
   const [fat, setFat] = useState('');
   const [snf, setSnf] = useState('');
+
+  // ----------------------------------------------------
+  // Sorted Farmers (Ascending order by Farmer Code: 1 to 10...)
+  // ----------------------------------------------------
+  const sortedFarmers = useMemo(() => {
+    return [...farmers].sort((a, b) => {
+      const codeA = Number(a.code) || Number(a.id) || 0;
+      const codeB = Number(b.code) || Number(b.id) || 0;
+      return codeA - codeB;
+    });
+  }, [farmers]);
+
+  // ----------------------------------------------------
+  // Ascending 1 to 10 Sequence Helper: after 10, resets to 1
+  // ----------------------------------------------------
+  const getNextSequenceValue = (currentVal) => {
+    const num = parseInt(currentVal, 10);
+    if (isNaN(num) || num < 1 || num >= 10) {
+      return 1;
+    }
+    return num + 1;
+  };
+
+  const handleCycleQuantity = () => {
+    const nextVal = getNextSequenceValue(quantity);
+    setQuantity(String(nextVal));
+  };
+
+  const handleCycleFarmerCode = () => {
+    const nextCode = getNextSequenceValue(farmerCode);
+    setFarmerCode(String(nextCode));
+    lookupFarmerInline(String(nextCode));
+  };
+
+  const handleCycleModalQuantity = () => {
+    const nextVal = getNextSequenceValue(modalQuantity);
+    setModalQuantity(String(nextVal));
+  };
+
+  const handleCycleModalFarmerCode = () => {
+    const nextCode = getNextSequenceValue(modalFarmerCode);
+    handleModalFarmerCodeChange(String(nextCode));
+  };
   const [dateTimeLocal, setDateTimeLocal] = useState(
     savedLock.locked ? savedLock.dateTimeLocal : getNowDateTimeLocal()
   );
@@ -98,6 +148,35 @@ export default function MilkCollectionManager({
     const refDt = savedLock.locked && savedLock.dateTimeLocal ? new Date(savedLock.dateTimeLocal) : new Date();
     return refDt.getHours() < 12 ? 0 : 1; // 0: Morning, 1: Evening
   });
+
+  // Reset date & time to current date and time upon next login, logout, or session expiry
+  const resetDateTimeToCurrent = () => {
+    setIsDateLocked(false);
+    const nowDt = getNowDateTimeLocal();
+    setDateTimeLocal(nowDt);
+    const nowShift = new Date().getHours() < 12 ? 0 : 1;
+    setShift(nowShift);
+    try {
+      localStorage.removeItem(DATE_LOCK_STORAGE_KEY);
+      localStorage.removeItem('dairy_reset_datetime_on_next_login');
+    } catch (_) {}
+  };
+
+  useEffect(() => {
+    const handleReset = () => {
+      resetDateTimeToCurrent();
+    };
+    window.addEventListener('dairy:reset_collection_datetime', handleReset);
+    return () => window.removeEventListener('dairy:reset_collection_datetime', handleReset);
+  }, []);
+
+  const previousUserIdRef = useRef(currentUser?.id);
+  useEffect(() => {
+    if (previousUserIdRef.current !== currentUser?.id) {
+      previousUserIdRef.current = currentUser?.id;
+      resetDateTimeToCurrent();
+    }
+  }, [currentUser?.id]);
 
   useEffect(() => {
     try {
@@ -278,17 +357,8 @@ export default function MilkCollectionManager({
       setInlineNoticeType('warning');
       return;
     }
-    const cleanCode = String(codeStr).trim().toUpperCase();
-    const matched = farmers.find(f => {
-      const fCode = String(f.code || '').trim().toUpperCase();
-      const fId = String(f.id);
-      if (fCode === cleanCode || fId === cleanCode) return true;
-      const numMatch = fCode.match(/(\d+)$/);
-      if (numMatch && (numMatch[1] === cleanCode || String(parseInt(numMatch[1], 10)) === cleanCode)) {
-        return true;
-      }
-      return false;
-    });
+    const cleanCode = String(codeStr).trim();
+    const matched = farmers.find(f => String(f.code) === cleanCode || String(f.id) === cleanCode);
     if (matched) {
       if (selectedFarmer && Number(selectedFarmer.id) !== Number(matched.id) && !inlineEditingId) {
         setFat('');
@@ -320,13 +390,27 @@ export default function MilkCollectionManager({
   };
 
   // Reset Inline Form (keeps locked date & shift fixed when Date Lock is active)
-  const handleResetInlineForm = () => {
+  // When lastSavedPayload is provided (upon successful save), auto-advances sequence 1 to 10, resetting to 1 after 10
+  const handleResetInlineForm = (lastSavedPayload = null) => {
     setInlineEditingId(null);
-    setFarmerCode('');
-    setSelectedFarmer(null);
-    setQuantity('');
-    setFat('');
-    setSnf('');
+    if (lastSavedPayload) {
+      const currentCodeNum = parseInt(lastSavedPayload.farmer?.code || farmerCode || '1', 10);
+      const nextCode = getNextSequenceValue(currentCodeNum);
+      const currentQtyNum = parseInt(lastSavedPayload.Quantity || quantity || '1', 10);
+      const nextQty = getNextSequenceValue(currentQtyNum);
+
+      setFarmerCode(String(nextCode));
+      lookupFarmerInline(String(nextCode));
+      setQuantity(String(nextQty));
+      setFat('');
+      setSnf('');
+    } else {
+      setFarmerCode('');
+      setSelectedFarmer(null);
+      setQuantity('');
+      setFat('');
+      setSnf('');
+    }
     if (!isDateLocked) {
       const freshNow = getNowDateTimeLocal();
       setDateTimeLocal(freshNow);
@@ -480,7 +564,7 @@ export default function MilkCollectionManager({
         if (onPrintSlip) {
           onPrintSlip(slipPayload);
         }
-        handleResetInlineForm();
+        handleResetInlineForm(slipPayload);
         if (onRefresh) onRefresh();
       } else {
         const err = await res.json().catch(() => ({}));
@@ -542,17 +626,7 @@ export default function MilkCollectionManager({
 
   const handleModalFarmerCodeChange = (code) => {
     setModalFarmerCode(code);
-    const cleanCode = String(code || '').trim().toUpperCase();
-    const matched = farmers.find(f => {
-      const fCode = String(f.code || '').trim().toUpperCase();
-      const fId = String(f.id);
-      if (fCode === cleanCode || fId === cleanCode) return true;
-      const numMatch = fCode.match(/(\d+)$/);
-      if (numMatch && (numMatch[1] === cleanCode || String(parseInt(numMatch[1], 10)) === cleanCode)) {
-        return true;
-      }
-      return false;
-    });
+    const matched = farmers.find(f => String(f.code) === code.trim());
     if (matched) {
       if (String(matched.id) !== String(modalSelectedFarmerId) && !modalEditingId) {
         setModalFat('');
@@ -808,22 +882,61 @@ export default function MilkCollectionManager({
               {/* Row 1: Farmer Code | Farmer | Quantity */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleCycleFarmerCode}
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800/40 transition cursor-pointer"
+                      title={lang === 'en' ? 'Cycle Farmer 1 to 10 (resets to 1 after 10)' : 'कृषक १ देखि १० चक्र (१० पछि १ मा पुनः फर्कने)'}
+                    >
+                      <span>1-10</span>
+                      <RotateCw className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
                   <input
-                    type="text"
+                    type="number"
+                    min="1"
                     value={farmerCode}
+                    onKeyDown={preventNegativeKey}
                     onChange={(e) => {
-                      const val = e.target.value;
+                      const val = sanitizeNonNegative(e.target.value);
                       setFarmerCode(val);
                       lookupFarmerInline(val);
                     }}
                     onBlur={() => lookupFarmerInline(farmerCode)}
-                    placeholder={lang === 'en' ? 'e.g. JS001 or 1' : 'उदा: JS001 वा १'}
-                    className="w-full px-3.5 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-semibold transition uppercase"
+                    placeholder="1"
+                    className="w-full px-3.5 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-semibold transition"
                     required
                   />
+                  {/* Ascending Quick Selection 1 to 10 */}
+                  <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+                    <span className="text-[10px] font-semibold text-slate-400 mr-0.5">
+                      {lang === 'en' ? 'Code:' : 'कोड:'}
+                    </span>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                      const isActive = parseInt(farmerCode, 10) === num;
+                      return (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => {
+                            setFarmerCode(String(num));
+                            lookupFarmerInline(String(num));
+                          }}
+                          className={`h-5 min-w-[20px] px-1 text-[10px] font-bold rounded transition cursor-pointer ${
+                            isActive
+                              ? 'bg-blue-600 text-white shadow-xs'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div>
@@ -858,7 +971,7 @@ export default function MilkCollectionManager({
                         ? (lang === 'en' ? (selectedFarmer.nameInEnglish || selectedFarmer.nameInNepali) : (selectedFarmer.nameInNepali || selectedFarmer.nameInEnglish))
                         : (lang === 'en' ? '-- Select Farmer --' : '-- कृषक छान्नुहोस् --')}
                     </option>
-                    {farmers.map(f => (
+                    {sortedFarmers.map(f => (
                       <option key={f.id} value={f.id}>
                         #{f.code} - {lang === 'en' ? (f.nameInEnglish || f.nameInNepali) : (f.nameInNepali || f.nameInEnglish)}
                       </option>
@@ -867,9 +980,20 @@ export default function MilkCollectionManager({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Quantity' : 'परिमाण'}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {lang === 'en' ? 'Quantity' : 'परिमाण'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleCycleQuantity}
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800/40 transition cursor-pointer"
+                      title={lang === 'en' ? 'Cycle Quantity 1 to 10 (resets to 1 after 10)' : 'परिमाण १ देखि १० चक्र (१० पछि १ मा पुनः फर्कने)'}
+                    >
+                      <span>1-10</span>
+                      <RotateCw className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
                   <input
                     type="number"
                     step="0.01"
@@ -881,6 +1005,29 @@ export default function MilkCollectionManager({
                     className="w-full px-3.5 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-extrabold text-blue-700 dark:text-blue-400 transition"
                     required
                   />
+                  {/* Ascending Quick Selection 1 to 10 */}
+                  <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+                    <span className="text-[10px] font-semibold text-slate-400 mr-0.5">
+                      {lang === 'en' ? 'Qty:' : 'मात्रा:'}
+                    </span>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                      const isActive = parseInt(quantity, 10) === num;
+                      return (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => setQuantity(String(num))}
+                          className={`h-5 min-w-[20px] px-1 text-[10px] font-bold rounded transition cursor-pointer ${
+                            isActive
+                              ? 'bg-blue-600 text-white shadow-xs'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
@@ -933,11 +1080,11 @@ export default function MilkCollectionManager({
                 </div>
               </div>
 
-              {/* Row 3: Total SNF Price | Date & Time | Shift */}
+              {/* Row 3: totalSnfPrice | DateTimeLocal | Shift */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Total SNF Price' : 'एस.एन.एफ. रकम प्रति लिटर'}
+                    {lang === 'en' ? 'totalSnfPrice' : 'एस.एन.एफ. रकम प्रति लिटर'}
                   </label>
                   <input
                     type="text"
@@ -952,7 +1099,7 @@ export default function MilkCollectionManager({
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {lang === 'en' ? 'Date & Time' : 'मिति र समय'}
+                      {lang === 'en' ? 'DateTimeLocal' : 'मिति र समय'}
                     </label>
                     <button
                       type="button"
@@ -1551,17 +1698,50 @@ export default function MilkCollectionManager({
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 {/* Farmer Code */}
                 <div className="sm:col-span-4">
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {lang === 'en' ? 'Farmer Code' : 'कृषक कोड'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleCycleModalFarmerCode}
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition cursor-pointer"
+                      title={lang === 'en' ? 'Cycle Farmer 1 to 10 (resets to 1 after 10)' : 'कृषक १ देखि १० चक्र (१० पछि १ मा पुनः फर्कने)'}
+                    >
+                      <span>1-10</span>
+                      <RotateCw className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
                   <input
-                    type="text"
+                    type="number"
+                    min="1"
                     value={modalFarmerCode}
-                    onChange={(e) => handleModalFarmerCodeChange(e.target.value)}
-                    placeholder={lang === 'en' ? 'e.g. JS001 or 1' : 'उदा: JS001 वा १'}
-                    className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold uppercase"
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => handleModalFarmerCodeChange(sanitizeNonNegative(e.target.value))}
+                    placeholder="1"
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-bold"
                     required
                   />
+                  {/* Ascending Quick Selection 1 to 10 */}
+                  <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                      const isActive = parseInt(modalFarmerCode, 10) === num;
+                      return (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleModalFarmerCodeChange(String(num))}
+                          className={`h-5 min-w-[20px] px-1 text-[10px] font-bold rounded transition cursor-pointer ${
+                            isActive
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Select Farmer */}
@@ -1576,7 +1756,7 @@ export default function MilkCollectionManager({
                     required
                   >
                     <option value="">{lang === 'en' ? '-- Select Farmer --' : '-- कृषक छान्नुहोस् --'}</option>
-                    {farmers.map(f => (
+                    {sortedFarmers.map(f => (
                       <option key={f.id} value={f.id}>
                         #{f.code} - {lang === 'en' ? (f.nameInEnglish || f.nameInNepali) : (f.nameInNepali || f.nameInEnglish)} {f.phone ? `(${f.phone})` : ''}
                       </option>
@@ -1669,9 +1849,20 @@ export default function MilkCollectionManager({
               <div className="grid grid-cols-3 gap-3">
                 {/* Quantity (Active Green Border from Image 2) */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Quantity' : 'मात्रा'}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {lang === 'en' ? 'Quantity' : 'मात्रा'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleCycleModalQuantity}
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition cursor-pointer"
+                      title={lang === 'en' ? 'Cycle Quantity 1 to 10 (resets to 1 after 10)' : 'परिमाण १ देखि १० चक्र (१० पछि १ मा पुनः फर्कने)'}
+                    >
+                      <span>1-10</span>
+                      <RotateCw className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
                   <input
                     type="number"
                     step="0.01"
@@ -1684,6 +1875,26 @@ export default function MilkCollectionManager({
                     required
                     autoFocus
                   />
+                  {/* Ascending Quick Selection 1 to 10 */}
+                  <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                      const isActive = parseInt(modalQuantity, 10) === num;
+                      return (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => setModalQuantity(String(num))}
+                          className={`h-5 min-w-[20px] px-1 text-[10px] font-bold rounded transition cursor-pointer ${
+                            isActive
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* FAT % */}

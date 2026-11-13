@@ -17,7 +17,7 @@ import ReportsManager from './components/Reports/ReportsManager';
 import SettingsManager from './components/Settings/SettingsManager';
 import AuditLogViewer from './components/Audit/AuditLogViewer';
 import DeveloperControlPanel from './components/Developer/DeveloperControlPanel';
-import { isTabAllowed } from './utils/rbac';
+import { isTabAllowed, isOwnerUser } from './utils/rbac';
 import { syncFetchAuthContext, getDerivedUsername } from './utils/fetchAuth';
 
 import LoginModal from './components/Auth/LoginModal';
@@ -29,7 +29,43 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 function DairyMainApp() {
   const { lang, t } = useLanguage();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dairy_user');
+      return saved ? JSON.parse(saved) : {
+        id: 1,
+        tenantId: 1,
+        username: 'admin',
+        name: 'Platform Owner / Admin',
+        email: 'admin@dairy.local',
+        roles: ['SuperAdmin', 'Admin']
+      };
+    } catch {
+      return null;
+    }
+  });
+
+  const [activeTenant, setActiveTenant] = useState({
+    id: 1,
+    name: 'sfacl',
+    organizationName: 'साना किसान कृषि सहकारी सस्था लि.',
+    address: 'गौशाला-१२, काठमाडौं',
+    timezone: 'Asia/Kathmandu',
+    host: 'sfacl.dairynepal.com',
+    expirationDateTimeUtms: Date.now() + 365 * 24 * 3600 * 1000
+  });
+
+  // Make Developer Console the PRIMARY landing page for the owner
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dairy_user');
+      const u = saved ? JSON.parse(saved) : null;
+      const isOwner = u ? isOwnerUser(u, { id: 1, name: 'sfacl' }) : true;
+      return isOwner ? 'platform' : 'dashboard';
+    } catch {
+      return 'platform';
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsSubTab, setSettingsSubTab] = useState('units');
@@ -55,7 +91,7 @@ function DairyMainApp() {
 
   const handleNavigateTab = (tab, subTab) => {
     const roles = currentUser?.roles || ['User'];
-    if (!isTabAllowed(tab, roles, currentUser)) return;
+    if (!isTabAllowed(tab, roles, activeTenant, currentUser)) return;
     setActiveTab(tab);
     if (subTab) setSettingsSubTab(subTab);
   };
@@ -75,30 +111,6 @@ function DairyMainApp() {
     } catch {
       return '';
     }
-  });
-  const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('dairy_user');
-      return saved ? JSON.parse(saved) : {
-        id: 1,
-        username: 'admin',
-        name: 'System Admin',
-        email: 'admin@dairy.local',
-        roles: ['SuperAdmin', 'Admin']
-      };
-    } catch {
-      return null;
-    }
-  });
-
-  const [activeTenant, setActiveTenant] = useState({
-    id: 1,
-    name: 'sfacl',
-    organizationName: 'साना किसान कृषि सहकारी सस्था लि.',
-    address: 'गौशाला-१२, काठमाडौं',
-    timezone: 'Asia/Kathmandu',
-    host: 'sfacl.dairynepal.com',
-    expirationDateTimeUtms: 1893456000000
   });
 
   const [availableTenants, setAvailableTenants] = useState([]);
@@ -266,10 +278,34 @@ function DairyMainApp() {
 
   useEffect(() => {
     const roles = currentUser?.roles || ['User'];
-    if (!isTabAllowed(activeTab, roles, currentUser)) {
-      setActiveTab('dashboard');
+    if (!isTabAllowed(activeTab, roles, activeTenant, currentUser)) {
+      setActiveTab(isOwnerUser(currentUser, activeTenant) ? 'platform' : 'dashboard');
     }
-  }, [activeTab, currentUser]);
+  }, [activeTab, currentUser, activeTenant]);
+
+  // Handle Session Expiration: clear auth & date lock, prompt login
+  useEffect(() => {
+    const onSessionExpired = () => {
+      syncFetchAuthContext({
+        user: null,
+        token: '',
+        tenantId: activeTenant?.id || 1
+      });
+      setCurrentUser(null);
+      setAuthToken('');
+      try {
+        localStorage.removeItem('dairy_user');
+        localStorage.removeItem('dairy_token');
+        localStorage.removeItem('dairy_milk_collection_date_lock');
+        localStorage.setItem('dairy_reset_datetime_on_next_login', 'true');
+      } catch (_) {}
+      window.dispatchEvent(new CustomEvent('dairy:reset_collection_datetime'));
+      setLoginModalOpen(true);
+    };
+
+    window.addEventListener('dairy:session_expired', onSessionExpired);
+    return () => window.removeEventListener('dairy:session_expired', onSessionExpired);
+  }, [activeTenant?.id]);
 
   const handleTenantUpdated = useCallback(async () => {
     await fetchData();
@@ -284,18 +320,22 @@ function DairyMainApp() {
 
   const handleSwitchTenant = async (tOrId) => {
     if (!tOrId) return;
+    let switchedTenant = null;
     if (typeof tOrId === 'object') {
+      switchedTenant = tOrId;
       setActiveTenant(tOrId);
     } else {
       const numId = Number(tOrId);
       const found = availableTenants.find(t => Number(t.id) === numId);
       if (found) {
+        switchedTenant = found;
         setActiveTenant(found);
       } else {
         try {
           const res = await fetch(`/api/Tenant/${numId}`);
           if (res.ok) {
             const fresh = await res.json();
+            switchedTenant = fresh;
             setActiveTenant(fresh);
           }
         } catch (err) {
@@ -303,8 +343,12 @@ function DairyMainApp() {
         }
       }
     }
-    if (activeTab === 'platform') {
-      setActiveTab('dashboard');
+    // If switched away from owner tenant, exit Developer Console immediately
+    const nextTid = Number(switchedTenant?.id || (typeof tOrId === 'number' ? tOrId : 1));
+    if (nextTid !== 1 || !isOwnerUser(currentUser, switchedTenant)) {
+      if (activeTab === 'platform') {
+        setActiveTab('dashboard');
+      }
     }
   };
 
@@ -313,7 +357,8 @@ function DairyMainApp() {
       ...data.user,
       username: getDerivedUsername(data.user)
     } : null;
-    const nextTenantId = data.activeTenant?.id || activeTenant?.id || 1;
+    const nextTenant = data.activeTenant || activeTenant;
+    const nextTenantId = nextTenant?.id || 1;
     syncFetchAuthContext({
       user: loggedUser,
       token: data.token || '',
@@ -330,7 +375,20 @@ function DairyMainApp() {
     if (data.activeTenant) setActiveTenant(data.activeTenant);
     try {
       localStorage.setItem('dairy_user', JSON.stringify(loggedUser));
+      // Reset collection date and time lock upon next login
+      localStorage.removeItem('dairy_milk_collection_date_lock');
+      localStorage.removeItem('dairy_reset_datetime_on_next_login');
     } catch (e) {}
+
+    // Dispatch reset event so collection date and time resets to current
+    window.dispatchEvent(new CustomEvent('dairy:reset_collection_datetime'));
+
+    // Developer Console is PRIMARY landing page for Platform Owner
+    if (isOwnerUser(loggedUser, nextTenant)) {
+      setActiveTab('platform');
+    } else {
+      setActiveTab('dashboard');
+    }
     fetchData();
   };
 
@@ -348,7 +406,13 @@ function DairyMainApp() {
     try {
       localStorage.removeItem('dairy_user');
       localStorage.removeItem('dairy_token');
+      // Reset collection date lock on logout so next login is fresh
+      localStorage.removeItem('dairy_milk_collection_date_lock');
+      localStorage.setItem('dairy_reset_datetime_on_next_login', 'true');
     } catch (e) {}
+
+    // Dispatch reset event
+    window.dispatchEvent(new CustomEvent('dairy:reset_collection_datetime'));
   };
 
   const handleOpenPrintSlip = (type, data) => {
@@ -396,6 +460,7 @@ function DairyMainApp() {
             activeTab={activeTab}
             onTabChange={handleNavigateTab}
             currentUser={currentUser}
+            activeTenant={activeTenant}
             isCollapsed={sidebarCollapsed}
             onToggleCollapse={() => {
               setSidebarCollapsed(prev => {
@@ -437,6 +502,7 @@ function DairyMainApp() {
                 farmers={customers.filter(c => c.customerType === 1 || c.customerType === 3)}
                 config={fatSnfConfig}
                 tenant={activeTenant}
+                currentUser={currentUser}
                 onRefresh={fetchData}
                 onPrintSlip={(col) => handleOpenPrintSlip('milk-collection', col)}
                 onInspectFarmer={handleInspectFarmer}
@@ -526,7 +592,6 @@ function DairyMainApp() {
 
             {activeTab === 'customers' && (
               <CustomerManager
-                tenant={activeTenant}
                 customers={customers}
                 collections={collections}
                 payments={payments}
@@ -567,7 +632,7 @@ function DairyMainApp() {
               />
             )}
 
-            {activeTab === 'platform' && currentUser?.roles?.includes('SuperAdmin') && (
+            {activeTab === 'platform' && isOwnerUser(currentUser, activeTenant) && (
               <DeveloperControlPanel
                 authToken={authToken}
                 onTenantUpdated={handleTenantUpdated}

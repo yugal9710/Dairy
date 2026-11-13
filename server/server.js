@@ -483,15 +483,7 @@ app.get('/api/Customer/withLastProductQualityInfo', (req, res) => {
 app.get('/api/Customer/code/:code', (req, res) => {
   const tid = resolveTenantId(req);
   const tData = multiTenantDb.getTenantData(tid);
-  const target = String(req.params.code).trim().toLowerCase();
-  const cust = tData.customers.find(c => {
-    if (c.isDeleted) return false;
-    const cCode = String(c.code ?? c.id ?? '').trim().toLowerCase();
-    if (cCode === target) return true;
-    const numMatch = cCode.match(/(\d+)$/);
-    if (numMatch && (numMatch[1] === target || String(parseInt(numMatch[1], 10)) === target)) return true;
-    return false;
-  });
+  const cust = tData.customers.find(c => (Number(c.code) === Number(req.params.code) || String(c.code) === String(req.params.code)) && !c.isDeleted);
   if (!cust) return res.status(404).json({ error: 'Customer not found with code ' + req.params.code });
   res.json(multiTenantDb.calculateCustomerKPIs(cust, tData));
 });
@@ -518,26 +510,17 @@ app.post('/api/Customer', (req, res) => {
   const tid = resolveTenantId(req);
   const tData = multiTenantDb.getTenantData(tid);
 
-  let finalCode = '';
-  if (req.body.code !== undefined && req.body.code !== null && String(req.body.code).trim() !== '') {
-    finalCode = String(req.body.code).trim().toUpperCase();
-  } else {
-    finalCode = multiTenantDb.getNextCustomerCode(tid);
-  }
-
-  const rawPhone = String(req.body.phone || '').trim();
-  const cleanPhone = rawPhone.replace(/\D/g, '').slice(0, 10);
-  if (rawPhone && cleanPhone.length !== 10) {
-    return res.status(400).json({ error: 'Phone number must be exactly 10 digits without letters, spaces, or special characters.' });
-  }
+  const nextCode = tData.customers.length > 0
+    ? Math.max(...tData.customers.map(c => Number(c.code) || 0)) + 1
+    : 1;
 
   const newCustomer = {
     id: Date.now(),
-    code: finalCode,
+    code: req.body.code ? Number(req.body.code) : nextCode,
     nameInNepali: req.body.nameInNepali || '',
     nameInEnglish: req.body.nameInEnglish || '',
     customerType: Number(req.body.customerType) || 1,
-    phone: cleanPhone,
+    phone: req.body.phone || '',
     address: req.body.address || '',
     provinceId: req.body.provinceId || '',
     provinceName: req.body.provinceName || '',
@@ -573,19 +556,9 @@ app.put('/api/Customer/:customerId', (req, res) => {
   const idx = tData.customers.findIndex(c => c.id === Number(req.params.customerId));
   if (idx === -1) return res.status(404).json({ error: 'Customer not found' });
 
-  const updateData = { ...req.body };
-  if (updateData.phone !== undefined) {
-    const rawPhone = String(updateData.phone || '').trim();
-    const cleanPhone = rawPhone.replace(/\D/g, '').slice(0, 10);
-    if (rawPhone && cleanPhone.length !== 10) {
-      return res.status(400).json({ error: 'Phone number must be exactly 10 digits without letters, spaces, or special characters.' });
-    }
-    updateData.phone = cleanPhone;
-  }
-
   tData.customers[idx] = {
     ...tData.customers[idx],
-    ...updateData,
+    ...req.body,
     id: Number(req.params.customerId),
     lastUpdatedDateTimeUtms: Date.now()
   };
@@ -2537,8 +2510,24 @@ app.get('/api/Reports/profit-loss', (req, res) => {
 });
 
 // ============================================================================
-// PLATFORM & DEVELOPER CONTROL PANEL APIS (SUPERADMIN)
+// PLATFORM & DEVELOPER CONTROL PANEL APIS (SUPERADMIN / PLATFORM OWNER ONLY)
 // ============================================================================
+
+// Middleware: Developer Console is strictly reserved for Platform Owner (Tenant 1: साना किसान कृषि सहकारी सस्था लि.)
+app.use('/api/platform', (req, res, next) => {
+  const tidHeader = req.headers['x-tenant-id'];
+  const tenantId = tidHeader !== undefined ? Number(tidHeader) : 1;
+  const username = decodeURIComponent(req.headers['x-username'] || '').toLowerCase();
+  
+  const isOwnerUser = ['admin', 'sfacl.admin'].includes(username);
+  if (tenantId !== 1 && !isOwnerUser) {
+    return res.status(403).json({
+      error: 'Forbidden',
+      message: 'Developer Console is strictly reserved for the Platform Owner (Tenant 1: साना किसान कृषि सहकारी सस्था लि.)'
+    });
+  }
+  next();
+});
 
 // Overview Dashboard
 app.get('/api/platform/overview', (req, res) => {
@@ -2589,22 +2578,18 @@ app.put('/api/platform/tenants/:id', (req, res) => {
 
 // Update Tenant Status (Active / Suspended / Offboarding)
 app.put('/api/platform/tenants/:id/status', (req, res) => {
-  try {
-    const { status } = req.body;
-    const updated = multiTenantDb.updateTenantStatus(req.params.id, status);
-    if (!updated) return res.status(404).json({ error: 'Tenant not found' });
-    recordActivity(req, {
-      action: 'PLATFORM_TENANT_STATUS',
-      category: 'System Configuration',
-      actionLabelNe: 'सहकारी स्थिति परिवर्तन',
-      actionLabelEn: 'Updated Cooperative Status',
-      details: `Changed cooperative status to ${status} for #${req.params.id}`,
-      referenceId: `#${req.params.id}`
-    });
-    res.json(updated);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  const { status } = req.body;
+  const updated = multiTenantDb.updateTenantStatus(req.params.id, status);
+  if (!updated) return res.status(404).json({ error: 'Tenant not found' });
+  recordActivity(req, {
+    action: 'PLATFORM_TENANT_STATUS',
+    category: 'System Configuration',
+    actionLabelNe: 'सहकारी स्थिति परिवर्तन',
+    actionLabelEn: 'Updated Cooperative Status',
+    details: `Changed cooperative status to ${status} for #${req.params.id}`,
+    referenceId: `#${req.params.id}`
+  });
+  res.json(updated);
 });
 
 // Delete Tenant

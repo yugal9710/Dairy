@@ -14,7 +14,7 @@ const PLATFORM_FILE = path.join(DATA_DIR, 'platform.json');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(TENANTS_DIR)) fs.mkdirSync(TENANTS_DIR, { recursive: true });
 
-// Initial 10 Tenants matching Dairy-dev/init.sql
+// Initial 3 Tenants
 const DEFAULT_TENANTS = [
   {
     id: 1,
@@ -29,10 +29,10 @@ const DEFAULT_TENANTS = [
   },
   {
     id: 2,
-    name: 'kds',
-    host: 'kds.dairynepal.com',
-    organizationName: 'किसान दुध संकलन तथा प्रशोधन केन्द्र',
-    address: 'इम्लिबजार, महोत्तरी',
+    name: 'himali',
+    host: 'himali.dairynepal.com',
+    organizationName: 'हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र',
+    address: 'हेटौंडा-८, मकवानपुर',
     timezone: 'Asia/Kathmandu',
     expirationDateTimeUtms: Date.now() + 180 * 24 * 3600 * 1000,
     subscriptionAmount: 30000,
@@ -40,90 +40,13 @@ const DEFAULT_TENANTS = [
   },
   {
     id: 3,
-    name: 'kduks',
-    host: 'kduks.dairynepal.com',
-    organizationName: 'कान्तिबजार दुग्ध उत्पादन कृषक समुह',
-    address: 'कान्तिबजार-४, धनुषा',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 120 * 24 * 3600 * 1000,
-    subscriptionAmount: 24000,
-    isDeleted: false
-  },
-  {
-    id: 4,
-    name: 'ndc',
-    host: 'ndc.dairynepal.com',
-    organizationName: 'नेपाल डेरी को-अपरेटिभ लि.',
-    address: 'नयाँ बानेश्वर, काठमाडौं',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 240 * 24 * 3600 * 1000,
-    subscriptionAmount: 40000,
-    isDeleted: false
-  },
-  {
-    id: 5,
-    name: 'himalayan',
-    host: 'himalayan.dairynepal.com',
-    organizationName: 'हिमालयन अर्गानिक डेरी फार्म',
-    address: 'धुलिखेल-३, काभ्रे',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 300 * 24 * 3600 * 1000,
-    subscriptionAmount: 28000,
-    isDeleted: false
-  },
-  {
-    id: 6,
     name: 'annapurna',
     host: 'annapurna.dairynepal.com',
-    organizationName: 'अन्नपूर्ण दुग्ध उत्पादक सहकारी',
-    address: 'पोखरा-८, कास्की',
+    organizationName: 'अन्नपूर्ण कृषि तथा दुग्ध डेरी उद्योग',
+    address: 'पोखरा-१५, कास्की',
     timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 90 * 24 * 3600 * 1000,
-    subscriptionAmount: 32000,
-    isDeleted: false
-  },
-  {
-    id: 7,
-    name: 'lumbini',
-    host: 'lumbini.dairynepal.com',
-    organizationName: 'लुम्बिनी कृषि तथा दुग्ध संकलन केन्द्र',
-    address: 'बुटवल-११, रुपन्देही',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 15 * 24 * 3600 * 1000, // Expiring soon
-    subscriptionAmount: 22000,
-    isDeleted: false
-  },
-  {
-    id: 8,
-    name: 'mithila',
-    host: 'mithila.dairynepal.com',
-    organizationName: 'मिथिला दुग्ध उद्योग प्रा. लि.',
-    address: 'जनकपुरधाम-४, धनुषा',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() - 5 * 24 * 3600 * 1000, // Expired
-    subscriptionAmount: 26000,
-    isDeleted: false
-  },
-  {
-    id: 9,
-    name: 'sagarmatha',
-    host: 'sagarmatha.dairynepal.com',
-    organizationName: 'सगरमाथा गाई फार्म तथा डेरी',
-    address: 'गाईघाट-२, उदयपुर',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 200 * 24 * 3600 * 1000,
-    subscriptionAmount: 18000,
-    isDeleted: false
-  },
-  {
-    id: 10,
-    name: 'everest',
-    host: 'everest.dairynepal.com',
-    organizationName: 'एभरेष्ट मिल्क प्रोडक्सन प्रा. लि.',
-    address: 'हेटौंडा-५, मकवानपुर',
-    timezone: 'Asia/Kathmandu',
-    expirationDateTimeUtms: Date.now() + 320 * 24 * 3600 * 1000,
-    subscriptionAmount: 30000,
+    expirationDateTimeUtms: Date.now() + 240 * 24 * 3600 * 1000,
+    subscriptionAmount: 24000,
     isDeleted: false
   }
 ];
@@ -151,67 +74,92 @@ function deriveUsername(user = {}) {
 }
 
 const DEFAULT_USERS = [
+  // Tenant 1 (Platform Owner: साना किसान कृषि सहकारी सस्था लि.)
   {
     id: 1,
     tenantId: 1,
     username: 'admin',
     email: 'admin@dairy.local',
-    name: 'System Admin',
+    name: 'Platform Owner / Admin',
     passwordHash: hashPassword('Admin@123'),
     roles: ['SuperAdmin', 'Admin'],
-    isDeveloper: true,
-    isPrimaryDeveloper: true,
     isActive: true,
     isDeleted: false,
-    creationDateTimeUtms: 1793502249000
+    creationDateTimeUtms: Date.now()
   },
   {
     id: 2,
     tenantId: 1,
-    username: 'manager',
-    email: 'manager@dairy.local',
-    name: 'Dairy Manager',
-    passwordHash: hashPassword('Manager@123'),
-    roles: ['Admin'],
+    username: 'sfacl.admin',
+    email: '',
+    name: 'Sana Kisan Admin',
+    passwordHash: hashPassword('Admin@123'),
+    roles: ['SuperAdmin', 'Admin'],
     isActive: true,
     isDeleted: false,
-    creationDateTimeUtms: 1793502249000
+    creationDateTimeUtms: Date.now()
   },
   {
     id: 3,
     tenantId: 1,
-    username: 'staff',
-    email: 'staff@dairy.local',
-    name: 'Counter Operator',
+    username: 'sfacl.staff',
+    email: '',
+    name: 'Sana Kisan Staff',
     passwordHash: hashPassword('Staff@123'),
     roles: ['User'],
     isActive: true,
     isDeleted: false,
-    creationDateTimeUtms: 1793502249000
+    creationDateTimeUtms: Date.now()
   },
+  // Tenant 2 (Himali)
   {
     id: 4,
-    tenantId: 1,
-    username: 'bipin.paul',
-    email: 'bipin.paul@dairy.local',
-    name: 'Bipin Paul',
+    tenantId: 2,
+    username: 'himali.admin',
+    email: '',
+    name: 'Himali Admin',
     passwordHash: hashPassword('Admin@123'),
-    roles: ['SuperAdmin'],
+    roles: ['Admin'],
     isActive: true,
     isDeleted: false,
-    creationDateTimeUtms: 1793502249000
+    creationDateTimeUtms: Date.now()
   },
   {
     id: 5,
-    tenantId: 1,
-    username: 'sita.sharma',
-    email: 'sita.sharma@dairy.local',
-    name: 'Sita Sharma',
-    passwordHash: hashPassword('Admin@123'),
+    tenantId: 2,
+    username: 'himali.staff',
+    email: '',
+    name: 'Himali Counter Staff',
+    passwordHash: hashPassword('Staff@123'),
     roles: ['User'],
     isActive: true,
     isDeleted: false,
-    creationDateTimeUtms: 1793502249000
+    creationDateTimeUtms: Date.now()
+  },
+  // Tenant 3 (Annapurna)
+  {
+    id: 6,
+    tenantId: 3,
+    username: 'anna.admin',
+    email: '',
+    name: 'Annapurna Admin',
+    passwordHash: hashPassword('Admin@123'),
+    roles: ['Admin'],
+    isActive: true,
+    isDeleted: false,
+    creationDateTimeUtms: Date.now()
+  },
+  {
+    id: 7,
+    tenantId: 3,
+    username: 'anna.staff',
+    email: '',
+    name: 'Annapurna Staff',
+    passwordHash: hashPassword('Staff@123'),
+    roles: ['User'],
+    isActive: true,
+    isDeleted: false,
+    creationDateTimeUtms: Date.now()
   }
 ];
 
@@ -339,17 +287,17 @@ class MultiTenantDatabase {
         {
           id: 'ren-001',
           tenantId: 2,
-          tenantName: 'किसान दुध संकलन तथा प्रशोधन केन्द्र',
+          tenantName: 'हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र',
           planId: 'plan-professional',
           planName: 'Cooperative Professional',
           billingCycle: 'Yearly',
           amount: 75000,
           currency: 'Rs.',
           method: 'FonePay QR',
-          payerName: 'Hari Prasad Sharma',
-          payerPhone: '9851029384',
-          userName: 'Kisan Dairy Manager',
-          userEmail: 'manager@kds.dairynepal.com',
+          payerName: 'Dil Bahadur Moktan',
+          payerPhone: '9845012345',
+          userName: 'Himali Admin',
+          userEmail: '',
           transactionRef: 'FONEPAY-981023',
           submittedAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
           status: 'PENDING_VERIFICATION',
@@ -366,10 +314,10 @@ class MultiTenantDatabase {
           timestamp: new Date().toISOString(),
           action: 'PLATFORM_CONSOLE_INITIALIZED',
           status: 'SUCCESS',
-          userEmail: 'admin@dairy.local',
+          userEmail: 'nb.superadmin',
           userRole: 'SuperAdmin',
           tenantId: 1,
-          details: 'Dairy ERP 2.0 Multi-Cooperative Developer Control Panel initialized'
+          details: 'Dairy ERP 2.0 Multi-Cooperative Developer Control Panel initialized with 3 cooperatives'
         }
       ];
     }
@@ -450,6 +398,49 @@ class MultiTenantDatabase {
     const now = Date.now();
     const day = 86400000;
     const hr = 3600000;
+    const tid = Number(tenantId) || 1;
+
+    let tenantCustomers;
+    if (tid === 1) {
+      tenantCustomers = [
+        { id: 1, code: 1, nameInNepali: 'राम बहादुर थापा', nameInEnglish: 'Ram Bahadur Thapa', customerType: 1, phone: '9841234567', address: 'गौशाला-१२, काठमाडौं', accountNumber: 'NABIL-012004592', remarks: 'नियमित बिहानी तथा बेलुकी दूध संकलक कृषक', isDeleted: false, creationDateTimeUtms: now - 60 * day },
+        { id: 2, code: 2, nameInNepali: 'हरि प्रसाद शर्मा', nameInEnglish: 'Hari Prasad Sharma', customerType: 1, phone: '9851029384', address: 'चावहिल-७, काठमाडौं', accountNumber: 'GBIME-99882211', remarks: 'गाई फार्म सञ्चालक', isDeleted: false, creationDateTimeUtms: now - 50 * day },
+        { id: 3, code: 3, nameInNepali: 'सीता माया गुरुङ', nameInEnglish: 'Sita Maya Gurung', customerType: 1, phone: '9812938475', address: 'बत्तीसपुतली-९, काठमाडौं', accountNumber: 'NIC-554433221', remarks: 'भैँसी फार्म', isDeleted: false, creationDateTimeUtms: now - 40 * day },
+        { id: 4, code: 4, nameInNepali: 'श्याम सुन्दर यादव', nameInEnglish: 'Shyam Sundar Yadav', customerType: 1, phone: '9803456789', address: 'सिनामंगल-९, काठमाडौं', accountNumber: 'PRABHU-887766', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 30 * day },
+        { id: 5, code: 5, nameInNepali: 'कृष्ण बहादुर कार्की', nameInEnglish: 'Krishna Bahadur Karki', customerType: 1, phone: '9860112233', address: 'तिलगंगा-८, काठमाडौं', accountNumber: 'EVEREST-112244', remarks: 'उच्च फ्याट दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 20 * day },
+        { id: 6, code: 6, nameInNepali: 'होटल पशुपति प्लाजा', nameInEnglish: 'Hotel Pashupati Plaza', customerType: 2, phone: '01-4490123', address: 'गौशाला चोक, काठमाडौं', accountNumber: 'HBL-990011', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
+        { id: 7, code: 7, nameInNepali: 'गौशाला मिष्ठान्न भण्डार', nameInEnglish: 'Gaushala Sweets & Bakery', customerType: 2, phone: '9846011223', address: 'गौशाला-१२, काठमाडौं', accountNumber: 'SBI-223344', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
+        { id: 8, code: 8, nameInNepali: 'एभरेस्ट क्याफे एन्ड डेरी', nameInEnglish: 'Everest Cafe & Dairy', customerType: 2, phone: '9811223344', address: 'चावहिल, काठमाडौं', accountNumber: 'NIMB-778899', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
+        { id: 9, code: 9, nameInNepali: 'काठमाडौं सेन्ट्रल डेरी', nameInEnglish: 'Kathmandu Central Dairy', customerType: 3, phone: '9801998877', address: 'पुरानो बानेश्वर, काठमाडौं', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
+        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9841998811', address: 'चावहिल-७, काठमाडौं', accountNumber: 'NABIL-012004888', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+      ];
+    } else if (tid === 2) {
+      tenantCustomers = [
+        { id: 1, code: 1, nameInNepali: 'दिल बहादुर मोक्तान', nameInEnglish: 'Dil Bahadur Moktan', customerType: 1, phone: '9845012345', address: 'हेटौंडा-८, मकवानपुर', accountNumber: 'NABIL-0550012', remarks: 'नियमित दूध संकलक कृषक', isDeleted: false, creationDateTimeUtms: now - 60 * day },
+        { id: 2, code: 2, nameInNepali: 'गंगा देवी अधिकारी', nameInEnglish: 'Ganga Devi Adhikari', customerType: 1, phone: '9855029384', address: 'हेटौंडा-४, मकवानपुर', accountNumber: 'GBIME-887711', remarks: 'गाई फार्म सञ्चालक', isDeleted: false, creationDateTimeUtms: now - 50 * day },
+        { id: 3, code: 3, nameInNepali: 'राजेन्द्र प्रसाद श्रेष्ठ', nameInEnglish: 'Rajendra Prasad Shrestha', customerType: 1, phone: '9815938475', address: 'मकवानपुरगढी-३, मकवानपुर', accountNumber: 'NIC-33221144', remarks: 'भैँसी फार्म', isDeleted: false, creationDateTimeUtms: now - 40 * day },
+        { id: 4, code: 4, nameInNepali: 'बिष्णु कुमारी लामा', nameInEnglish: 'Bishnu Kumari Lama', customerType: 1, phone: '9805456789', address: 'भीमफेदी-२, मकवानपुर', accountNumber: 'PRABHU-776655', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 30 * day },
+        { id: 5, code: 5, nameInNepali: 'सन्तोष थापा मगर', nameInEnglish: 'Santosh Thapa Magar', customerType: 1, phone: '9865112233', address: 'पालुङ-१, मकवानपुर', accountNumber: 'EVEREST-998877', remarks: 'उच्च फ्याट दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 20 * day },
+        { id: 6, code: 6, nameInNepali: 'हेटौंडा डेरी मार्ट', nameInEnglish: 'Hetauda Dairy Mart', customerType: 2, phone: '057-520111', address: 'मेनरोड, हेटौंडा', accountNumber: 'HBL-881122', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
+        { id: 7, code: 7, nameInNepali: 'रोयल मकवानपुर स्वीट्स', nameInEnglish: 'Royal Makwanpur Sweets', customerType: 2, phone: '9845011998', address: 'सिमाना, हेटौंडा', accountNumber: 'SBI-334455', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
+        { id: 8, code: 8, nameInNepali: 'भुटनदेवी होटल एन्ड रेस्टुरेन्ट', nameInEnglish: 'Bhutandevi Hotel & Restaurant', customerType: 2, phone: '9815223344', address: 'हेटौंडा-४, मकवानपुर', accountNumber: 'NIMB-445566', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
+        { id: 9, code: 9, nameInNepali: 'मकवानपुर ताजा मार्ट', nameInEnglish: 'Makwanpur Fresh Mart', customerType: 3, phone: '9805998877', address: 'हेटौंडा-२, मकवानपुर', accountNumber: 'KBL-223344', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
+        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9845998811', address: 'हेटौंडा-६, मकवानपुर', accountNumber: 'NABIL-0550099', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+      ];
+    } else {
+      tenantCustomers = [
+        { id: 1, code: 1, nameInNepali: 'टेक बहादुर पुन', nameInEnglish: 'Tek Bahadur Pun', customerType: 1, phone: '9846012345', address: 'पोखरा-१५, कास्की', accountNumber: 'NABIL-0610012', remarks: 'नियमित दूध संकलक कृषक', isDeleted: false, creationDateTimeUtms: now - 60 * day },
+        { id: 2, code: 2, nameInNepali: 'सुनिता देवी गुरुङ', nameInEnglish: 'Sunita Devi Gurung', customerType: 1, phone: '9856029384', address: 'पोखरा-८, कास्की', accountNumber: 'GBIME-776622', remarks: 'गाई फार्म सञ्चालक', isDeleted: false, creationDateTimeUtms: now - 50 * day },
+        { id: 3, code: 3, nameInNepali: 'नारायण प्रसाद पौडेल', nameInEnglish: 'Narayan Prasad Poudel', customerType: 1, phone: '9816938475', address: 'हेम्जा-२, कास्की', accountNumber: 'NIC-44332211', remarks: 'भैँसी फार्म', isDeleted: false, creationDateTimeUtms: now - 40 * day },
+        { id: 4, code: 4, nameInNepali: 'माया देवी थापा', nameInEnglish: 'Maya Devi Thapa', customerType: 1, phone: '9806456789', address: 'लेखनाथ-४, कास्की', accountNumber: 'PRABHU-665544', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 30 * day },
+        { id: 5, code: 5, nameInNepali: 'केदार नाथ आचार्य', nameInEnglish: 'Kedar Nath Acharya', customerType: 1, phone: '9866112233', address: 'सराङकोट-१, कास्की', accountNumber: 'EVEREST-887766', remarks: 'उच्च फ्याट दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 20 * day },
+        { id: 6, code: 6, nameInNepali: 'होटल अन्नपूर्ण भ्यु', nameInEnglish: 'Hotel Annapurna View', customerType: 2, phone: '061-460111', address: 'लेकसाइड, पोखरा', accountNumber: 'HBL-990011', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
+        { id: 7, code: 7, nameInNepali: 'पोखरा स्वीट्स एन्ड बेकरी', nameInEnglish: 'Pokhara Sweets & Bakery', customerType: 2, phone: '9846011223', address: 'न्यूरोड, पोखरा', accountNumber: 'SBI-223344', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
+        { id: 8, code: 8, nameInNepali: 'फेवा लेकसाइड क्याफे', nameInEnglish: 'Fewa Lakeside Cafe', customerType: 2, phone: '9816223344', address: 'लेकसाइड, पोखरा', accountNumber: 'NIMB-778899', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
+        { id: 9, code: 9, nameInNepali: 'पोखरा डेरी कर्नर', nameInEnglish: 'Pokhara Dairy Corner', customerType: 3, phone: '9806998877', address: 'पृथ्वीचोक, पोखरा', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
+        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9846998811', address: 'पोखरा-१२, कास्की', accountNumber: 'NABIL-0610099', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+      ];
+    }
 
     return {
       tenantId: tenantId,
@@ -548,14 +539,6 @@ class MultiTenantDatabase {
           isDeleted: false
         }
       ],
-      // Reconciled stocks: Opening/Purchased/Collected/Produced - Consumed - Sold - Wastage = Current On Hand
-      // Raw Milk (id 1): 300.0 collected + 80.0 purchased = 380.0 in; 280.0 processed + 12.0 sold + 3.0 wastage = 295.0 used -> 85.0 L on hand
-      // Pasteurized Milk (id 2): 120.0 opening + 160.0 produced = 280.0 in; 80.0 sold + 4.0 wastage = 84.0 used -> 196.0 Pouch on hand
-      // Curd (id 3): 20.0 purchased + 60.0 produced = 80.0 in; 37.0 sold = 37.0 used -> 43.0 L on hand
-      // Paneer (id 4): 10.0 opening + 14.0 produced = 24.0 in; 13.0 sold = 13.0 used -> 11.0 KG on hand (Low Stock <= 15)
-      // Ghee (id 5): 21.0 opening + 2.0 produced = 23.0 in; 8.0 sold = 8.0 used -> 15.0 KG on hand
-      // White Butter (id 6): 10.0 opening + 4.0 produced = 14.0 in; 2.0 sold = 2.0 used -> 12.0 KG on hand
-      // Cream (id 7): 10.0 opening + 8.0 produced = 18.0 in; 4.0 sold = 4.0 used -> 14.0 L on hand
       productStocks: [
         { id: 1, productId: 1, batchNumber: 'RAW-LOT-2026-01', quantity: 380.0, usedQuantity: 295.0, expiryDateUtms: now + 2 * day, dateTimeUtms: now - 2 * day },
         { id: 2, productId: 2, batchNumber: 'PAS-LOT-2026-01', quantity: 280.0, usedQuantity: 84.0, expiryDateUtms: now + 3 * day, dateTimeUtms: now - 2 * day },
@@ -565,125 +548,7 @@ class MultiTenantDatabase {
         { id: 6, productId: 6, batchNumber: 'BUTTER-LOT-2026-01', quantity: 14.0, usedQuantity: 2.0, expiryDateUtms: now + 15 * day, dateTimeUtms: now - 2 * day },
         { id: 7, productId: 7, batchNumber: 'CREAM-LOT-2026-01', quantity: 18.0, usedQuantity: 4.0, expiryDateUtms: now + 5 * day, dateTimeUtms: now - 2 * day }
       ],
-      customers: [
-        {
-          id: 1,
-          code: 1,
-          nameInNepali: 'राम बहादुर थापा',
-          nameInEnglish: 'Ram Bahadur Thapa',
-          customerType: 1,
-          phone: '9841234567',
-          address: 'गौशाला-४, काठमाडौं',
-          accountNumber: 'NABIL-012004592',
-          remarks: 'नियमित बिहानी तथा बेलुकी दूध संकलक कृषक',
-          isDeleted: false,
-          creationDateTimeUtms: now - 60 * day
-        },
-        {
-          id: 2,
-          code: 2,
-          nameInNepali: 'हरि प्रसाद शर्मा',
-          nameInEnglish: 'Hari Prasad Sharma',
-          customerType: 1,
-          phone: '9851029384',
-          address: 'चाबहिल-७, काठमाडौं',
-          accountNumber: 'GBIME-99882211',
-          remarks: 'गाई फार्म सञ्चालक',
-          isDeleted: false,
-          creationDateTimeUtms: now - 50 * day
-        },
-        {
-          id: 3,
-          code: 3,
-          nameInNepali: 'सीता माया गुरुङ',
-          nameInEnglish: 'Sita Maya Gurung',
-          customerType: 1,
-          phone: '9812938475',
-          address: 'साँखु-२, काठमाडौं',
-          accountNumber: 'NIC-554433221',
-          remarks: 'भैँसी फार्म',
-          isDeleted: false,
-          creationDateTimeUtms: now - 40 * day
-        },
-        {
-          id: 4,
-          code: 4,
-          nameInNepali: 'श्याम सुन्दर यादव',
-          nameInEnglish: 'Shyam Sundar Yadav',
-          customerType: 1,
-          phone: '9803456789',
-          address: 'भक्तपुर-९, कमलविनायक',
-          accountNumber: 'PRABHU-887766',
-          remarks: 'दैनिक दूध आपूर्तिकर्ता',
-          isDeleted: false,
-          creationDateTimeUtms: now - 30 * day
-        },
-        {
-          id: 5,
-          code: 5,
-          nameInNepali: 'कृष्ण बहादुर कार्की',
-          nameInEnglish: 'Krishna Bahadur Karki',
-          customerType: 1,
-          phone: '9860112233',
-          address: 'बौद्ध-६, काठमाडौं',
-          accountNumber: 'EVEREST-112244',
-          remarks: 'उच्च फ्याट दूध आपूर्तिकर्ता',
-          isDeleted: false,
-          creationDateTimeUtms: now - 20 * day
-        },
-        {
-          id: 6,
-          code: 6,
-          nameInNepali: 'होटल अन्नपूर्ण भ्यु',
-          nameInEnglish: 'Hotel Annapurna View',
-          customerType: 2,
-          phone: '01-4499881',
-          address: 'दरबारमार्ग, काठमाडौं',
-          accountNumber: 'HBL-990011',
-          remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता',
-          isDeleted: false,
-          creationDateTimeUtms: now - 45 * day
-        },
-        {
-          id: 7,
-          code: 7,
-          nameInNepali: 'पोखरा स्वीट्स एन्ड बेकरी',
-          nameInEnglish: 'Pokhara Sweets & Bakery',
-          customerType: 2,
-          phone: '9846011223',
-          address: 'न्यूरोड, काठमाडौं',
-          accountNumber: 'SBI-223344',
-          remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता',
-          isDeleted: false,
-          creationDateTimeUtms: now - 35 * day
-        },
-        {
-          id: 8,
-          code: 8,
-          nameInNepali: 'लेकसाइड क्याफे',
-          nameInEnglish: 'Lakeside Organic Cafe',
-          customerType: 2,
-          phone: '9811223344',
-          address: 'झम्सीखेल, ललितपुर',
-          accountNumber: 'NIMB-778899',
-          remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता',
-          isDeleted: false,
-          creationDateTimeUtms: now - 25 * day
-        },
-        {
-          id: 9,
-          code: 9,
-          nameInNepali: 'न्यू किराना तथा डेरी स्टोर',
-          nameInEnglish: 'New Kirana & Dairy Store',
-          customerType: 3,
-          phone: '9801998877',
-          address: 'सिनामंगल, काठमाडौं',
-          accountNumber: 'KBL-445566',
-          remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र',
-          isDeleted: false,
-          creationDateTimeUtms: now - 15 * day
-        }
-      ],
+      customers: tenantCustomers,
       milkFatSnfConfig: {
         id: 1,
         buyingFatPrice: 7.50,
@@ -743,7 +608,7 @@ class MultiTenantDatabase {
           id: 1,
           saleType: 1,
           customerId: 6,
-          customerName: 'Hotel Annapurna View',
+          customerName: tenantCustomers[5].nameInEnglish,
           orderDateTimeUtms: now - 20 * hr,
           totalAmount: 12250.00,
           discountAmount: 250.00,
@@ -764,7 +629,7 @@ class MultiTenantDatabase {
           id: 2,
           saleType: 1,
           customerId: 7,
-          customerName: 'Pokhara Sweets & Bakery',
+          customerName: tenantCustomers[6].nameInEnglish,
           orderDateTimeUtms: now - 14 * hr,
           totalAmount: 10250.00,
           discountAmount: 0.00,
@@ -785,7 +650,7 @@ class MultiTenantDatabase {
           id: 3,
           saleType: 1,
           customerId: 8,
-          customerName: 'Lakeside Organic Cafe',
+          customerName: tenantCustomers[7].nameInEnglish,
           orderDateTimeUtms: now - 8 * hr,
           totalAmount: 5460.00,
           discountAmount: 60.00,
@@ -828,10 +693,10 @@ class MultiTenantDatabase {
           id: 101,
           orderNumber: 'ORD-2026-001',
           customerId: 7,
-          customerName: 'Pokhara Sweets & Bakery',
+          customerName: tenantCustomers[6].nameInEnglish,
           orderDateUtms: now - day,
           deliveryDateUtms: now + day,
-          deliveryAddress: 'न्यूरोड, काठमाडौं',
+          deliveryAddress: tenantCustomers[6].address,
           status: 'Confirmed',
           totalAmount: 14850.00,
           paidAmount: 5000.00,
@@ -844,7 +709,7 @@ class MultiTenantDatabase {
           ],
           deliveries: [],
           changeLogs: [
-            { timestamp: now - day, action: 'CREATED', details: 'Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit' }
+            { timestamp: now - day, action: 'CREATED', details: `Order placed for Rs. 14,850 with Rs. 5,000 advance bank deposit (${tenantCustomers[6].nameInEnglish})` }
           ]
         }
       ],
@@ -982,12 +847,12 @@ class MultiTenantDatabase {
         {
           id: 1,
           customerId: 6,
-          customerName: 'Hotel Annapurna View',
+          customerName: tenantCustomers[5].nameInEnglish,
           orderId: 1,
           amount: 2000.00,
           paymentMethod: 2,
           referenceNumber: 'FP-TXN-998822',
-          remarks: 'होटल अन्नपूर्णको आंशिक बक्यौता भुक्तानी (Fonepay QR)',
+          remarks: `${tenantCustomers[5].nameInNepali}को आंशिक बक्यौता भुक्तानी (Fonepay QR)`,
           paymentDateUtms: now - 12 * hr,
           isDeleted: false
         }
@@ -998,16 +863,16 @@ class MultiTenantDatabase {
       cashBankLedgers: [
         { id: 1, accountType: 2, transactionType: 2, amount: 5000.00, balanceAfter: 70000.00, category: 'Supplier Purchase', description: 'Payment for purchase from Himalayan Dairy Suppliers Ltd.', referenceNumber: 'HDP-2026-9041', referenceType: 'Purchase', transactionDateUtms: now - 2 * day, isDeleted: false },
         { id: 2, accountType: 1, transactionType: 2, amount: 650.00, balanceAfter: 24350.00, category: 'Expense: Packaging', description: 'Operating Expense for Packaging paid to Nepal Packaging Industries', referenceNumber: 'PKG-8821', referenceType: 'Expense', transactionDateUtms: now - 2 * day + 2 * hr, isDeleted: false },
-        { id: 3, accountType: 2, transactionType: 1, amount: 5000.00, balanceAfter: 75000.00, category: 'Order Advance Deposit', description: 'Advance deposit for Scheduled Order ORD-2026-001 (Pokhara Sweets & Bakery)', referenceNumber: 'ORD-2026-001', referenceType: 'FutureOrderDeposit', transactionDateUtms: now - day, isDeleted: false },
-        { id: 4, accountType: 2, transactionType: 1, amount: 8500.00, balanceAfter: 83500.00, category: 'Instant Sale', description: 'Payment received for Instant Sale #1 (Hotel Annapurna View)', referenceNumber: 'SALE-1', referenceType: 'Sale', transactionDateUtms: now - 20 * hr, isDeleted: false },
-        { id: 5, accountType: 1, transactionType: 2, amount: 5000.00, balanceAfter: 19350.00, category: 'Milk Settlement', description: 'Payment out to Ram Bahadur Thapa (Farmer)', referenceNumber: 'VCHR-FARM-01', referenceType: 'PaymentOut', transactionDateUtms: now - 18 * hr, isDeleted: false },
-        { id: 6, accountType: 2, transactionType: 2, amount: 3000.00, balanceAfter: 80500.00, category: 'Milk Settlement', description: 'Bank Transfer to Hari Prasad Sharma (Farmer)', referenceNumber: 'BANK-TR-8491', referenceType: 'PaymentOut', transactionDateUtms: now - 17 * hr, isDeleted: false },
-        { id: 7, accountType: 1, transactionType: 2, amount: 2000.00, balanceAfter: 17350.00, category: 'Milk Settlement', description: 'Payment out to Sita Maya Gurung (Farmer)', referenceNumber: 'VCHR-FARM-02', referenceType: 'PaymentOut', transactionDateUtms: now - 16 * hr, isDeleted: false },
+        { id: 3, accountType: 2, transactionType: 1, amount: 5000.00, balanceAfter: 75000.00, category: 'Order Advance Deposit', description: `Advance deposit for Scheduled Order ORD-2026-001 (${tenantCustomers[6].nameInEnglish})`, referenceNumber: 'ORD-2026-001', referenceType: 'FutureOrderDeposit', transactionDateUtms: now - day, isDeleted: false },
+        { id: 4, accountType: 2, transactionType: 1, amount: 8500.00, balanceAfter: 83500.00, category: 'Instant Sale', description: `Payment received for Instant Sale #1 (${tenantCustomers[5].nameInEnglish})`, referenceNumber: 'SALE-1', referenceType: 'Sale', transactionDateUtms: now - 20 * hr, isDeleted: false },
+        { id: 5, accountType: 1, transactionType: 2, amount: 5000.00, balanceAfter: 19350.00, category: 'Milk Settlement', description: `Payment out to ${tenantCustomers[0].nameInEnglish} (Farmer)`, referenceNumber: 'VCHR-FARM-01', referenceType: 'PaymentOut', transactionDateUtms: now - 18 * hr, isDeleted: false },
+        { id: 6, accountType: 2, transactionType: 2, amount: 3000.00, balanceAfter: 80500.00, category: 'Milk Settlement', description: `Bank Transfer to ${tenantCustomers[1].nameInEnglish} (Farmer)`, referenceNumber: 'BANK-TR-8491', referenceType: 'PaymentOut', transactionDateUtms: now - 17 * hr, isDeleted: false },
+        { id: 7, accountType: 1, transactionType: 2, amount: 2000.00, balanceAfter: 17350.00, category: 'Milk Settlement', description: `Payment out to ${tenantCustomers[2].nameInEnglish} (Farmer)`, referenceNumber: 'VCHR-FARM-02', referenceType: 'PaymentOut', transactionDateUtms: now - 16 * hr, isDeleted: false },
         { id: 8, accountType: 2, transactionType: 2, amount: 1450.00, balanceAfter: 79050.00, category: 'Expense: Electricity', description: 'Operating Expense for Electricity paid to NEA', referenceNumber: 'NEA-OCT-2026', referenceType: 'Expense', transactionDateUtms: now - 15 * hr, isDeleted: false },
-        { id: 9, accountType: 1, transactionType: 1, amount: 10250.00, balanceAfter: 27600.00, category: 'Instant Sale', description: 'Payment received for Instant Sale #2 (Pokhara Sweets)', referenceNumber: 'SALE-2', referenceType: 'Sale', transactionDateUtms: now - 14 * hr, isDeleted: false },
+        { id: 9, accountType: 1, transactionType: 1, amount: 10250.00, balanceAfter: 27600.00, category: 'Instant Sale', description: `Payment received for Instant Sale #2 (${tenantCustomers[6].nameInEnglish})`, referenceNumber: 'SALE-2', referenceType: 'Sale', transactionDateUtms: now - 14 * hr, isDeleted: false },
         { id: 10, accountType: 1, transactionType: 2, amount: 800.00, balanceAfter: 26800.00, category: 'Expense: Transport', description: 'Operating Expense for Transport paid to Sita Cold Transport', referenceNumber: 'TR-502', referenceType: 'Expense', transactionDateUtms: now - 13 * hr, isDeleted: false },
-        { id: 11, accountType: 2, transactionType: 1, amount: 2000.00, balanceAfter: 81050.00, category: 'Customer Payment', description: 'Payment received from Hotel Annapurna View (Fonepay)', referenceNumber: 'FP-TXN-998822', referenceType: 'CustomerPayment', transactionDateUtms: now - 12 * hr, isDeleted: false },
-        { id: 12, accountType: 2, transactionType: 1, amount: 4000.00, balanceAfter: 85050.00, category: 'Instant Sale', description: 'Payment received for Instant Sale #3 (Lakeside Cafe)', referenceNumber: 'SALE-3', referenceType: 'Sale', transactionDateUtms: now - 8 * hr, isDeleted: false },
+        { id: 11, accountType: 2, transactionType: 1, amount: 2000.00, balanceAfter: 81050.00, category: 'Customer Payment', description: `Payment received from ${tenantCustomers[5].nameInEnglish} (Fonepay)`, referenceNumber: 'FP-TXN-998822', referenceType: 'CustomerPayment', transactionDateUtms: now - 12 * hr, isDeleted: false },
+        { id: 12, accountType: 2, transactionType: 1, amount: 4000.00, balanceAfter: 85050.00, category: 'Instant Sale', description: `Payment received for Instant Sale #3 (${tenantCustomers[7].nameInEnglish})`, referenceNumber: 'SALE-3', referenceType: 'Sale', transactionDateUtms: now - 8 * hr, isDeleted: false },
         { id: 13, accountType: 1, transactionType: 1, amount: 6150.00, balanceAfter: 32950.00, category: 'Instant Sale', description: 'Payment received for Instant Sale #4 (Walk-in)', referenceNumber: 'SALE-4', referenceType: 'Sale', transactionDateUtms: now - 3 * hr, isDeleted: false }
       ]
     };
@@ -1075,8 +940,6 @@ class MultiTenantDatabase {
         email: user.email || '',
         name: user.name,
         roles: user.roles,
-        isDeveloper: !!user.isDeveloper,
-        isPrimaryDeveloper: !!user.isPrimaryDeveloper,
         tenantId: tenant.id,
         tenantName: tenant.name,
         organizationName: tenant.organizationName
@@ -1114,106 +977,6 @@ class MultiTenantDatabase {
       totalPaid: totalOrderPaid,
       outstandingBalance
     };
-  }
-
-  getCompanyCodePrefix(tenantIdOrObj) {
-    let tenant = null;
-    if (typeof tenantIdOrObj === 'object' && tenantIdOrObj !== null) {
-      tenant = tenantIdOrObj;
-    } else if (tenantIdOrObj !== undefined && tenantIdOrObj !== null) {
-      tenant = this.getTenantById(tenantIdOrObj);
-    }
-    if (!tenant) return 'JS';
-
-    const raw = (
-      tenant.codePrefix ||
-      tenant.companyName ||
-      tenant.nameInEnglish ||
-      tenant.englishName ||
-      tenant.organizationName ||
-      tenant.name ||
-      ''
-    ).trim();
-
-    const latinWords = raw.replace(/[^a-zA-Z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
-    if (latinWords.length > 0) {
-      if (latinWords[0].length === 2) return latinWords[0].toUpperCase();
-      if (latinWords.length >= 2) return (latinWords[0][0] + latinWords[1][0]).toUpperCase();
-      if (latinWords[0].length >= 2) return latinWords[0].slice(0, 2).toUpperCase();
-    }
-
-    if (tenant.name) {
-      const slugLetters = String(tenant.name).replace(/[^a-zA-Z]/g, '');
-      if (slugLetters.length >= 2) return slugLetters.slice(0, 2).toUpperCase();
-    }
-
-    const devanagariMap = {
-      'क': 'K', 'ख': 'K', 'ग': 'G', 'घ': 'G', 'ङ': 'N',
-      'च': 'C', 'छ': 'C', 'ज': 'J', 'झ': 'J', 'ञ': 'N',
-      'ट': 'T', 'ठ': 'T', 'ड': 'D', 'ढ': 'D', 'ण': 'N',
-      'त': 'T', 'थ': 'T', 'द': 'D', 'ध': 'D', 'न': 'N',
-      'प': 'P', 'फ': 'P', 'ब': 'B', 'भ': 'B', 'म': 'M',
-      'य': 'Y', 'र': 'R', 'ल': 'L', 'व': 'V',
-      'श': 'S', 'ष': 'S', 'स': 'S', 'ह': 'H',
-      'अ': 'A', 'आ': 'A', 'इ': 'I', 'ई': 'I', 'उ': 'U',
-      'ए': 'E', 'ओ': 'O'
-    };
-
-    const devWords = raw.split(/\s+/).filter(Boolean);
-    if (devWords.length >= 2) {
-      const c1 = devanagariMap[devWords[0][0]] || '';
-      const c2 = devanagariMap[devWords[1][0]] || '';
-      if (c1 && c2) return (c1 + c2).toUpperCase();
-      if (c1) return (c1 + 'S').toUpperCase();
-    } else if (devWords.length === 1) {
-      const c1 = devanagariMap[devWords[0][0]] || '';
-      if (c1) return (c1 + 'S').toUpperCase();
-    }
-
-    return 'JS';
-  }
-
-  getNextCustomerCode(tenantId) {
-    const tid = Number(tenantId) || 1;
-    const prefix = this.getCompanyCodePrefix(tid);
-    const tData = this.getTenantData(tid);
-    const customers = tData.customers || [];
-
-    let maxNum = 0;
-    let hasPrefixMatch = false;
-
-    for (const c of customers) {
-      if (!c || c.isDeleted) continue;
-      const raw = String(c.code ?? c.id ?? '').trim().toUpperCase();
-      if (raw.startsWith(prefix)) {
-        hasPrefixMatch = true;
-        const numPart = raw.slice(prefix.length);
-        const val = parseInt(numPart, 10);
-        if (Number.isFinite(val) && val > maxNum) {
-          maxNum = val;
-        }
-      }
-    }
-
-    if (hasPrefixMatch) {
-      return `${prefix}${String(maxNum + 1).padStart(3, '0')}`;
-    }
-
-    let maxLegacyNum = 0;
-    for (const c of customers) {
-      if (!c || c.isDeleted) continue;
-      const raw = String(c.code ?? c.id ?? '').trim();
-      const match = raw.match(/(\d+)$/);
-      if (match) {
-        const val = parseInt(match[1], 10);
-        if (Number.isFinite(val) && val > maxLegacyNum) {
-          maxLegacyNum = val;
-        }
-      }
-    }
-
-    const nextNum = maxLegacyNum > 0 ? maxLegacyNum + 1 : 1;
-    return `${prefix}${String(nextNum).padStart(3, '0')}`;
   }
 
   // Dashboard & Profit-Loss Analytics
@@ -2109,10 +1872,6 @@ class MultiTenantDatabase {
   updateTenantStatus(id, status) {
     const tenant = this.getTenantById(id);
     if (!tenant) return null;
-    // Primary developer tenant cannot be suspended
-    if (Number(id) === 1 && status === 'Suspended') {
-      throw new Error('The primary developer tenant cannot be suspended.');
-    }
     tenant.status = status;
     this.logPlatformAction({
       action: 'TENANT_STATUS_CHANGED',

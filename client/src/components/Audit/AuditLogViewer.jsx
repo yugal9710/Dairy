@@ -498,7 +498,7 @@ export default function AuditLogViewer({
                             </span>
                           </div>
                           <span className="text-[10px] text-slate-400 block font-mono mt-0.5">
-                            {log.userEmail || 'staff@dairy.local'}
+                            {log.username ? `@${log.username}` : (log.userEmail || 'system')}
                           </span>
                         </div>
                       </div>
@@ -620,8 +620,8 @@ export default function AuditLogViewer({
               </div>
 
               <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-400">{lang === 'en' ? 'User Email:' : 'इमेल:'}</span>
-                <span className="font-mono text-slate-700 dark:text-slate-300">{selectedLog.userEmail || 'staff@dairy.local'}</span>
+                <span className="text-slate-400">{lang === 'en' ? 'User / Username:' : 'प्रयोगकर्ता:'}</span>
+                <span className="font-mono text-slate-700 dark:text-slate-300">{selectedLog.username ? `@${selectedLog.username}` : (selectedLog.userEmail || 'system')}</span>
               </div>
 
               <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">

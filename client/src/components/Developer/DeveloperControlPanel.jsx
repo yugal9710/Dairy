@@ -362,10 +362,6 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
   };
 
   const handleToggleTenantStatus = async (tenantId, currentStatus) => {
-    if (Number(tenantId) === 1) {
-      alert('The primary developer account (#1) cannot be suspended.');
-      return;
-    }
     const newStatus = currentStatus === 'Active' ? 'Suspended' : 'Active';
     try {
       const res = await fetch(`/api/platform/tenants/${tenantId}/status`, {
@@ -1313,25 +1309,18 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                               >
                                 <Edit className="w-3.5 h-3.5" />
                               </button>
-                              {Number(t.id) === 1 || t.isPrimary ? (
-                                <span className="text-xs font-semibold px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 inline-flex items-center">
-                                  Primary (Protected)
-                                </span>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => handleToggleTenantStatus(t.id, t.status)}
-                                  disabled={actionProcessing}
-                                  className={`text-xs font-semibold px-2 py-1.5 rounded-lg border transition inline-flex items-center cursor-pointer ${
-                                    t.status === 'Active'
-                                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                                      : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
-                                  }`}
-                                  title={t.status === 'Active' ? 'Suspend cooperative operations' : 'Activate cooperative operations'}
-                                >
-                                  <span>{t.status === 'Active' ? 'Suspend' : 'Activate'}</span>
-                                </button>
-                              )}
+                              <button
+                                type="button"
+                                onClick={() => handleToggleTenantStatus(t.id, t.status)}
+                                className={`text-xs font-semibold px-2 py-1.5 rounded-lg border transition inline-flex items-center cursor-pointer ${
+                                  t.status === 'Active'
+                                    ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+                                }`}
+                                title={t.status === 'Active' ? 'Suspend cooperative operations' : 'Activate cooperative operations'}
+                              >
+                                <span>{t.status === 'Active' ? 'Suspend' : 'Activate'}</span>
+                              </button>
                               {Number(t.id) !== 1 && (
                                 <button
                                   type="button"
@@ -1776,7 +1765,7 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                         {log.action}
                       </span>
                       <span className="font-bold text-slate-800 dark:text-slate-200">
-                        {log.userEmail || 'admin@dairy.local'} ({log.userRole || 'SuperAdmin'})
+                        {log.username ? `@${log.username}` : (log.userEmail || 'superadmin')} ({log.userRole || 'SuperAdmin'})
                       </span>
                       {log.tenantId && <span className="text-slate-500">[Tenant #{log.tenantId}]</span>}
                     </div>
@@ -2183,24 +2172,14 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                 </div>
                 <div>
                   <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Status</label>
-                  {Number(editForm.id) === 1 ? (
-                    <input
-                      type="text"
-                      value="Active (Primary Protected)"
-                      disabled
-                      readOnly
-                      className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold cursor-not-allowed"
-                    />
-                  ) : (
-                    <select
-                      value={editForm.status}
-                      onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold"
-                    >
-                      <option value="Active">Active</option>
-                      <option value="Suspended">Suspended</option>
-                    </select>
-                  )}
+                  <select
+                    value={editForm.status}
+                    onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
                 </div>
               </div>
 

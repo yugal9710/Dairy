@@ -7,149 +7,30 @@
       "organizationName": "साना किसान कृषि सहकारी सस्था लि.",
       "address": "गौशाला-१२, काठमाडौं",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1893456000000,
+      "expirationDateTimeUtms": 1826102441924,
       "subscriptionAmount": 35000,
       "isDeleted": false
     },
     {
       "id": 2,
-      "name": "kds",
-      "host": "kds.dairynepal.com",
-      "organizationName": "किसान दुध संकलन तथा प्रशोधन केन्द्र",
-      "address": "इम्लिबजार, महोत्तरी",
+      "name": "himali",
+      "host": "himali.dairynepal.com",
+      "organizationName": "हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र",
+      "address": "हेटौंडा-८, मकवानपुर",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1809820800000,
+      "expirationDateTimeUtms": 1810118441924,
       "subscriptionAmount": 30000,
-      "isDeleted": false,
-      "phone": "9841000000",
-      "managerName": "Cooperative Manager",
-      "status": "Active",
-      "planId": "plan-starter",
-      "modules": {
-        "milkCollection": true,
-        "fatSnfPricing": true,
-        "farmerLedger": true,
-        "basicReports": true,
-        "pos": false,
-        "futureOrders": false,
-        "dairyProcessing": false,
-        "nepaliBS": true,
-        "smsAlerts": false
-      },
-      "subscription": {
-        "status": "Active",
-        "billingCycle": "Yearly",
-        "totalAmountDue": 30000,
-        "expiryDate": "2027-05-09T00:00:00.000Z"
-      }
+      "isDeleted": false
     },
     {
       "id": 3,
-      "name": "kduks",
-      "host": "kduks.dairynepal.com",
-      "organizationName": "कान्तिबजार दुग्ध उत्पादन कृषक समुह",
-      "address": "कान्तिबजार-४, धनुषा",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1804665418428,
-      "subscriptionAmount": 24000,
-      "isDeleted": false
-    },
-    {
-      "id": 4,
-      "name": "ndc",
-      "host": "ndc.dairynepal.com",
-      "organizationName": "नेपाल डेरी को-अपरेटिभ लि.",
-      "address": "नयाँ बानेश्वर, काठमाडौं",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1815033418428,
-      "subscriptionAmount": 40000,
-      "isDeleted": false
-    },
-    {
-      "id": 5,
-      "name": "himalayan",
-      "host": "himalayan.dairynepal.com",
-      "organizationName": "हिमालयन अर्गानिक डेरी फार्म",
-      "address": "धुलिखेल-३, काभ्रे",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1820188800000,
-      "subscriptionAmount": 28000,
-      "isDeleted": false,
-      "phone": "9841000000",
-      "managerName": "Cooperative Manager",
-      "status": "Active",
-      "planId": "plan-starter",
-      "modules": {
-        "milkCollection": true,
-        "fatSnfPricing": true,
-        "farmerLedger": true,
-        "basicReports": true,
-        "pos": false,
-        "futureOrders": false,
-        "dairyProcessing": false,
-        "nepaliBS": true,
-        "smsAlerts": false
-      },
-      "subscription": {
-        "status": "Active",
-        "billingCycle": "Yearly",
-        "totalAmountDue": 28000,
-        "expiryDate": "2027-09-06T00:00:00.000Z"
-      }
-    },
-    {
-      "id": 6,
       "name": "annapurna",
       "host": "annapurna.dairynepal.com",
-      "organizationName": "अन्नपूर्ण दुग्ध उत्पादक सहकारी",
-      "address": "पोखरा-८, कास्की",
+      "organizationName": "अन्नपूर्ण कृषि तथा दुग्ध डेरी उद्योग",
+      "address": "पोखरा-१५, कास्की",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1802073418428,
-      "subscriptionAmount": 32000,
-      "isDeleted": false
-    },
-    {
-      "id": 7,
-      "name": "lumbini",
-      "host": "lumbini.dairynepal.com",
-      "organizationName": "लुम्बिनी कृषि तथा दुग्ध संकलन केन्द्र",
-      "address": "बुटवल-११, रुपन्देही",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1795593418428,
-      "subscriptionAmount": 22000,
-      "isDeleted": false
-    },
-    {
-      "id": 8,
-      "name": "mithila",
-      "host": "mithila.dairynepal.com",
-      "organizationName": "मिथिला दुग्ध उद्योग प्रा. लि.",
-      "address": "जनकपुरधाम-४, धनुषा",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1793865418428,
-      "subscriptionAmount": 26000,
-      "isDeleted": false
-    },
-    {
-      "id": 9,
-      "name": "sagarmatha",
-      "host": "sagarmatha.dairynepal.com",
-      "organizationName": "सगरमाथा गाई फार्म तथा डेरी",
-      "address": "गाईघाट-२, उदयपुर",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1811577418428,
-      "subscriptionAmount": 18000,
-      "isDeleted": false
-    },
-    {
-      "id": 10,
-      "name": "everest",
-      "host": "everest.dairynepal.com",
-      "organizationName": "एभरेष्ट मिल्क प्रोडक्सन प्रा. लि.",
-      "address": "हेटौंडा-५, मकवानपुर",
-      "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1821945418428,
-      "subscriptionAmount": 30000,
+      "expirationDateTimeUtms": 1815302441924,
+      "subscriptionAmount": 24000,
       "isDeleted": false
     }
   ],
@@ -157,8 +38,9 @@
     {
       "id": 1,
       "tenantId": 1,
+      "username": "admin",
       "email": "admin@dairy.local",
-      "name": "System Admin",
+      "name": "Platform Owner / Admin",
       "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
       "roles": [
         "SuperAdmin",
@@ -166,74 +48,148 @@
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1793502249000
+      "creationDateTimeUtms": 1794566441924
     },
     {
       "id": 2,
       "tenantId": 1,
-      "email": "manager@dairy.local",
-      "name": "Dairy Manager",
-      "passwordHash": "e29f1577d5308ecef19bda1d4933391ce2ea2bd8ad20f0cf3f4c2356f79b22eccc7de85203954a4ebe6bc3ab8bcf7138b73c179ade0a4018a9ffe9c70cc61259",
+      "username": "sfacl.admin",
+      "email": "",
+      "name": "Sana Kisan Admin",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
       "roles": [
+        "SuperAdmin",
         "Admin"
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1793502249000
+      "creationDateTimeUtms": 1794566441925
     },
     {
       "id": 3,
       "tenantId": 1,
-      "email": "staff@dairy.local",
-      "name": "Counter Operator",
+      "username": "sfacl.staff",
+      "email": "",
+      "name": "Sana Kisan Staff",
       "passwordHash": "73dd4d25048d436aa62bf61aa61919c76458228ce1c3daa3ab8bcd7d4758272e2afd35a8388707110c493b8820ddc4d7803ed8f06126cc278dd38757083aa44c",
       "roles": [
         "User"
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1793502249000
+      "creationDateTimeUtms": 1794566441925
     },
     {
       "id": 4,
-      "tenantId": 1,
-      "email": "bipin.paul@dairy.local",
-      "name": "Bipin Paul",
+      "tenantId": 2,
+      "username": "himali.admin",
+      "email": "",
+      "name": "Himali Admin",
       "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
       "roles": [
-        "SuperAdmin"
+        "Admin"
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1793502249000
+      "creationDateTimeUtms": 1794566441925
     },
     {
       "id": 5,
-      "tenantId": 1,
-      "email": "sita.sharma@dairy.local",
-      "name": "Sita Sharma",
-      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "tenantId": 2,
+      "username": "himali.staff",
+      "email": "",
+      "name": "Himali Counter Staff",
+      "passwordHash": "73dd4d25048d436aa62bf61aa61919c76458228ce1c3daa3ab8bcd7d4758272e2afd35a8388707110c493b8820ddc4d7803ed8f06126cc278dd38757083aa44c",
       "roles": [
         "User"
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1793502249000
+      "creationDateTimeUtms": 1794566441926
     },
     {
       "id": 6,
-      "tenantId": 2,
-      "username": "kisan",
+      "tenantId": 3,
+      "username": "anna.admin",
       "email": "",
-      "name": "Cooperative Manager",
-      "passwordHash": "ea02d7cab2fc7d8d985e504a00e02980029254ee4a40dea4ec6ec4fe1fdc59b47e29ce38f96695393c62e8fc93e3d81871e23ecb08ac260194d5f6dfbfe70e64",
+      "name": "Annapurna Admin",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
       "roles": [
-        "SuperAdmin",
         "Admin"
       ],
       "isActive": true,
       "isDeleted": false,
-      "creationDateTimeUtms": 1794503474642
+      "creationDateTimeUtms": 1794566441926
+    },
+    {
+      "id": 7,
+      "tenantId": 3,
+      "username": "anna.staff",
+      "email": "",
+      "name": "Annapurna Staff",
+      "passwordHash": "73dd4d25048d436aa62bf61aa61919c76458228ce1c3daa3ab8bcd7d4758272e2afd35a8388707110c493b8820ddc4d7803ed8f06126cc278dd38757083aa44c",
+      "roles": [
+        "User"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794566441926
+    },
+    {
+      "id": 1794567946942,
+      "tenantId": 1,
+      "username": "nb.accountant",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794567946942
+    },
+    {
+      "id": 1794578691942,
+      "tenantId": 1,
+      "username": "sfacl.acct_1940",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794578691942
+    },
+    {
+      "id": 1794578857054,
+      "tenantId": 1,
+      "username": "sfacl.acct_7053",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794578857054
+    },
+    {
+      "id": 1794592574234,
+      "tenantId": 1,
+      "username": "sfacl.acct_4233",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794592574234
     }
   ],
   "billings": [
@@ -242,261 +198,21 @@
       "tenantId": 1,
       "amount": 35000,
       "remarks": "वार्षिक सफ्टवेयर सदस्यता नवीकरण शुल्क (पूर्ण भुक्तानी)",
-      "dateTimeUtms": 1791705418432,
+      "dateTimeUtms": 1791974441926,
       "paymentMethod": 2,
       "isDeleted": false
     }
   ],
   "auditLogs": [
     {
-      "id": "paudit-1794503474642-440",
-      "timestamp": "2026-11-12T17:11:14.643Z",
-      "action": "TENANT_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 2,
-      "details": "Updated cooperative profile \"किसान दुध संकलन तथा प्रशोधन केन्द्र\" (Plan: plan-starter, Status: Active)"
-    },
-    {
-      "id": "paudit-1794501353591-277",
-      "timestamp": "2026-11-12T16:35:53.592Z",
-      "action": "TENANT_DELETED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Permanently removed cooperative \"Test UI Dairy Coop\" (#11) and cleaned associated records"
-    },
-    {
-      "id": "paudit-1794482896664-471",
-      "timestamp": "2026-11-12T11:28:16.664Z",
-      "action": "TENANT_USER_CREATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Created staff user UI Cashier (@uicoopstaff) with role User"
-    },
-    {
-      "id": "paudit-1794482643762-532",
-      "timestamp": "2026-11-12T11:24:03.763Z",
-      "action": "COOPERATIVE_PROVISIONED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Provisioned cooperative \"Test UI Dairy Coop\" (test-ui-coop.dairynepal.com) on Cooperative Professional"
-    },
-    {
-      "id": "paudit-1794480463730-991",
-      "timestamp": "2026-11-12T10:47:43.730Z",
-      "action": "TENANT_DELETED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 12,
-      "details": "Permanently removed cooperative \"Test Coop Beta\" (#12) and cleaned associated records"
-    },
-    {
-      "id": "paudit-1794480463717-778",
-      "timestamp": "2026-11-12T10:47:43.717Z",
-      "action": "TENANT_DELETED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Permanently removed cooperative \"Test Coop Alpha\" (#11) and cleaned associated records"
-    },
-    {
-      "id": "paudit-1794480463591-842",
-      "timestamp": "2026-11-12T10:47:43.592Z",
-      "action": "TENANT_USER_CREATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Created staff user Alpha Cashier (@alpha.cashier) with role User"
-    },
-    {
-      "id": "paudit-1794480463569-468",
-      "timestamp": "2026-11-12T10:47:43.569Z",
-      "action": "COOPERATIVE_PROVISIONED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 12,
-      "details": "Provisioned cooperative \"Test Coop Beta\" (test-beta-tmp.dairynepal.com) on Cooperative Starter"
-    },
-    {
-      "id": "paudit-1794480463552-502",
-      "timestamp": "2026-11-12T10:47:43.552Z",
-      "action": "COOPERATIVE_PROVISIONED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Provisioned cooperative \"Test Coop Alpha\" (test-alpha-tmp.dairynepal.com) on Cooperative Starter"
-    },
-    {
-      "id": "paudit-1794479588844-95",
-      "timestamp": "2026-11-12T10:33:08.844Z",
-      "action": "TENANT_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 5,
-      "details": "Updated cooperative profile \"हिमालयन अर्गानिक डेरी फार्म\" (Plan: plan-starter, Status: Active)"
-    },
-    {
-      "id": "paudit-1794479531493-569",
-      "timestamp": "2026-11-12T10:32:11.493Z",
-      "action": "TENANT_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 5,
-      "details": "Updated cooperative profile \"हिमालयन अर्गानिक डेरी फार्म\" (Plan: plan-starter, Status: Active)"
-    },
-    {
-      "id": "paudit-1794367403491-949",
-      "timestamp": "2026-11-11T03:23:23.491Z",
-      "action": "PAYMENT_CONFIG_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": null,
-      "details": "Updated platform bank & FonePay gateway configuration"
-    },
-    {
-      "id": "paudit-1794367403482-541",
-      "timestamp": "2026-11-11T03:23:23.482Z",
-      "action": "PLAN_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": null,
-      "details": "Updated subscription plan \"Cooperative Starter\" (plan-starter) — Rs. 3500/mo, Rs. 35000/yr"
-    },
-    {
-      "id": "paudit-1794367347689-203",
-      "timestamp": "2026-11-11T03:22:27.689Z",
-      "action": "TENANT_DELETED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Permanently removed cooperative \"Temp Verification Dairy Coop\" (#11) and cleaned associated records"
-    },
-    {
-      "id": "paudit-1794367347664-334",
-      "timestamp": "2026-11-11T03:22:27.664Z",
-      "action": "SUPPORT_GRANT_AUTHORIZED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Authorized 30m audited support grant for Tenant #11: Verification check"
-    },
-    {
-      "id": "paudit-1794367347658-968",
-      "timestamp": "2026-11-11T03:22:27.658Z",
-      "action": "TENANT_USER_UPDATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Updated staff account Temp Staff (#7)"
-    },
-    {
-      "id": "paudit-1794367347653-431",
-      "timestamp": "2026-11-11T03:22:27.653Z",
-      "action": "TENANT_USER_CREATED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Created staff user Temp Staff (tempstaff@dairy.local) with role User"
-    },
-    {
-      "id": "paudit-1794367347650-974",
-      "timestamp": "2026-11-11T03:22:27.650Z",
-      "action": "TENANT_PAYMENT_RECORDED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Recorded Rs. 15,000 license payment (सदस्यता भुक्तानी)"
-    },
-    {
-      "id": "paudit-1794367347633-396",
-      "timestamp": "2026-11-11T03:22:27.633Z",
-      "action": "SUBSCRIPTION_EXTENDED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Updated license for \"Temp Verification Dairy Coop\" (Plan: plan-enterprise, Expires: 2028-12-31)"
-    },
-    {
-      "id": "paudit-1794367347629-351",
-      "timestamp": "2026-11-11T03:22:27.629Z",
-      "action": "MODULE_FLAG_TOGGLED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Set module \"smsAlerts\" to ENABLED for \"Temp Verification Dairy Coop\""
-    },
-    {
-      "id": "paudit-1794367347486-785",
-      "timestamp": "2026-11-11T03:22:27.486Z",
-      "action": "DOMAIN_VERIFIED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Verified DNS and provisioned SSL for tempverify.coop.np"
-    },
-    {
-      "id": "paudit-1794367347472-443",
-      "timestamp": "2026-11-11T03:22:27.472Z",
-      "action": "DOMAIN_ADDED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Added custom domain tempverify.coop.np for tenant #11"
-    },
-    {
-      "id": "paudit-1794367347167-589",
-      "timestamp": "2026-11-11T03:22:27.167Z",
-      "action": "COOPERATIVE_PROVISIONED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": 11,
-      "details": "Provisioned cooperative \"Temp Verification Dairy Coop\" (tempverifycoop.dairynepal.com) on Cooperative Professional"
-    },
-    {
-      "id": "paudit-1794367056971-269",
-      "timestamp": "2026-11-11T03:17:36.971Z",
-      "action": "DOMAIN_VERIFIED",
-      "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
-      "userRole": "SuperAdmin",
-      "tenantId": null,
-      "details": "Verified and provisioned SSL for undefined"
-    },
-    {
       "id": "paudit-init",
-      "timestamp": "2026-11-11T03:16:01.499Z",
+      "timestamp": "2026-11-13T10:40:41.932Z",
       "action": "PLATFORM_CONSOLE_INITIALIZED",
       "status": "SUCCESS",
-      "userEmail": "admin@dairy.local",
+      "userEmail": "nb.superadmin",
       "userRole": "SuperAdmin",
       "tenantId": 1,
-      "details": "Dairy ERP 2.0 Multi-Cooperative Developer Control Panel initialized"
+      "details": "Dairy ERP 2.0 Multi-Cooperative Developer Control Panel initialized with 3 cooperatives"
     }
   ],
   "plans": [
@@ -581,7 +297,7 @@
     {
       "id": "dom-2",
       "tenantId": 2,
-      "domain": "kds.dairynepal.com",
+      "domain": "himali.dairynepal.com",
       "type": "subdomain",
       "isPrimary": true,
       "verified": true,
@@ -590,70 +306,7 @@
     {
       "id": "dom-3",
       "tenantId": 3,
-      "domain": "kduks.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-4",
-      "tenantId": 4,
-      "domain": "ndc.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-5",
-      "tenantId": 5,
-      "domain": "himalayan.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-6",
-      "tenantId": 6,
       "domain": "annapurna.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-7",
-      "tenantId": 7,
-      "domain": "lumbini.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-8",
-      "tenantId": 8,
-      "domain": "mithila.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-9",
-      "tenantId": 9,
-      "domain": "sagarmatha.dairynepal.com",
-      "type": "subdomain",
-      "isPrimary": true,
-      "verified": true,
-      "sslStatus": "active"
-    },
-    {
-      "id": "dom-10",
-      "tenantId": 10,
-      "domain": "everest.dairynepal.com",
       "type": "subdomain",
       "isPrimary": true,
       "verified": true,
@@ -664,19 +317,19 @@
     {
       "id": "ren-001",
       "tenantId": 2,
-      "tenantName": "किसान दुध संकलन तथा प्रशोधन केन्द्र",
+      "tenantName": "हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र",
       "planId": "plan-professional",
       "planName": "Cooperative Professional",
       "billingCycle": "Yearly",
       "amount": 75000,
       "currency": "Rs.",
       "method": "FonePay QR",
-      "payerName": "Hari Prasad Sharma",
-      "payerPhone": "9851029384",
-      "userName": "Kisan Dairy Manager",
-      "userEmail": "manager@kds.dairynepal.com",
+      "payerName": "Dil Bahadur Moktan",
+      "payerPhone": "9845012345",
+      "userName": "Himali Admin",
+      "userEmail": "",
       "transactionRef": "FONEPAY-981023",
-      "submittedAt": "2026-11-09T03:16:01.499Z",
+      "submittedAt": "2026-11-11T10:40:41.926Z",
       "status": "PENDING_VERIFICATION",
       "receiptUrl": null,
       "receiptFileName": "fonepay-voucher-981023.pdf",
@@ -701,9 +354,8 @@
       "type": "SYSTEM",
       "title": "Dairy 2.0 Developer Console Initialized",
       "message": "Multi-cooperative management, custom domains, and subscription engines active.",
-      "createdAt": "2026-11-11T03:16:01.499Z",
+      "createdAt": "2026-11-13T10:40:41.932Z",
       "isRead": false
     }
-  ],
-  "supportGrants": []
+  ]
 }

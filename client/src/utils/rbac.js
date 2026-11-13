@@ -191,23 +191,40 @@ export const SYSTEM_MODULES = [
     labelNe: 'डेभलपर कन्सोल',
     labelEn: 'Developer Console',
     label: 'डेभलपर कन्सोल',
-    badgeText: 'DEV',
+    badgeText: 'PRIMARY / OWNER',
     description: 'Multi-cooperative SaaS control panel, plans, custom domains, renewals & platform audit logs',
     icon: Server,
     color: 'slate',
-    defaultRoles: ['Developer']
+    defaultRoles: ['SuperAdmin']
   }
 ];
+
+export function isOwnerUser(user, activeTenant) {
+  if (!user) return false;
+  const roles = user.roles || [];
+  if (!roles.includes('SuperAdmin')) return false;
+
+  const userTenantId = Number(user.tenantId);
+  const activeTid = activeTenant ? Number(activeTenant.id) : userTenantId;
+
+  // The Developer Console is strictly the owner page for Tenant 1 (sfacl - साना किसान कृषि सहकारी सस्था लि.)
+  const isTenant1 = (userTenantId === 1 || !userTenantId) && (activeTid === 1);
+  const isOwnerTenantName = (!activeTenant || activeTenant.name === 'sfacl');
+  return isTenant1 && isOwnerTenantName;
+}
 
 export function getModuleLabel(module, lang = 'ne') {
   if (!module) return '';
   return lang === 'en' ? (module.labelEn || module.label) : (module.labelNe || module.label);
 }
 
-export function isTabAllowed(tabId, userRoles = ['User'], user = null) {
-  // Developer Console requires isDeveloper flag, not just a role
+export function isTabAllowed(tabId, userRoles = ['User'], activeTenant = null, currentUser = null) {
   if (tabId === 'platform') {
-    return !!(user && user.isDeveloper);
+    if (currentUser) {
+      return isOwnerUser(currentUser, activeTenant);
+    }
+    const tid = activeTenant ? Number(activeTenant.id) : 1;
+    return userRoles.includes('SuperAdmin') && tid === 1 && (!activeTenant || activeTenant.name === 'sfacl');
   }
   if (userRoles.includes('SuperAdmin')) return true;
   const mod = SYSTEM_MODULES.find(m => m.id === tabId);
