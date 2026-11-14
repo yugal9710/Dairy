@@ -233,6 +233,9 @@ export default function Navbar({
             <span className="hidden sm:inline">{lang === 'ne' ? 'नेपाली' : 'English'}</span>
           </button>
 
+          {/* Theme Switcher Button [ 🌙 ] */}
+          <ThemeSwitcher />
+
           {/* Settings & Administration Hub Button [ ⚙️ ] */}
           <div ref={settingsMenuRef} className="relative">
             <button
@@ -475,9 +478,6 @@ export default function Navbar({
               </div>
             )}
           </div>
-
-          {/* Theme Switcher Button [ 🌙 ] */}
-          <ThemeSwitcher />
         </div>
       </div>
     </header>
