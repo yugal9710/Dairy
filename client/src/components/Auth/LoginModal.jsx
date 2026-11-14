@@ -4,14 +4,12 @@ import {
   Lock,
   AlertCircle,
   ArrowRight,
-  LogOut,
   Eye,
   EyeOff,
   Milk,
   X
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getDerivedUsername } from '../../utils/fetchAuth';
 
 export default function LoginModal({
   isOpen,
@@ -104,33 +102,6 @@ export default function LoginModal({
 
         {/* Body */}
         <div className="p-5 space-y-4">
-          {currentUser ? (
-            <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 flex items-center justify-between text-xs">
-              <div className="truncate pr-2">
-                <span className="text-slate-500 dark:text-slate-400">{lang === 'en' ? 'Signed in as: ' : 'हालको लगइन: '}</span>
-                <strong className="text-emerald-800 dark:text-emerald-300 font-bold">{currentUser.name}</strong>{' '}
-                <span className="font-mono text-emerald-700 dark:text-emerald-400">(@{getDerivedUsername(currentUser)})</span>
-              </div>
-              <button
-                type="button"
-                onClick={onLogout}
-                className="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 rounded-lg text-slate-600 dark:text-slate-300 transition flex items-center gap-1 font-bold shrink-0 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>{lang === 'en' ? 'Sign Out' : 'बाहिरिनुहोस्'}</span>
-              </button>
-            </div>
-          ) : (
-            <div className="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center gap-2.5 text-xs text-emerald-900 dark:text-emerald-200">
-              <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span className="font-medium">
-                {lang === 'en'
-                  ? 'Enter your user ID and password to sign in again.'
-                  : 'पुनः लगइन गर्न कृपया आफ्नो प्रयोगकर्ता नाम र पासवर्ड प्रविष्ट गर्नुहोस् ।'}
-              </span>
-            </div>
-          )}
-
           {error && (
             <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />
