@@ -1,0 +1,138 @@
+{
+  "tenantId": 4,
+  "name": "amresh-dairy",
+  "organizationName": "Amresh Dairy",
+  "units": [
+    {
+      "id": 1,
+      "name": "Litre",
+      "nameInNepali": "लिटर",
+      "code": "L",
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "name": "Kilogram",
+      "nameInNepali": "किलो",
+      "code": "KG",
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "name": "Packet",
+      "nameInNepali": "प्याकेट",
+      "code": "PKT",
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "name": "Pouch",
+      "nameInNepali": "पाउच",
+      "code": "PCH",
+      "isDeleted": false
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "nameInEnglish": "Raw Milk",
+      "nameInNepali": "काँचो दूध",
+      "unitId": 1,
+      "unitName": "Litre",
+      "sellingPrice": 85,
+      "costPrice": 65,
+      "reorderLevel": 50,
+      "description": "ताजा गाई तथा भैँसीको काँचो दूध",
+      "isDeleted": false
+    },
+    {
+      "id": 2,
+      "nameInEnglish": "Standard Pasteurized Milk",
+      "nameInNepali": "पाश्चराइज्ड प्रशोधित दूध",
+      "unitId": 4,
+      "unitName": "Pouch",
+      "sellingPrice": 50,
+      "costPrice": 38,
+      "reorderLevel": 100,
+      "description": "५०० मिलि पाश्चराइज्ड प्याकेट दूध",
+      "isDeleted": false
+    },
+    {
+      "id": 3,
+      "nameInEnglish": "Fresh Curd / Dahi",
+      "nameInNepali": "ताजा दही",
+      "unitId": 1,
+      "unitName": "Litre",
+      "sellingPrice": 120,
+      "costPrice": 85,
+      "reorderLevel": 25,
+      "description": "घरेलु स्वादको शुद्ध दही",
+      "isDeleted": false
+    },
+    {
+      "id": 4,
+      "nameInEnglish": "Fresh Paneer",
+      "nameInNepali": "ताजा पनिर",
+      "unitId": 2,
+      "unitName": "Kilogram",
+      "sellingPrice": 750,
+      "costPrice": 580,
+      "reorderLevel": 15,
+      "description": "नरम र ताजा पनिर",
+      "isDeleted": false
+    },
+    {
+      "id": 5,
+      "nameInEnglish": "Pure Cow Ghee",
+      "nameInNepali": "शुद्ध गाईको घिउ",
+      "unitId": 2,
+      "unitName": "Kilogram",
+      "sellingPrice": 1400,
+      "costPrice": 1100,
+      "reorderLevel": 10,
+      "description": "परम्परागत विधिबाट निर्मित शुद्ध घिउ",
+      "isDeleted": false
+    }
+  ],
+  "productStocks": [
+    {
+      "id": 1,
+      "productId": 1,
+      "batchNumber": "INIT-RAW-01",
+      "quantity": 0,
+      "usedQuantity": 0,
+      "expiryDateUtms": 1795248546540,
+      "dateTimeUtms": 1794643746540
+    },
+    {
+      "id": 2,
+      "productId": 2,
+      "batchNumber": "INIT-PAS-01",
+      "quantity": 0,
+      "usedQuantity": 0,
+      "expiryDateUtms": 1795248546540,
+      "dateTimeUtms": 1794643746540
+    }
+  ],
+  "customers": [],
+  "milkFatSnfConfig": {
+    "id": 1,
+    "buyingFatPrice": 7.5,
+    "buyingSnfPrice": 4,
+    "sellingFatPrice": 9,
+    "sellingSnfPrice": 5,
+    "sellingPrice": 90,
+    "lastTimeUpdatedUtms": 1794643746540
+  },
+  "milkCollections": [],
+  "milkCollectionPayments": [],
+  "orders": [],
+  "futureOrders": [],
+  "productionBatches": [],
+  "purchases": [],
+  "stockMovements": [],
+  "expenses": [],
+  "customerPayments": [],
+  "cashBankLedgers": [],
+  "auditLogs": []
+}

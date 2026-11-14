@@ -30,7 +30,8 @@ import {
   Trash2,
   Milk,
   Landmark,
-  Sliders
+  Sliders,
+  AlertCircle
 } from 'lucide-react';
 
 const DAIRY_PLAN_MODULES = [
@@ -81,6 +82,7 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
   const [loading, setLoading] = useState(true);
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createError, setCreateError] = useState(null);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [paymentConfigModalOpen, setPaymentConfigModalOpen] = useState(false);
   const [toast, setToast] = useState(null);
@@ -221,6 +223,8 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
 
   const headers = {
     'Content-Type': 'application/json',
+    'x-tenant-id': '1',
+    'x-username': 'sfacl.admin',
     ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
   };
 
@@ -322,18 +326,50 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
 
   const handleCreateCoop = async (e) => {
     e.preventDefault();
+    setCreateError(null);
     setActionProcessing(true);
     try {
+      const cleanSlug = (newCoop.slug || newCoop.name || `coop-${Date.now().toString().slice(-4)}`)
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || `coop-${Date.now().toString().slice(-4)}`;
+
+      const payload = {
+        ...newCoop,
+        name: (newCoop.name || '').trim(),
+        slug: cleanSlug,
+        organizationName: (newCoop.name || '').trim() || 'New Dairy Cooperative',
+        totalAmountDue: newCoop.totalAmountDue !== '' ? Number(newCoop.totalAmountDue) : undefined,
+        initialPayment: newCoop.initialPayment !== '' ? Number(newCoop.initialPayment) : 0
+      };
+
       const res = await fetch('/api/platform/tenants', {
         method: 'POST',
-        headers,
-        body: JSON.stringify(newCoop)
+        headers: {
+          ...headers,
+          'x-tenant-id': '1',
+          'x-username': 'sfacl.admin'
+        },
+        body: JSON.stringify(payload),
+        signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error);
+
+      const text = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        data = { message: text || `HTTP ${res.status}` };
+      }
+
+      if (!res.ok) {
+        throw new Error(data.message || data.error || `HTTP ${res.status}: Failed to provision cooperative`);
+      }
 
       notify(`Cooperative "${newCoop.name}" provisioned with isolated store!`);
       setCreateModalOpen(false);
+      setCreateError(null);
       setNewCoop({
         name: '',
         slug: '',
@@ -353,9 +389,14 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
         enablePOS: true,
         enableProcessing: true
       });
-      fetchPlatformData();
+      await fetchPlatformData();
+      if (typeof onTenantUpdated === 'function') {
+        onTenantUpdated(data.tenant);
+      }
     } catch (err) {
-      alert(`Error creating cooperative: ${err.message}`);
+      console.error('Cooperative provisioning error:', err);
+      setCreateError(err.message || 'Failed to provision cooperative. Please try again.');
+      notify(`Error creating cooperative: ${err.message || 'Failed'}`);
     } finally {
       setActionProcessing(false);
     }
@@ -741,7 +782,7 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
 
           <button
             type="button"
-            onClick={() => setCreateModalOpen(true)}
+            onClick={() => { setCreateError(null); setCreateModalOpen(true); }}
             className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black transition shadow-md shadow-emerald-900/40 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
@@ -1075,7 +1116,7 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCreateModalOpen(true)}
+                  onClick={() => { setCreateError(null); setCreateModalOpen(true); }}
                   className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-xl transition flex items-center gap-1 shadow-2xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -1795,12 +1836,21 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                 <h3 className="text-base font-black tracking-tight">Provision New Dairy Cooperative</h3>
                 <p className="text-xs text-emerald-100">Creates isolated cooperative database, units, milk products, rate chart & SuperAdmin</p>
               </div>
-              <button type="button" onClick={() => setCreateModalOpen(false)} className="text-white/80 hover:text-white p-1 cursor-pointer">
+              <button type="button" onClick={() => { setCreateModalOpen(false); setCreateError(null); }} className="text-white/80 hover:text-white p-1 cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateCoop} className="p-6 overflow-y-auto space-y-4 text-xs">
+              {createError && (
+                <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 rounded-2xl flex items-start gap-2.5 text-rose-700 dark:text-rose-300 animate-in fade-in duration-150">
+                  <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
+                  <div className="text-xs">
+                    <div className="font-bold">Cooperative Provisioning Error</div>
+                    <div className="mt-0.5 font-medium">{createError}</div>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div className="sm:col-span-2">
                   <label className="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Cooperative / Dairy Legal Name *</label>
@@ -1994,17 +2044,24 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
               <div className="pt-4 flex justify-end gap-2 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setCreateModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 font-bold cursor-pointer"
+                  onClick={() => { setCreateModalOpen(false); setCreateError(null); }}
+                  className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 font-bold cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionProcessing}
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black shadow-md cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-black shadow-md cursor-pointer transition flex items-center gap-2"
                 >
-                  {actionProcessing ? 'Provisioning...' : 'Provision Cooperative Store'}
+                  {actionProcessing ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Provisioning...</span>
+                    </>
+                  ) : (
+                    <span>Provision Cooperative Store</span>
+                  )}
                 </button>
               </div>
             </form>

@@ -2516,7 +2516,7 @@ app.get('/api/Reports/profit-loss', (req, res) => {
 // Middleware: Developer Console is strictly reserved for Platform Owner (Tenant 1: साना किसान कृषि सहकारी सस्था लि.)
 app.use('/api/platform', (req, res, next) => {
   const tidHeader = req.headers['x-tenant-id'];
-  const tenantId = tidHeader !== undefined ? Number(tidHeader) : 1;
+  const tenantId = tidHeader !== undefined && !isNaN(Number(tidHeader)) ? Number(tidHeader) : 1;
   const username = decodeURIComponent(req.headers['x-username'] || '').toLowerCase();
   
   const isOwnerUser = ['admin', 'sfacl.admin'].includes(username);

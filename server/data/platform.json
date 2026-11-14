@@ -32,6 +32,120 @@
       "expirationDateTimeUtms": 1815302441924,
       "subscriptionAmount": 24000,
       "isDeleted": false
+    },
+    {
+      "id": 4,
+      "name": "amresh-dairy",
+      "host": "amresh-dairy.dairynepal.com",
+      "organizationName": "Amresh Dairy",
+      "address": "Kathmandu, Nepal",
+      "phone": "9841000000",
+      "email": "amresh-dairy@dairynepal.com",
+      "managerName": "Amresh Raut",
+      "timezone": "Asia/Kathmandu",
+      "status": "Active",
+      "planId": "plan-professional",
+      "expirationDateTimeUtms": 1826150400000,
+      "subscriptionAmount": 10,
+      "isDeleted": false,
+      "createdAt": "2026-11-14T08:09:06.541Z",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": true,
+        "futureOrders": true,
+        "dairyProcessing": true,
+        "nepaliBS": true,
+        "smsAlerts": true
+      },
+      "subscription": {
+        "planId": "plan-professional",
+        "planName": "Cooperative Professional",
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "startDate": "2026-11-14T08:09:06.541Z",
+        "expiryDate": "2027-11-14T00:00:00.000Z",
+        "totalAmountDue": 10,
+        "amountPaid": 0
+      }
+    },
+    {
+      "id": 5,
+      "name": "amresh-dairy-2",
+      "host": "amresh-dairy-2.dairynepal.com",
+      "organizationName": "Amresh Dairy 2",
+      "address": "Kathmandu, Nepal",
+      "phone": "9841000000",
+      "email": "amresh-dairy-2@dairynepal.com",
+      "managerName": "Cooperative Manager",
+      "timezone": "Asia/Kathmandu",
+      "status": "Active",
+      "planId": "plan-professional",
+      "expirationDateTimeUtms": 1826150400000,
+      "subscriptionAmount": 10,
+      "isDeleted": false,
+      "createdAt": "2026-11-14T08:09:21.387Z",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": true,
+        "futureOrders": true,
+        "dairyProcessing": true,
+        "nepaliBS": true,
+        "smsAlerts": true
+      },
+      "subscription": {
+        "planId": "plan-professional",
+        "planName": "Cooperative Professional",
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "startDate": "2026-11-14T08:09:21.387Z",
+        "expiryDate": "2027-11-14T00:00:00.000Z",
+        "totalAmountDue": 10,
+        "amountPaid": 0
+      }
+    },
+    {
+      "id": 6,
+      "name": "test-coop-1567",
+      "host": "test-coop-1567.dairynepal.com",
+      "organizationName": "कञ्चनजंघा दुग्ध उत्पादक सहकारी संस्था",
+      "address": "ताप्लेजुङ-१, कोशी",
+      "phone": "9841234567",
+      "email": "test-coop-1567@dairynepal.com",
+      "managerName": "Ram Bahadur Limbu",
+      "timezone": "Asia/Kathmandu",
+      "status": "Active",
+      "planId": "plan-professional",
+      "expirationDateTimeUtms": 1826180901610,
+      "subscriptionAmount": 75000,
+      "isDeleted": false,
+      "createdAt": "2026-11-14T08:28:21.610Z",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": true,
+        "futureOrders": true,
+        "dairyProcessing": true,
+        "nepaliBS": true,
+        "smsAlerts": true
+      },
+      "subscription": {
+        "planId": "plan-professional",
+        "planName": "Cooperative Professional",
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "startDate": "2026-11-14T08:28:21.610Z",
+        "expiryDate": "2027-11-14T08:28:21.610Z",
+        "totalAmountDue": 75000,
+        "amountPaid": 35000
+      }
     }
   ],
   "users": [
@@ -232,6 +346,79 @@
       "isActive": true,
       "isDeleted": false,
       "creationDateTimeUtms": 1794641303487
+    },
+    {
+      "id": 1794641303487,
+      "tenantId": 4,
+      "username": "amresh",
+      "email": "",
+      "name": "Amresh Raut",
+      "passwordHash": "44b80e4be27504a5d512e44552048435f00896e4605696651fa2fcdd88b609cbb1c70b4f6910cc8aae4a79df501159715e41f4531cee2accffdeeda6c4f42a6e",
+      "roles": [
+        "SuperAdmin",
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794643746540
+    },
+    {
+      "id": 1794641303488,
+      "tenantId": 5,
+      "username": "amresh2",
+      "email": "",
+      "name": "Amresh Dairy 2 Admin",
+      "passwordHash": "44b80e4be27504a5d512e44552048435f00896e4605696651fa2fcdd88b609cbb1c70b4f6910cc8aae4a79df501159715e41f4531cee2accffdeeda6c4f42a6e",
+      "roles": [
+        "SuperAdmin",
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794643761387
+    },
+    {
+      "id": 1794644837365,
+      "tenantId": 1,
+      "username": "sfacl.acct_7364",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794644837365
+    },
+    {
+      "id": 1794644877905,
+      "tenantId": 1,
+      "username": "sfacl.acct_7905",
+      "email": "",
+      "name": "Ramesh Adhikari",
+      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "roles": [
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794644877906
+    },
+    {
+      "id": 1794644877906,
+      "tenantId": 6,
+      "username": "kanchan_1567",
+      "email": "",
+      "name": "Ram Bahadur Limbu",
+      "passwordHash": "416effe9b1ecde8a283c7170e353c39de7cd36119cf9f90b30cf02ca6ed7a0561e961c639177db104bb8a0965819bb4278120c5bad3356679c28d60d40a14e41",
+      "roles": [
+        "SuperAdmin",
+        "Admin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1794644901610
     }
   ],
   "billings": [
@@ -243,9 +430,48 @@
       "dateTimeUtms": 1791974441926,
       "paymentMethod": 2,
       "isDeleted": false
+    },
+    {
+      "id": 1794644901610,
+      "tenantId": 6,
+      "amount": 35000,
+      "remarks": "सफ्टवेयर स्थापना तथा सदस्यता पहिलो भुक्तानी",
+      "dateTimeUtms": 1794644901610,
+      "paymentMethod": 2,
+      "isDeleted": false
     }
   ],
   "auditLogs": [
+    {
+      "id": "paudit-1794644901613-322",
+      "timestamp": "2026-11-14T08:28:21.613Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 6,
+      "details": "Provisioned cooperative \"कञ्चनजंघा दुग्ध उत्पादक सहकारी संस्था\" (test-coop-1567.dairynepal.com) on Cooperative Professional"
+    },
+    {
+      "id": "paudit-1794643761391-965",
+      "timestamp": "2026-11-14T08:09:21.392Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 5,
+      "details": "Provisioned cooperative \"Amresh Dairy 2\" (amresh-dairy-2.dairynepal.com) on Cooperative Professional"
+    },
+    {
+      "id": "paudit-1794643746565-330",
+      "timestamp": "2026-11-14T08:09:06.566Z",
+      "action": "COOPERATIVE_PROVISIONED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 4,
+      "details": "Provisioned cooperative \"Amresh Dairy\" (amresh-dairy.dairynepal.com) on Cooperative Professional"
+    },
     {
       "id": "paudit-init",
       "timestamp": "2026-11-13T10:40:41.932Z",
@@ -349,6 +575,33 @@
       "id": "dom-3",
       "tenantId": 3,
       "domain": "annapurna.dairynepal.com",
+      "type": "subdomain",
+      "isPrimary": true,
+      "verified": true,
+      "sslStatus": "active"
+    },
+    {
+      "id": "dom-4",
+      "tenantId": 4,
+      "domain": "amresh-dairy.dairynepal.com",
+      "type": "subdomain",
+      "isPrimary": true,
+      "verified": true,
+      "sslStatus": "active"
+    },
+    {
+      "id": "dom-5",
+      "tenantId": 5,
+      "domain": "amresh-dairy-2.dairynepal.com",
+      "type": "subdomain",
+      "isPrimary": true,
+      "verified": true,
+      "sslStatus": "active"
+    },
+    {
+      "id": "dom-6",
+      "tenantId": 6,
+      "domain": "test-coop-1567.dairynepal.com",
       "type": "subdomain",
       "isPrimary": true,
       "verified": true,
