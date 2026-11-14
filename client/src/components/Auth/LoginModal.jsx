@@ -93,9 +93,6 @@ export default function LoginModal({
               <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
                 <span>{lang === 'en' ? 'Dairy ERP 2.0 Sign In' : 'डेरी ईआरपी २.० लगइन'}</span>
               </h2>
-              <p className="text-xs text-emerald-100 truncate mt-0.5">
-                {activeTenant?.organizationName || (lang === 'en' ? 'Sana Kisan Agri Cooperative Ltd.' : 'साना किसान कृषि सहकारी सस्था लि.')}
-              </p>
             </div>
           </div>
         </div>
