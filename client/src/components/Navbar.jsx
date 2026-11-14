@@ -94,21 +94,8 @@ export default function Navbar({
       )}
 
       <div className="px-3 sm:px-4 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Left: Hamburger Menu Button, Dairy Logo & Tenant Selector */}
+        {/* Left: Dairy Logo, Hamburger Menu Button & Tenant Selector */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          {/* Hamburger Menu Toggle Button [ ≡ ] */}
-          <button
-            type="button"
-            onClick={onToggleSidebar}
-            className={`p-2 rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 focus:outline-none transition-all flex items-center justify-center shrink-0 shadow-2xs cursor-pointer ${
-              isSidebarOpen ? 'bg-blue-50 dark:bg-blue-950/50 ring-2 ring-blue-400/40' : 'bg-white dark:bg-slate-800'
-            }`}
-            title={lang === 'en' ? 'Toggle Navigation Menu (Ctrl+B)' : 'मेनु खोल्नुहोस् / बन्द गर्नुहोस् (Ctrl+B)'}
-            aria-label="Toggle Navigation Menu"
-          >
-            <Menu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          </button>
-
           {/* Dairy Logo Illustration Tile */}
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden select-none p-1">
             <svg viewBox="0 0 48 48" className="w-8 h-8 drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -123,6 +110,19 @@ export default function Navbar({
               <ellipse cx="33" cy="27" rx="5" ry="1.5" fill="#E0F2FE" />
             </svg>
           </div>
+
+          {/* Hamburger Menu Toggle Button [ ≡ ] */}
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className={`p-2 rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 focus:outline-none transition-all flex items-center justify-center shrink-0 shadow-2xs cursor-pointer ${
+              isSidebarOpen ? 'bg-blue-50 dark:bg-blue-950/50 ring-2 ring-blue-400/40' : 'bg-white dark:bg-slate-800'
+            }`}
+            title={lang === 'en' ? 'Toggle Navigation Menu (Ctrl+B)' : 'मेनु खोल्नुहोस् / बन्द गर्नुहोस् (Ctrl+B)'}
+            aria-label="Toggle Navigation Menu"
+          >
+            <Menu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          </button>
 
           {/* Organization Name & Valid Upto */}
           <div className="relative min-w-0">
