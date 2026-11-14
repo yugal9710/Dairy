@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
 import {
   getProvinces,
-  getDistricts,
-  getMunicipalities,
-  getWards,
-  getProvince,
-  getDistrict,
-  getMunicipality
-} from 'nepal-places';
+  getDistrictsByProvince,
+  getLocalLevelsByDistrict,
+  getWardsByLocalLevel,
+  composeNepalAddress,
+  findLocalLevel,
+  PROVINCE_NAMES_NP,
+  DISTRICT_NAMES_NP,
+  CATEGORY_NAMES_NP
+} from '../../data/nepalLocalLevels';
 
 export const EMPTY_NEPAL_LOCATION = {
   provinceId: '',
@@ -19,20 +21,7 @@ export const EMPTY_NEPAL_LOCATION = {
   ward: ''
 };
 
-const MUNICIPALITY_TYPE_LABELS = {
-  en: {
-    metropolitan: 'Metropolitan City',
-    sub_metropolitan: 'Sub-Metropolitan City',
-    municipality: 'Municipality',
-    rural_municipality: 'Rural Municipality'
-  },
-  ne: {
-    metropolitan: 'महानगरपालिका',
-    sub_metropolitan: 'उपमहानगरपालिका',
-    municipality: 'नगरपालिका',
-    rural_municipality: 'गाउँपालिका'
-  }
-};
+export { composeNepalAddress };
 
 export function getNextCustomerCode(customers = []) {
   if (!Array.isArray(customers) || customers.length === 0) return 1;
@@ -43,162 +32,271 @@ export function getNextCustomerCode(customers = []) {
   return maxCode + 1;
 }
 
-function getMunicipalityFullLabel(mun, lang = 'en') {
-  if (!mun) return '';
-  const name = lang === 'ne' ? (mun.name_np || mun.name) : (mun.name || mun.name_np);
-  const typeLabel = MUNICIPALITY_TYPE_LABELS[lang]?.[mun.type] || '';
-  return typeLabel ? `${name} ${typeLabel}` : name;
-}
-
-export function composeNepalAddress(location = {}, lang = 'en') {
-  const prov = location.provinceId ? getProvince(Number(location.provinceId)) : null;
-  const dist = location.districtId ? getDistrict(Number(location.districtId)) : null;
-  const mun = location.municipalityId ? getMunicipality(Number(location.municipalityId)) : null;
-
-  const provLabel = prov ? (lang === 'ne' ? (prov.name_np || prov.name) : prov.name) : (location.provinceName || '');
-  const distLabel = dist ? (lang === 'ne' ? (dist.name_np || dist.name) : dist.name) : (location.districtName || '');
-  const munLabel = mun ? getMunicipalityFullLabel(mun, lang) : (location.municipalityName || '');
-  const wardNum = location.ward ? String(location.ward).trim() : '';
-
-  const munWithWard = munLabel
-    ? (wardNum ? `${munLabel}-${wardNum}` : munLabel)
-    : (wardNum ? `${lang === 'ne' ? 'वडा नं.' : 'Ward'} ${wardNum}` : '');
-
-  return [munWithWard, distLabel, provLabel].filter(Boolean).join(', ');
-}
-
-export default function NepalAddressFields({ value = EMPTY_NEPAL_LOCATION, onChange, lang = 'en', compact = false }) {
+export default function NepalAddressFields({
+  value = EMPTY_NEPAL_LOCATION,
+  onChange,
+  lang = 'en',
+  compact = false
+}) {
+  // 1. All Provinces (7)
   const provinces = useMemo(() => getProvinces(), []);
 
+  // Normalize selected province (support name or id)
+  const selectedProvinceName = useMemo(() => {
+    if (!value) return '';
+    const raw = String(value.provinceName || value.provinceId || '').trim();
+    if (!raw) return '';
+    const match = provinces.find(
+      p => p.name.toLowerCase() === raw.toLowerCase() || p.nameNp.toLowerCase() === raw.toLowerCase()
+    );
+    return match ? match.name : raw;
+  }, [value?.provinceName, value?.provinceId, provinces]);
+
+  // 2. Dependent Districts: ONLY districts in selected province
   const districts = useMemo(() => {
-    if (!value?.provinceId) return [];
-    return [...getDistricts(Number(value.provinceId))].sort((a, b) => a.name.localeCompare(b.name));
-  }, [value?.provinceId]);
+    if (!selectedProvinceName) return [];
+    return getDistrictsByProvince(selectedProvinceName);
+  }, [selectedProvinceName]);
 
-  const municipalities = useMemo(() => {
-    if (!value?.districtId) return [];
-    return [...getMunicipalities(Number(value.districtId))].sort((a, b) => a.name.localeCompare(b.name));
-  }, [value?.districtId]);
+  // Normalize selected district
+  const selectedDistrictName = useMemo(() => {
+    if (!value) return '';
+    const raw = String(value.districtName || value.districtId || '').trim();
+    if (!raw) return '';
+    const match = districts.find(
+      d => d.name.toLowerCase() === raw.toLowerCase() || d.nameNp.toLowerCase() === raw.toLowerCase()
+    );
+    return match ? match.name : raw;
+  }, [value?.districtName, value?.districtId, districts]);
 
+  // 3. Dependent Local Levels: ONLY local levels in selected district
+  const localLevels = useMemo(() => {
+    if (!selectedDistrictName) return [];
+    return getLocalLevelsByDistrict(selectedProvinceName, selectedDistrictName);
+  }, [selectedProvinceName, selectedDistrictName]);
+
+  // Selected Local Level object
+  const selectedLocalLevel = useMemo(() => {
+    if (!value) return null;
+    const raw = String(value.municipalityName || value.municipalityId || '').trim();
+    if (!raw || localLevels.length === 0) return null;
+    return (
+      localLevels.find(
+        ll => ll.name.toLowerCase() === raw.toLowerCase() ||
+              ll.fullTitle.toLowerCase() === raw.toLowerCase() ||
+              String(ll.sn) === raw
+      ) || null
+    );
+  }, [value?.municipalityName, value?.municipalityId, localLevels]);
+
+  // 4. Dependent Wards: ONLY wards belonging to selected municipality
   const wards = useMemo(() => {
-    if (!value?.municipalityId) return [];
-    return getWards(Number(value.municipalityId));
-  }, [value?.municipalityId]);
+    if (!selectedLocalLevel) return [];
+    return Array.from({ length: selectedLocalLevel.totalWards }, (_, i) => i + 1);
+  }, [selectedLocalLevel]);
 
+  // Emit changes to parent component
   const emitChange = (nextLocation) => {
     if (onChange) {
-      onChange(nextLocation, composeNepalAddress(nextLocation, lang));
+      const composed = composeNepalAddress(nextLocation, lang);
+      onChange(nextLocation, composed);
     }
   };
 
+  // Province Change -> resets District, Municipality, and Ward
   const handleProvinceChange = (e) => {
-    const provinceId = e.target.value;
-    const prov = provinceId ? getProvince(Number(provinceId)) : null;
-    emitChange({
+    const provName = e.target.value;
+    const nextLoc = {
       ...EMPTY_NEPAL_LOCATION,
-      provinceId,
-      provinceName: prov ? prov.name : ''
-    });
+      provinceId: provName,
+      provinceName: provName
+    };
+    emitChange(nextLoc);
   };
 
+  // District Change -> resets Municipality and Ward
   const handleDistrictChange = (e) => {
-    const districtId = e.target.value;
-    const dist = districtId ? getDistrict(Number(districtId)) : null;
-    emitChange({
+    const distName = e.target.value;
+    const nextLoc = {
       ...value,
-      districtId,
-      districtName: dist ? dist.name : '',
+      provinceId: selectedProvinceName,
+      provinceName: selectedProvinceName,
+      districtId: distName,
+      districtName: distName,
       municipalityId: '',
       municipalityName: '',
       ward: ''
-    });
+    };
+    emitChange(nextLoc);
   };
 
+  // Municipality Change -> resets Ward
   const handleMunicipalityChange = (e) => {
-    const municipalityId = e.target.value;
-    const mun = municipalityId ? getMunicipality(Number(municipalityId)) : null;
-    emitChange({
+    const localLevelVal = e.target.value;
+    const target = localLevels.find(
+      ll => ll.name === localLevelVal || ll.fullTitle === localLevelVal || String(ll.sn) === localLevelVal
+    );
+
+    const nextLoc = {
       ...value,
-      municipalityId,
-      municipalityName: mun ? getMunicipalityFullLabel(mun, 'en') : '',
+      provinceId: selectedProvinceName,
+      provinceName: selectedProvinceName,
+      districtId: selectedDistrictName,
+      districtName: selectedDistrictName,
+      municipalityId: target ? String(target.sn) : localLevelVal,
+      municipalityName: target ? target.fullTitle : localLevelVal,
       ward: ''
-    });
+    };
+    emitChange(nextLoc);
   };
 
+  // Ward Change
   const handleWardChange = (e) => {
-    emitChange({
+    const wardVal = e.target.value;
+    const nextLoc = {
       ...value,
-      ward: e.target.value
-    });
+      provinceId: selectedProvinceName,
+      provinceName: selectedProvinceName,
+      districtId: selectedDistrictName,
+      districtName: selectedDistrictName,
+      municipalityId: selectedLocalLevel ? String(selectedLocalLevel.sn) : (value.municipalityId || ''),
+      municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : (value.municipalityName || ''),
+      ward: wardVal
+    };
+    emitChange(nextLoc);
   };
 
-  const selectClass = `w-full px-3 ${compact ? 'py-1.5' : 'py-2'} text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-900/50 cursor-pointer`;
-  const labelClass = 'block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1';
+  const selectBaseClass = `w-full px-3 ${compact ? 'py-1.5' : 'py-2'} text-xs border rounded-xl outline-none font-medium transition cursor-pointer`;
+  const activeClass = 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500 shadow-2xs';
+  const disabledClass = 'border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/40 text-slate-400 dark:text-slate-500 cursor-not-allowed';
+
+  const labelClass = 'block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1';
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label className={labelClass}>{lang === 'en' ? 'Province' : 'प्रदेश'}</label>
-        <select value={value?.provinceId || ''} onChange={handleProvinceChange} className={selectClass}>
-          <option value="">{lang === 'en' ? '-- Select Province --' : '-- प्रदेश छान्नुहोस् --'}</option>
-          {provinces.map((p) => (
-            <option key={p.id} value={String(p.id)}>
-              {lang === 'ne' ? `${p.name_np} (${p.name})` : `${p.name} (${p.name_np})`}
+    <div className="space-y-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* 1. Province Dropdown */}
+        <div>
+          <label className={labelClass}>
+            {lang === 'en' ? 'Province' : 'प्रदेश'}
+            <span className="text-rose-500 ml-0.5">*</span>
+          </label>
+          <select
+            value={selectedProvinceName}
+            onChange={handleProvinceChange}
+            className={`${selectBaseClass} ${activeClass}`}
+          >
+            <option value="">
+              {lang === 'en' ? '-- Select Province --' : '-- प्रदेश छान्नुहोस् --'}
             </option>
-          ))}
-        </select>
+            {provinces.map((p) => (
+              <option key={p.name} value={p.name}>
+                {lang === 'ne' ? `${p.nameNp} (${p.name})` : `${p.name} (${p.nameNp})`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 2. District Dropdown (Dependent on Province) */}
+        <div>
+          <label className={labelClass}>
+            {lang === 'en' ? 'District' : 'जिल्ला'}
+            <span className="text-rose-500 ml-0.5">*</span>
+          </label>
+          <select
+            value={selectedDistrictName}
+            onChange={handleDistrictChange}
+            disabled={!selectedProvinceName}
+            className={`${selectBaseClass} ${selectedProvinceName ? activeClass : disabledClass}`}
+          >
+            <option value="">
+              {!selectedProvinceName
+                ? (lang === 'en' ? '-- Select Province First --' : '-- पहिले प्रदेश छान्नुहोस् --')
+                : (lang === 'en' ? '-- Select District --' : '-- जिल्ला छान्नुहोस् --')}
+            </option>
+            {districts.map((d) => (
+              <option key={d.name} value={d.name}>
+                {lang === 'ne' ? `${d.nameNp} (${d.name})` : `${d.name} (${d.nameNp})`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 3. Municipality / Local Level Dropdown (Dependent on District) */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+              {lang === 'en' ? 'Local Level / Municipality' : 'स्थानीय तह / नगरपालिका'}
+              <span className="text-rose-500 ml-0.5">*</span>
+            </label>
+            {selectedLocalLevel && (
+              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                {selectedLocalLevel.totalWards} {lang === 'en' ? 'Wards' : 'वडा'}
+              </span>
+            )}
+          </div>
+          <select
+            value={selectedLocalLevel ? selectedLocalLevel.fullTitle : (value?.municipalityName || '')}
+            onChange={handleMunicipalityChange}
+            disabled={!selectedDistrictName}
+            className={`${selectBaseClass} ${selectedDistrictName ? activeClass : disabledClass}`}
+          >
+            <option value="">
+              {!selectedDistrictName
+                ? (lang === 'en' ? '-- Select District First --' : '-- पहिले जिल्ला छान्नुहोस् --')
+                : (lang === 'en' ? '-- Select Local Level --' : '-- स्थानीय तह छान्नुहोस् --')}
+            </option>
+            {localLevels.map((ll) => (
+              <option key={ll.sn} value={ll.fullTitle}>
+                {lang === 'ne' ? `${ll.fullTitleNp || ll.fullTitle}` : `${ll.fullTitle}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 4. Ward Dropdown (Dependent on Municipality) */}
+        <div>
+          <label className={labelClass}>
+            {lang === 'en' ? 'Ward Number' : 'वडा नं.'}
+            <span className="text-rose-500 ml-0.5">*</span>
+          </label>
+          <select
+            value={value?.ward || ''}
+            onChange={handleWardChange}
+            disabled={!selectedLocalLevel}
+            className={`${selectBaseClass} ${selectedLocalLevel ? activeClass : disabledClass}`}
+          >
+            <option value="">
+              {!selectedLocalLevel
+                ? (lang === 'en' ? '-- Select Municipality First --' : '-- पहिले नगरपालिका छान्नुहोस् --')
+                : (lang === 'en' ? '-- Select Ward --' : '-- वडा छान्नुहोस् --')}
+            </option>
+            {wards.map((w) => (
+              <option key={w} value={String(w)}>
+                {lang === 'ne' ? `वडा नं. ${w}` : `Ward ${w}`}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label className={labelClass}>{lang === 'en' ? 'District' : 'जिल्ला'}</label>
-        <select
-          value={value?.districtId || ''}
-          onChange={handleDistrictChange}
-          disabled={!value?.provinceId}
-          className={selectClass}
-        >
-          <option value="">{lang === 'en' ? '-- Select District --' : '-- जिल्ला छान्नुहोस् --'}</option>
-          {districts.map((d) => (
-            <option key={d.id} value={String(d.id)}>
-              {lang === 'ne' ? `${d.name_np} (${d.name})` : `${d.name} (${d.name_np})`}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className={labelClass}>{lang === 'en' ? 'Municipality / Local Level' : 'नगरपालिका / गाउँपालिका'}</label>
-        <select
-          value={value?.municipalityId || ''}
-          onChange={handleMunicipalityChange}
-          disabled={!value?.districtId}
-          className={selectClass}
-        >
-          <option value="">{lang === 'en' ? '-- Select Municipality --' : '-- स्थानीय तह छान्नुहोस् --'}</option>
-          {municipalities.map((m) => (
-            <option key={m.id} value={String(m.id)}>
-              {getMunicipalityFullLabel(m, lang)}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className={labelClass}>{lang === 'en' ? 'Ward No.' : 'वडा नं.'}</label>
-        <select
-          value={value?.ward || ''}
-          onChange={handleWardChange}
-          disabled={!value?.municipalityId}
-          className={selectClass}
-        >
-          <option value="">{lang === 'en' ? '-- Select Ward --' : '-- वडा छान्नुहोस् --'}</option>
-          {wards.map((w) => (
-            <option key={w.id} value={String(w.ward_number)}>
-              {lang === 'ne' ? `वडा नं. ${w.ward_number}` : `Ward ${w.ward_number}`}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Composed Address Preview Pill */}
+      {(selectedLocalLevel || value?.ward) && (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-semibold">
+          <span className="shrink-0 font-bold">📍 {lang === 'en' ? 'Location:' : 'ठेगाना:'}</span>
+          <span className="truncate">
+            {composeNepalAddress(
+              {
+                provinceName: selectedProvinceName,
+                districtName: selectedDistrictName,
+                municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : value?.municipalityName,
+                ward: value?.ward
+              },
+              lang
+            )}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
