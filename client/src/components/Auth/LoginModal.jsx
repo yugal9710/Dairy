@@ -7,6 +7,7 @@ import {
   Eye,
   EyeOff,
   Milk,
+  Globe,
   X
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -19,7 +20,7 @@ export default function LoginModal({
   onLoginSuccess,
   onLogout
 }) {
-  const { lang, t } = useLanguage();
+  const { lang, toggleLang, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -74,25 +75,40 @@ export default function LoginModal({
         
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600 p-5 text-white relative shrink-0">
-          {currentUser && typeof onClose === 'function' && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-          
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/10 rounded-xl border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-              <Milk className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-12 h-12 bg-white/10 rounded-xl border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
+                <Milk className="w-6 h-6 text-white" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-lg font-black tracking-tight">
+                  {lang === 'en' ? 'Dairy ERP 2.0 Sign In' : 'डेरी ईआरपी २.० लगइन'}
+                </h2>
+              </div>
             </div>
-            <div className="min-w-0 pr-8">
-              <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
-                <span>{lang === 'en' ? 'Dairy ERP 2.0 Sign In' : 'डेरी ईआरपी २.० लगइन'}</span>
-              </h2>
+
+            {/* Language Switcher & Optional Close Button */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={toggleLang}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-xs font-bold text-white transition cursor-pointer"
+                title={lang === 'en' ? 'नेपालीमा परिवर्तन गर्नुहोस्' : 'Switch to English'}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{lang === 'en' ? 'नेपाली' : 'English'}</span>
+              </button>
+
+              {currentUser && typeof onClose === 'function' && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
         </div>

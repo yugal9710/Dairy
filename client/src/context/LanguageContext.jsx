@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { translations, getTranslation } from '../utils/translations';
 
 const LanguageContext = createContext({
-  lang: 'ne',
+  lang: 'en',
   setLang: () => {},
   toggleLang: () => {},
   t: (key, fallback) => fallback || key
@@ -12,9 +12,12 @@ export function LanguageProvider({ children }) {
   const [lang, setLangState] = useState(() => {
     try {
       const saved = localStorage.getItem('dairy_lang');
-      return saved === 'en' ? 'en' : 'ne';
+      if (saved === 'ne' || saved === 'en') {
+        return saved;
+      }
+      return 'en';
     } catch {
-      return 'ne';
+      return 'en';
     }
   });
 
