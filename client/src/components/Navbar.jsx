@@ -30,6 +30,7 @@ export default function Navbar({
   availableTenants = [],
   onSwitchTenant,
   onOpenLogin,
+  onLogout,
   onOpenCalendar,
   subscriptionWarning,
   onToggleSidebar,
@@ -458,7 +459,8 @@ export default function Navbar({
                     type="button"
                     onClick={() => {
                       setSettingsOpen(false);
-                      if (onOpenLogin) onOpenLogin();
+                      if (onLogout) onLogout();
+                      else if (onOpenLogin) onOpenLogin();
                     }}
                     className="w-full text-left px-2.5 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center justify-between group cursor-pointer"
                   >

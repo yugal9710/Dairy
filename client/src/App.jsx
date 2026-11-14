@@ -32,14 +32,7 @@ function DairyMainApp() {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('dairy_user');
-      return saved ? JSON.parse(saved) : {
-        id: 1,
-        tenantId: 1,
-        username: 'admin',
-        name: 'Platform Owner / Admin',
-        email: 'admin@dairy.local',
-        roles: ['SuperAdmin', 'Admin']
-      };
+      return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
@@ -97,7 +90,13 @@ function DairyMainApp() {
   };
 
   // Modals
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(() => {
+    try {
+      return !localStorage.getItem('dairy_user');
+    } catch {
+      return true;
+    }
+  });
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [fatSnfConfigModalOpen, setFatSnfConfigModalOpen] = useState(false);
   const [slipModalOpen, setSlipModalOpen] = useState(false);
@@ -137,6 +136,10 @@ function DairyMainApp() {
 
   // Fetch all core system data
   const fetchData = useCallback(async () => {
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
     try {
       syncFetchAuthContext({
         user: currentUser,
@@ -436,6 +439,24 @@ function DairyMainApp() {
       : (lang === 'en' ? 'Notice: Software subscription expires soon. Please renew on time.' : 'सूचना: सफ्टवेयर सदस्यता चाँडै समाप्त हुँदैछ । कृपया समयमै नवीकरण गर्नुहोस् ।')
   } : null;
 
+  if (!currentUser) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden select-none">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/40 via-slate-950 to-slate-950 -z-10" />
+          <LoginModal
+            isOpen={true}
+            onClose={null}
+            currentUser={null}
+            activeTenant={activeTenant}
+            onLoginSuccess={handleLoginSuccess}
+            onLogout={handleLogout}
+          />
+        </div>
+      </ErrorBoundary>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className="h-screen print:h-auto bg-slate-100 dark:bg-slate-950 flex flex-col overflow-hidden print:overflow-visible text-slate-800 dark:text-slate-100 antialiased font-sans">
@@ -446,6 +467,7 @@ function DairyMainApp() {
           availableTenants={availableTenants}
           onSwitchTenant={handleSwitchTenant}
           onOpenLogin={() => setLoginModalOpen(true)}
+          onLogout={handleLogout}
           onOpenCalendar={() => setCalendarModalOpen(true)}
           subscriptionWarning={subscriptionWarning}
           onToggleSidebar={handleToggleSidebar}

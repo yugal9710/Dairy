@@ -76,14 +76,16 @@ export default function LoginModal({
         
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600 p-5 text-white relative shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {currentUser && typeof onClose === 'function' && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
           
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/10 rounded-xl border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
@@ -102,7 +104,7 @@ export default function LoginModal({
 
         {/* Body */}
         <div className="p-5 space-y-4">
-          {currentUser && (
+          {currentUser ? (
             <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 flex items-center justify-between text-xs">
               <div className="truncate pr-2">
                 <span className="text-slate-500 dark:text-slate-400">{lang === 'en' ? 'Signed in as: ' : 'हालको लगइन: '}</span>
@@ -117,6 +119,15 @@ export default function LoginModal({
                 <LogOut className="w-3.5 h-3.5" />
                 <span>{lang === 'en' ? 'Sign Out' : 'बाहिरिनुहोस्'}</span>
               </button>
+            </div>
+          ) : (
+            <div className="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center gap-2.5 text-xs text-emerald-900 dark:text-emerald-200">
+              <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span className="font-medium">
+                {lang === 'en'
+                  ? 'Enter your user ID and password to sign in again.'
+                  : 'पुनः लगइन गर्न कृपया आफ्नो प्रयोगकर्ता नाम र पासवर्ड प्रविष्ट गर्नुहोस् ।'}
+              </span>
             </div>
           )}
 
@@ -183,15 +194,17 @@ export default function LoginModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 text-center shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
-          >
-            {t('close')}
-          </button>
-        </div>
+        {currentUser && typeof onClose === 'function' && (
+          <div className="p-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 text-center shrink-0">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
+            >
+              {t('close')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
