@@ -411,8 +411,7 @@ class MultiTenantDatabase {
         { id: 6, code: 6, nameInNepali: 'होटल पशुपति प्लाजा', nameInEnglish: 'Hotel Pashupati Plaza', customerType: 2, phone: '01-4490123', address: 'गौशाला चोक, काठमाडौं', accountNumber: 'HBL-990011', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
         { id: 7, code: 7, nameInNepali: 'गौशाला मिष्ठान्न भण्डार', nameInEnglish: 'Gaushala Sweets & Bakery', customerType: 2, phone: '9846011223', address: 'गौशाला-१२, काठमाडौं', accountNumber: 'SBI-223344', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
         { id: 8, code: 8, nameInNepali: 'एभरेस्ट क्याफे एन्ड डेरी', nameInEnglish: 'Everest Cafe & Dairy', customerType: 2, phone: '9811223344', address: 'चावहिल, काठमाडौं', accountNumber: 'NIMB-778899', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
-        { id: 9, code: 9, nameInNepali: 'काठमाडौं सेन्ट्रल डेरी', nameInEnglish: 'Kathmandu Central Dairy', customerType: 3, phone: '9801998877', address: 'पुरानो बानेश्वर, काठमाडौं', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
-        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9841998811', address: 'चावहिल-७, काठमाडौं', accountNumber: 'NABIL-012004888', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+        { id: 9, code: 9, nameInNepali: 'काठमाडौं सेन्ट्रल डेरी', nameInEnglish: 'Kathmandu Central Dairy', customerType: 3, phone: '9801998877', address: 'पुरानो बानेश्वर, काठमाडौं', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day }
       ];
     } else if (tid === 2) {
       tenantCustomers = [
@@ -424,8 +423,7 @@ class MultiTenantDatabase {
         { id: 6, code: 6, nameInNepali: 'हेटौंडा डेरी मार्ट', nameInEnglish: 'Hetauda Dairy Mart', customerType: 2, phone: '057-520111', address: 'मेनरोड, हेटौंडा', accountNumber: 'HBL-881122', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
         { id: 7, code: 7, nameInNepali: 'रोयल मकवानपुर स्वीट्स', nameInEnglish: 'Royal Makwanpur Sweets', customerType: 2, phone: '9845011998', address: 'सिमाना, हेटौंडा', accountNumber: 'SBI-334455', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
         { id: 8, code: 8, nameInNepali: 'भुटनदेवी होटल एन्ड रेस्टुरेन्ट', nameInEnglish: 'Bhutandevi Hotel & Restaurant', customerType: 2, phone: '9815223344', address: 'हेटौंडा-४, मकवानपुर', accountNumber: 'NIMB-445566', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
-        { id: 9, code: 9, nameInNepali: 'मकवानपुर ताजा मार्ट', nameInEnglish: 'Makwanpur Fresh Mart', customerType: 3, phone: '9805998877', address: 'हेटौंडा-२, मकवानपुर', accountNumber: 'KBL-223344', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
-        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9845998811', address: 'हेटौंडा-६, मकवानपुर', accountNumber: 'NABIL-0550099', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+        { id: 9, code: 9, nameInNepali: 'मकवानपुर ताजा मार्ट', nameInEnglish: 'Makwanpur Fresh Mart', customerType: 3, phone: '9805998877', address: 'हेटौंडा-२, मकवानपुर', accountNumber: 'KBL-223344', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day }
       ];
     } else {
       tenantCustomers = [
@@ -437,8 +435,7 @@ class MultiTenantDatabase {
         { id: 6, code: 6, nameInNepali: 'होटल अन्नपूर्ण भ्यु', nameInEnglish: 'Hotel Annapurna View', customerType: 2, phone: '061-460111', address: 'लेकसाइड, पोखरा', accountNumber: 'HBL-990011', remarks: 'दैनिक दूध, दही र पनिरको थोक खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 45 * day },
         { id: 7, code: 7, nameInNepali: 'पोखरा स्वीट्स एन्ड बेकरी', nameInEnglish: 'Pokhara Sweets & Bakery', customerType: 2, phone: '9846011223', address: 'न्यूरोड, पोखरा', accountNumber: 'SBI-223344', remarks: 'मिठाई उत्पादनका लागि थोक पनिर र क्रिम खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 35 * day },
         { id: 8, code: 8, nameInNepali: 'फेवा लेकसाइड क्याफे', nameInEnglish: 'Fewa Lakeside Cafe', customerType: 2, phone: '9816223344', address: 'लेकसाइड, पोखरा', accountNumber: 'NIMB-778899', remarks: 'अर्गानिक दूध तथा दही खरिदकर्ता', isDeleted: false, creationDateTimeUtms: now - 25 * day },
-        { id: 9, code: 9, nameInNepali: 'पोखरा डेरी कर्नर', nameInEnglish: 'Pokhara Dairy Corner', customerType: 3, phone: '9806998877', address: 'पृथ्वीचोक, पोखरा', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day },
-        { id: 10, code: 10, nameInNepali: 'कमल बहादुर लामा', nameInEnglish: 'Kamal Bahadur Lama', customerType: 1, phone: '9846998811', address: 'पोखरा-१२, कास्की', accountNumber: 'NABIL-0610099', remarks: 'दैनिक दूध आपूर्तिकर्ता', isDeleted: false, creationDateTimeUtms: now - 10 * day }
+        { id: 9, code: 9, nameInNepali: 'पोखरा डेरी कर्नर', nameInEnglish: 'Pokhara Dairy Corner', customerType: 3, phone: '9806998877', address: 'पृथ्वीचोक, पोखरा', accountNumber: 'KBL-445566', remarks: 'स्थानीय दुध बिक्रेता तथा संकलन केन्द्र', isDeleted: false, creationDateTimeUtms: now - 15 * day }
       ];
     }
 

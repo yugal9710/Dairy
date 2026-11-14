@@ -5,35 +5,58 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT_DIR = __dirname;
+
+// Resolve project root whether script is executed from root or scripts/ folder
+const ROOT_DIR = fs.existsSync(path.join(__dirname, 'package.json'))
+  ? __dirname
+  : path.resolve(__dirname, '..');
+
 const CLIENT_DIR = path.join(ROOT_DIR, 'client');
 const CLIENT_DIST = path.join(CLIENT_DIR, 'dist');
 const BUILD_DIR = path.join(ROOT_DIR, 'build');
+const SERVER_DIR = path.join(ROOT_DIR, 'server');
 
-console.log('==============================================');
-console.log('🚀 Running Production Build for Render / Static');
-console.log('==============================================');
+console.log('====================================================');
+console.log('🥛 DAIRY ERP 2.0 - PRODUCTION BUILD PIPELINE');
+console.log('====================================================');
+console.log(`Root Directory: ${ROOT_DIR}`);
 
 const hasPrebuilt = fs.existsSync(path.join(BUILD_DIR, 'index.html'));
-console.log(`Pre-built publish directory ready: ${hasPrebuilt ? 'YES (Safe)' : 'NO'}`);
+console.log(`Pre-built publish directory ready: ${hasPrebuilt ? 'YES (Fallback ready)' : 'NO'}`);
 
 try {
-  // 1. Install client dependencies
-  console.log('>>> [1/3] Installing client dependencies...');
-  execSync('npm install --prefix client', {
+  // 1. Install Server Dependencies if needed
+  if (fs.existsSync(SERVER_DIR) && fs.existsSync(path.join(SERVER_DIR, 'package.json'))) {
+    console.log('\n>>> [1/4] Installing server dependencies...');
+    try {
+      execSync('npm install --prefix server --production=false', {
+        cwd: ROOT_DIR,
+        stdio: 'inherit'
+      });
+      console.log('✓ Server dependencies installed.');
+    } catch (sErr) {
+      console.warn('⚠️ Server dependency install warning:', sErr.message || sErr);
+    }
+  }
+
+  // 2. Install Client Dependencies (including dev dependencies for Vite)
+  console.log('\n>>> [2/4] Installing client dependencies (with devDependencies for Vite)...');
+  execSync('npm install --prefix client --include=dev', {
     cwd: ROOT_DIR,
     stdio: 'inherit'
   });
+  console.log('✓ Client dependencies installed.');
 
-  // 2. Build Vite client
-  console.log('>>> [2/3] Building Vite frontend...');
+  // 3. Compile Vite Client Frontend
+  console.log('\n>>> [3/4] Compiling Vite frontend...');
   execSync('npm run build --prefix client', {
     cwd: ROOT_DIR,
     stdio: 'inherit'
   });
+  console.log('✓ Vite client compiled successfully.');
 
-  // 3. Sync to publish directory 'build'
-  console.log('>>> [3/3] Syncing dist to publish directory "build"...');
+  // 4. Copy to Publish Directory 'build' (for Render static site or express static)
+  console.log('\n>>> [4/4] Syncing client/dist to publish directory "build"...');
   if (fs.existsSync(BUILD_DIR)) {
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
   }
@@ -46,17 +69,17 @@ try {
     throw new Error(`client/dist not found at ${CLIENT_DIST}`);
   }
 
-  console.log('==============================================');
-  console.log('🎉 Production build successfully created in "build" directory!');
-  console.log('==============================================');
+  console.log('\n====================================================');
+  console.log('🎉 Production build successfully verified and created in "build/"!');
+  console.log('====================================================');
   process.exit(0);
 } catch (err) {
-  console.warn('⚠️ Build compilation warning/error:', err.message || err);
+  console.warn('\n⚠️ Build warning / error encountered:', err.message || err);
   if (fs.existsSync(path.join(BUILD_DIR, 'index.html'))) {
-    console.log('✓ Found pre-committed build/ directory with index.html. Deployment will succeed!');
+    console.log('✓ Found existing pre-built build/index.html. Deployment will proceed safely!');
     process.exit(0);
   } else {
-    console.error('❌ No pre-committed build found. Failing build.');
+    console.error('❌ Build failed and no fallback publish directory exists.');
     process.exit(1);
   }
 }

@@ -208,54 +208,55 @@ export default function FinanceManager({
   return (
     <div className="space-y-6">
       {/* 1. Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 lg:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 lg:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <DollarSign className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 leading-tight">
               {lang === 'en' ? 'Finance, Cash & Bank Ledgers' : 'वित्त, नगद तथा बैंक खाता लेजर'}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 sm:line-clamp-none">
               {lang === 'en'
-                ? 'Track customer receipts, farmer & supplier disbursements, operational expenses, and maintain separate cash and bank ledgers.'
+                ? 'Track customer receipts, disbursements, operational expenses, and maintain separate cash and bank ledgers.'
                 : 'ग्राहकबाट संकलित रकम, आपूर्तिकर्ता भुक्तानी, दैनिक सञ्चालन खर्च तथा नगद र बैंक खाता लेजर'}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={onRefresh}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition cursor-pointer"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>{lang === 'en' ? 'Refresh' : 'ताजा'}</span>
-          </button>
-
+        <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
           <button
             onClick={() => setPaymentInModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-600/20 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-600/20 whitespace-nowrap cursor-pointer"
           >
-            <ArrowDownRight className="w-4 h-4" />
+            <ArrowDownRight className="w-3.5 h-3.5 shrink-0" />
             <span>{lang === 'en' ? 'Customer Receipt' : 'ग्राहकबाट प्राप्त'}</span>
           </button>
 
           <button
             onClick={() => setPaymentOutModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-blue-600/20 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-blue-600/20 whitespace-nowrap cursor-pointer"
           >
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
             <span>{lang === 'en' ? 'Disbursement' : 'भुक्तानी निकासी'}</span>
           </button>
 
           <button
             onClick={() => setExpenseModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-rose-600/20 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-rose-600/20 whitespace-nowrap cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 shrink-0" />
             <span>{lang === 'en' ? 'Record Expense' : 'खर्च दर्ता'}</span>
+          </button>
+
+          <button
+            onClick={onRefresh}
+            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition whitespace-nowrap cursor-pointer"
+            title={lang === 'en' ? 'Refresh Ledgers' : 'ताजा गर्नुहोस्'}
+          >
+            <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+            <span>{lang === 'en' ? 'Refresh' : 'ताजा'}</span>
           </button>
         </div>
       </div>
@@ -412,10 +413,10 @@ export default function FinanceManager({
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase font-bold border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="py-3 px-4">{lang === 'en' ? 'Date & Time' : 'मिति र समय'}</th>
-                  <th className="py-3 px-4 text-center">{lang === 'en' ? 'Account' : 'खाता'}</th>
-                  <th className="py-3 px-4 text-center">{lang === 'en' ? 'Type' : 'प्रकार'}</th>
-                  <th className="py-3 px-4 text-right">{lang === 'en' ? 'Amount' : 'रकम'}</th>
-                  <th className="py-3 px-4 text-right">{lang === 'en' ? 'Balance After' : 'मौज्दात रकम'}</th>
+                  <th className="py-3 px-4 text-center whitespace-nowrap">{lang === 'en' ? 'Account' : 'खाता'}</th>
+                  <th className="py-3 px-4 text-center whitespace-nowrap min-w-[75px]">{lang === 'en' ? 'Type' : 'प्रकार'}</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">{lang === 'en' ? 'Amount' : 'रकम'}</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">{lang === 'en' ? 'Balance After' : 'मौज्दात रकम'}</th>
                   <th className="py-3 px-4">{lang === 'en' ? 'Category' : 'शीर्षक'}</th>
                   <th className="py-3 px-4">{lang === 'en' ? 'Ref #' : 'भौचर नं.'}</th>
                   <th className="py-3 px-4">{lang === 'en' ? 'Description' : 'विवरण'}</th>
@@ -429,11 +430,11 @@ export default function FinanceManager({
 
                   return (
                     <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition">
-                      <td className="py-2.5 px-4 text-slate-600 dark:text-slate-400 font-mono">
+                      <td className="py-2.5 px-4 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">
                         {entry.transactionDateUtms ? new Date(entry.transactionDateUtms).toLocaleString() : (entry.date || '-')}
                       </td>
 
-                      <td className="py-2.5 px-4 text-center">
+                      <td className="py-2.5 px-4 text-center whitespace-nowrap">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           isCashAcct
                             ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
@@ -443,13 +444,18 @@ export default function FinanceManager({
                         </span>
                       </td>
 
-                      <td className="py-2.5 px-4 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      <td className="py-2.5 px-4 text-center whitespace-nowrap">
+                        <span className={`inline-flex items-center justify-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide whitespace-nowrap border shadow-2xs ${
                           isIn
-                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200'
-                            : 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200'
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                            : 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-300 dark:border-rose-700'
                         }`}>
-                          {isIn ? '+ In' : '- Out'}
+                          {isIn ? (
+                            <ArrowDownRight className="w-3 h-3 text-emerald-600 shrink-0" />
+                          ) : (
+                            <ArrowUpRight className="w-3 h-3 text-rose-600 shrink-0" />
+                          )}
+                          <span>{isIn ? '+ In' : '- Out'}</span>
                         </span>
                       </td>
 

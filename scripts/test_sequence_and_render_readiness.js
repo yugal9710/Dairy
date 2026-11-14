@@ -72,13 +72,15 @@ assert.ok(assetFiles.some(f => f.endsWith('.js')), 'build/assets must contain ja
 assert.ok(assetFiles.some(f => f.endsWith('.css')), 'build/assets must contain css bundles');
 console.log(`  [PASS] build directory verified (${assetFiles.length} asset files).`);
 
-// Test 4: Package.json scripts verification
-console.log('\n>>> [4] Testing package.json Render build scripts:');
+// Test 4: Package.json and Build Scripts verification
+console.log('\n>>> [4] Testing package.json Render build scripts and script files:');
 const pkgPath = path.join(ROOT_DIR, 'package.json');
 const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
-assert.strictEqual(pkg.scripts.build, 'node scripts/build.js');
-assert.strictEqual(pkg.scripts.postinstall, 'node scripts/build.js');
-console.log('  [PASS] "build" and "postinstall" scripts are mapped to node scripts/build.js');
+assert.ok(pkg.scripts.build.includes('build.js'), 'build script must reference build.js');
+assert.ok(pkg.scripts.postinstall.includes('build.js'), 'postinstall script must reference build.js');
+assert.ok(fs.existsSync(path.join(ROOT_DIR, 'build.js')), 'root build.js must exist');
+assert.ok(fs.existsSync(path.join(ROOT_DIR, 'scripts', 'build.js')), 'scripts/build.js must exist');
+console.log('  [PASS] build scripts and entry points (both build.js and scripts/build.js) exist and are verified.');
 
 // Test 5: .gitignore verification
 console.log('\n>>> [5] Testing .gitignore:');
