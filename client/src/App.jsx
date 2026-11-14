@@ -90,13 +90,7 @@ function DairyMainApp() {
   };
 
   // Modals
-  const [loginModalOpen, setLoginModalOpen] = useState(() => {
-    try {
-      return !localStorage.getItem('dairy_user');
-    } catch {
-      return true;
-    }
-  });
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [fatSnfConfigModalOpen, setFatSnfConfigModalOpen] = useState(false);
   const [slipModalOpen, setSlipModalOpen] = useState(false);
@@ -392,6 +386,7 @@ function DairyMainApp() {
     } else {
       setActiveTab('dashboard');
     }
+    setLoginModalOpen(false);
     fetchData();
   };
 
@@ -406,6 +401,7 @@ function DairyMainApp() {
     });
     setCurrentUser(null);
     setAuthToken('');
+    setLoginModalOpen(false);
     try {
       localStorage.removeItem('dairy_user');
       localStorage.removeItem('dairy_token');
@@ -446,7 +442,7 @@ function DairyMainApp() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/40 via-slate-950 to-slate-950 -z-10" />
           <LoginModal
             isOpen={true}
-            onClose={null}
+            onClose={() => setLoginModalOpen(false)}
             currentUser={null}
             activeTenant={activeTenant}
             onLoginSuccess={handleLoginSuccess}
