@@ -95,10 +95,10 @@ export default function Navbar({
 
       <div className="px-3 sm:px-4 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Dairy Logo, Hamburger Menu Button & Tenant Selector */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
           {/* Dairy Logo Illustration Tile */}
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden select-none p-1">
-            <svg viewBox="0 0 48 48" className="w-8 h-8 drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden select-none p-0.5 sm:p-1">
+            <svg viewBox="0 0 48 48" className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="24" cy="26" rx="20" ry="16" fill="#CCFBF1" />
               <path d="M14 18L18 13H26L30 18V38H14V18Z" fill="#FFFFFF" stroke="#0D9488" strokeWidth="2" strokeLinejoin="round" />
               <path d="M18 13V10H26V13" fill="#38BDF8" stroke="#0D9488" strokeWidth="2" strokeLinejoin="round" />
@@ -115,31 +115,31 @@ export default function Navbar({
           <button
             type="button"
             onClick={onToggleSidebar}
-            className={`p-2 rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 focus:outline-none transition-all flex items-center justify-center shrink-0 shadow-2xs cursor-pointer ${
+            className={`p-1.5 sm:p-2 rounded-xl border border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 focus:outline-none transition-all flex items-center justify-center shrink-0 shadow-2xs cursor-pointer ${
               isSidebarOpen ? 'bg-blue-50 dark:bg-blue-950/50 ring-2 ring-blue-400/40' : 'bg-white dark:bg-slate-800'
             }`}
             title={lang === 'en' ? 'Toggle Navigation Menu (Ctrl+B)' : 'मेनु खोल्नुहोस् / बन्द गर्नुहोस् (Ctrl+B)'}
             aria-label="Toggle Navigation Menu"
           >
-            <Menu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
           </button>
 
           {/* Organization Name & Valid Upto */}
           <div className="relative min-w-0">
             <button
               onClick={() => setTenantDropdownOpen(!tenantDropdownOpen)}
-              className="flex items-center gap-1.5 text-left group hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded-lg transition"
+              className="flex items-center gap-1.5 text-left group hover:bg-slate-50 dark:hover:bg-slate-800 p-0.5 sm:p-1 rounded-lg transition"
             >
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <h1 className="font-extrabold text-slate-800 dark:text-slate-100 text-xs min-[400px]:text-sm sm:text-base leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition truncate max-w-[130px] min-[400px]:max-w-[200px] sm:max-w-xs md:max-w-md">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <h1 className="font-extrabold text-slate-800 dark:text-slate-100 text-xs min-[400px]:text-sm sm:text-base leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition truncate max-w-[105px] min-[360px]:max-w-[135px] min-[420px]:max-w-[190px] sm:max-w-xs md:max-w-md">
                     {activeTenant?.organizationName || (lang === 'en' ? 'Sana Kisan Agri Cooperative Ltd.' : 'साना किसान कृषि सहकारी सस्था लि.')}
                   </h1>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 shrink-0" />
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5 font-medium">
+                <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5 font-medium truncate max-w-[105px] min-[360px]:max-w-[135px] min-[420px]:max-w-[190px] sm:max-w-none">
                   <Calendar className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Valid upto: <strong className="text-slate-700 dark:text-slate-200 font-bold">{validUptoFormatted}</strong></span>
+                  <span className="truncate">Valid upto: <strong className="text-slate-700 dark:text-slate-200 font-bold">{validUptoFormatted}</strong></span>
                   {activeTenant?.address && (
                     <>
                       <span className="text-slate-300 dark:text-slate-600 hidden md:inline">•</span>
@@ -205,19 +205,19 @@ export default function Navbar({
         </div>
 
         {/* Right Controls: Nepali Date Pill [ 📅 ], Language Toggle, Settings Button [ ⚙️ ] & Theme Switcher [ 🌙 ] */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Nepali Calendar Date Pill [ 📅 ] */}
           <button
             type="button"
             onClick={onOpenCalendar}
-            className="group flex items-center space-x-2 px-3 py-1 rounded-2xl border border-blue-200 bg-blue-50/70 dark:bg-slate-800/80 dark:border-slate-700 hover:bg-blue-100/70 dark:hover:bg-slate-750 transition-all shadow-2xs text-left cursor-pointer"
+            className="group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-2xl border border-blue-200 bg-blue-50/70 dark:bg-slate-800/80 dark:border-slate-700 hover:bg-blue-100/70 dark:hover:bg-slate-750 transition-all shadow-2xs text-left cursor-pointer shrink-0"
             title={lang === 'en' ? 'Open Nepali Calendar' : 'नेपाली पात्रो खोल्नुहोस्'}
             aria-label="Nepali Calendar"
           >
-            <div className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-              <Calendar className="w-4 h-4" />
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-blue-600 dark:text-blue-400 font-extrabold text-xs sm:text-sm tracking-tight pr-0.5">
+            <span className="hidden sm:inline text-blue-600 dark:text-blue-400 font-extrabold text-xs sm:text-sm tracking-tight pr-0.5 whitespace-nowrap">
               {todayBS.formattedBs}
             </span>
           </button>

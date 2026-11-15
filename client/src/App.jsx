@@ -87,6 +87,7 @@ function DairyMainApp() {
     if (!isTabAllowed(tab, roles, activeTenant, currentUser)) return;
     setActiveTab(tab);
     if (subTab) setSettingsSubTab(subTab);
+    setSidebarOpen(false);
   };
 
   // Modals

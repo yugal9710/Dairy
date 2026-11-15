@@ -119,7 +119,7 @@ export default function LoginModal({
                 <Milk className="w-6 h-6 text-white" />
               </div>
               <div className="min-w-0">
-                <h2 className="text-lg font-black tracking-tight">
+                <h2 className="text-base sm:text-lg font-black tracking-tight truncate">
                   {lang === 'en' ? 'Dairy ERP 2.0 Sign In' : 'डेरी ईआरपी २.० लगइन'}
                 </h2>
               </div>
@@ -163,7 +163,7 @@ export default function LoginModal({
           <form onSubmit={handleFormSubmit} className="space-y-3.5">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                {lang === 'en' ? 'Username or Email' : 'प्रयोगकर्ता नाम वा इमेल'}
+                {t('username')}
               </label>
               <div className="relative">
                 <input
@@ -271,7 +271,7 @@ export default function LoginModal({
                   <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 leading-tight">
                     {lang === 'en' ? 'Phone Call' : 'फोन कल'}
                   </span>
-                  <span className="text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 font-mono leading-tight mt-0.5 truncate w-full">
+                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 font-mono leading-tight mt-0.5 break-all w-full">
                     {supportPhone}
                   </span>
                 </a>
@@ -307,7 +307,7 @@ export default function LoginModal({
                   <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 leading-tight">
                     {lang === 'en' ? 'Email Desk' : 'इमेल डेस्क'}
                   </span>
-                  <span className="text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 font-mono leading-tight mt-0.5 truncate w-full">
+                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 font-mono leading-tight mt-0.5 break-all w-full">
                     {supportEmail}
                   </span>
                 </a>

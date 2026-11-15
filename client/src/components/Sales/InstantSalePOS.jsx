@@ -761,7 +761,7 @@ export default function InstantSalePOS({
                     {lang === 'en' ? 'No items in bill yet' : 'बिल सूची खाली छ'}
                   </div>
                   <p className="text-[11px] text-slate-400 px-3">
-                    {lang === 'en' ? 'Click any product on the left to add' : 'बायाँबाट उत्पादन क्लिक गरी थप्नुहोस्'}
+                    {lang === 'en' ? 'Click any product from the catalog to add' : 'क्याटलगबाट उत्पादन क्लिक गरी थप्नुहोस्'}
                   </p>
                 </div>
               )}

@@ -955,7 +955,7 @@ export default function MilkCollectionManager({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'totalSnfPrice' : 'एस.एन.एफ. रकम प्रति लिटर'}
+                    {lang === 'en' ? 'Total SNF Price' : 'एस.एन.एफ. रकम प्रति लिटर'}
                   </label>
                   <input
                     type="text"
@@ -970,7 +970,7 @@ export default function MilkCollectionManager({
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {lang === 'en' ? 'DateTimeLocal' : 'मिति र समय'}
+                      {lang === 'en' ? 'Date & Time' : 'मिति र समय'}
                     </label>
                     <button
                       type="button"
@@ -1198,9 +1198,9 @@ export default function MilkCollectionManager({
               <strong className="text-slate-800 dark:text-slate-100 text-sm font-black block mt-0.5">{todayStats.farmerCount}</strong>
 
               <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Quantity:' : 'कुल परिमाण:'}</div>
-              <strong className="text-blue-700 dark:text-blue-400 text-sm font-black block mt-0.5">{todayStats.totalQuantity.toFixed(2)} लि.</strong>
+              <strong className="text-blue-700 dark:text-blue-400 text-sm font-black block mt-0.5">{todayStats.totalQuantity.toFixed(2)} {lang === 'en' ? 'L' : 'लि.'}</strong>
 
-              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price(रू):' : 'जम्मा रकम(रू):'}</div>
+              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price (Rs.):' : 'जम्मा रकम (रू):'}</div>
               <strong className="text-emerald-700 dark:text-emerald-400 text-sm font-black block mt-0.5">{todayStats.totalPrice.toFixed(2)}</strong>
             </div>
 
@@ -1228,9 +1228,9 @@ export default function MilkCollectionManager({
               <strong className="text-slate-800 dark:text-slate-100 text-sm font-black block mt-0.5">{morningStats.farmerCount}</strong>
 
               <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Quantity:' : 'कुल परिमाण:'}</div>
-              <strong className="text-amber-700 dark:text-amber-500 text-sm font-black block mt-0.5">{morningStats.totalQuantity.toFixed(2)} लि.</strong>
+              <strong className="text-amber-700 dark:text-amber-500 text-sm font-black block mt-0.5">{morningStats.totalQuantity.toFixed(2)} {lang === 'en' ? 'L' : 'लि.'}</strong>
 
-              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price(रू):' : 'जम्मा रकम(रू):'}</div>
+              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price (Rs.):' : 'जम्मा रकम (रू):'}</div>
               <strong className="text-emerald-700 dark:text-emerald-400 text-sm font-black block mt-0.5">{morningStats.totalPrice.toFixed(2)}</strong>
             </div>
 
@@ -1258,9 +1258,9 @@ export default function MilkCollectionManager({
               <strong className="text-slate-800 dark:text-slate-100 text-sm font-black block mt-0.5">{eveningStats.farmerCount}</strong>
 
               <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Quantity:' : 'कुल परिमाण:'}</div>
-              <strong className="text-indigo-700 dark:text-indigo-500 text-sm font-black block mt-0.5">{eveningStats.totalQuantity.toFixed(2)} लि.</strong>
+              <strong className="text-indigo-700 dark:text-indigo-500 text-sm font-black block mt-0.5">{eveningStats.totalQuantity.toFixed(2)} {lang === 'en' ? 'L' : 'लि.'}</strong>
 
-              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price(रू):' : 'जम्मा रकम(रू):'}</div>
+              <div className="text-slate-500 dark:text-slate-400 font-medium mt-2">{lang === 'en' ? 'Total Price (Rs.):' : 'जम्मा रकम (रू):'}</div>
               <strong className="text-emerald-700 dark:text-emerald-400 text-sm font-black block mt-0.5">{eveningStats.totalPrice.toFixed(2)}</strong>
             </div>
 
@@ -1435,12 +1435,12 @@ export default function MilkCollectionManager({
 
                       {/* Quantity */}
                       <td className="py-3 px-4 font-black text-blue-600 dark:text-blue-400">
-                        {Number(col.quantity || 0).toFixed(2)} लि.
+                        {Number(col.quantity || 0).toFixed(2)} {lang === 'en' ? 'L' : 'लि.'}
                       </td>
 
                       {/* Rate */}
                       <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400">
-                        रू {Number(col.rate || 0).toFixed(2)}
+                        {lang === 'en' ? 'Rs. ' : 'रू '} {Number(col.rate || 0).toFixed(2)}
                       </td>
 
                       {/* FAT */}
