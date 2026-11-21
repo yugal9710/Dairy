@@ -439,17 +439,15 @@ function DairyMainApp() {
   if (!currentUser) {
     return (
       <ErrorBoundary>
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden select-none">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/40 via-slate-950 to-slate-950 -z-10" />
-          <LoginModal
-            isOpen={true}
-            onClose={() => setLoginModalOpen(false)}
-            currentUser={null}
-            activeTenant={activeTenant}
-            onLoginSuccess={handleLoginSuccess}
-            onLogout={handleLogout}
-          />
-        </div>
+        <LoginModal
+          isOpen={true}
+          isFullScreen={true}
+          onClose={null}
+          currentUser={null}
+          activeTenant={activeTenant}
+          onLoginSuccess={handleLoginSuccess}
+          onLogout={handleLogout}
+        />
       </ErrorBoundary>
     );
   }

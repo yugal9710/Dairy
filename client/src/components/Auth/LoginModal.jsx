@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  Milk,
   Globe,
   X,
   Phone,
@@ -17,6 +16,62 @@ import {
   Check
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+
+// Bespoke Dairy Leaf & Milk Drop Monogram from preview
+function DairyLeafIcon({ className = 'w-6 h-6' }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none">
+      <path
+        d="M16 4c-1.1 5.4-5.5 8-9.3 8.5C7.1 21 11 26 16 28c5-2 8.9-7 9.3-15.5C21.5 12 17.1 9.4 16 4Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11 20c2-3.5 4.3-5.7 8-8"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+// Custom Pastoral Dairy Artwork from dairy-2-login-preview.html
+function DairyPastoralArt({ className = 'w-full max-w-[420px]' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 460 220"
+      role="img"
+      aria-label="Illustration of a dairy barn, green fields, and morning sun"
+    >
+      <ellipse cx="232" cy="197" rx="194" ry="15" fill="#739678" opacity=".2" />
+      <path d="M42 162c35-45 76-54 114-28 38-27 83-35 128-8 44-33 91-16 133 16v48H42v-28Z" fill="#a8c69e" />
+      <path d="M42 171c39-28 79-33 118-12 51-28 96-29 143-5 40-20 78-14 114 10v26H42v-19Z" fill="#789f77" />
+      <path d="m111 111 76-51 76 51v71H111v-71Z" fill="#f7f4e9" />
+      <path d="m99 112 88-61 88 61-10 12-78-53-78 53-10-12Z" fill="#507a58" />
+      <path d="M132 119h34v29h-34zM207 119h34v29h-34z" fill="#c4d8bc" />
+      <path d="M172 137h31v45h-31z" fill="#d9e5d1" />
+      <path d="M182 137h11v45h-11z" fill="#91ad8d" />
+      <path d="M151 79h72v8h-72z" fill="#d8e4d1" />
+      <path d="M304 91h41l8 15v71h-57v-71l8-15Z" fill="#fffdf5" stroke="#d8e1d2" strokeWidth="2" />
+      <path d="M310 80h28v13h-28z" fill="#779a70" />
+      <path d="M305 117h51v33h-51z" fill="#6c946b" />
+      <path d="M321 123h20v21h-20z" fill="#eef2e8" />
+      <path d="M326 128h10v11h-10z" fill="#85a47c" />
+      <path
+        d="M72 173c7-17 14-25 21-29m-4 29c4-14 10-22 19-27m211 25c6-17 13-25 21-30m-2 30c4-13 10-21 19-26"
+        stroke="#567c5d"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <circle cx="381" cy="54" r="21" fill="#e8c878" opacity=".9" />
+      <path d="M273 172c9-7 19-7 28 0" stroke="#f5f1df" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 // Dedicated Official WhatsApp Vector Icon
 function WhatsAppIcon({ className = 'w-3.5 h-3.5' }) {
@@ -33,7 +88,8 @@ export default function LoginModal({
   currentUser,
   activeTenant,
   onLoginSuccess,
-  onLogout
+  onLogout,
+  isFullScreen = false
 }) {
   const { lang, toggleLang, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +98,9 @@ export default function LoginModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // When rendered as the primary login page (no currentUser and full screen requested or no close handler)
+  const isFull = isFullScreen || (!currentUser && !onClose);
 
   // Customer Support Contact Details
   const supportPhone = activeTenant?.supportPhone || activeTenant?.phone || '+977 98012 34567';
@@ -91,7 +150,7 @@ export default function LoginModal({
         setUsername('');
         setPassword('');
         if (onLoginSuccess) onLoginSuccess(data);
-        onClose();
+        if (typeof onClose === 'function') onClose();
       } else {
         setError(data.message || (lang === 'en' ? 'Invalid username or password.' : 'लगइन असफल भयो । कृपया सही विवरण प्रविष्ट गर्नुहोस् ।'));
       }
@@ -107,41 +166,119 @@ export default function LoginModal({
     executeLogin();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full max-h-[92vh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100">
-        
-        {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600 p-5 text-white relative shrink-0">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-12 h-12 bg-white/10 rounded-xl border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-                <Milk className="w-6 h-6 text-white" />
+  // Cooperative details
+  const cooperativeName = lang === 'en'
+    ? (activeTenant?.nameInEnglish || activeTenant?.nameInNepali || 'Dairy Cooperative')
+    : (activeTenant?.nameInNepali || activeTenant?.nameInEnglish || 'दुग्ध उत्पादक सहकारी संस्था');
+
+  const modalShell = (
+    <div
+      className={
+        isFull
+          ? 'w-full min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-12 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden select-none'
+          : 'w-full max-w-5xl bg-[#fffefa] dark:bg-slate-900 border border-[#e4e5db] dark:border-slate-800 rounded-3xl sm:rounded-[28px] shadow-2xl shadow-emerald-950/15 overflow-hidden grid grid-cols-1 lg:grid-cols-12 my-auto max-h-[96vh] text-slate-800 dark:text-slate-100'
+      }
+    >
+      {/* ========================================================
+          LEFT COLUMN (Story & Dairy Art): Preview Split Design
+          ======================================================== */}
+      <section
+        aria-labelledby="headline"
+        className={`lg:col-span-6 xl:col-span-6 relative isolation-isolate flex flex-col justify-between overflow-hidden bg-gradient-to-br from-[#e7eedf] via-[#dce9d9] to-[#c9ddcb] dark:from-slate-900 dark:via-emerald-950/40 dark:to-slate-900 border-b lg:border-b-0 lg:border-r border-[#dce2d7] dark:border-slate-800 ${
+          isFull ? 'p-8 sm:p-12 lg:p-14 xl:p-16 h-full overflow-y-auto lg:overflow-hidden' : 'p-6 sm:p-8 md:p-10'
+        }`}
+      >
+        {/* Subtle decorative ambient circles matching preview */}
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#f8f6ec]/40 dark:bg-emerald-900/10 pointer-events-none blur-xl -z-10" />
+        <div className="absolute -bottom-28 -left-28 w-72 h-72 rounded-full bg-[#f8f6ec]/40 dark:bg-emerald-900/10 pointer-events-none blur-xl -z-10" />
+
+        {/* Top Brand Mark & Cooperative Subtitle */}
+        <div>
+          <div className="flex items-center gap-3 select-none">
+            <span
+              className="w-11 h-11 rounded-2xl bg-[#285d49] text-white flex items-center justify-center shadow-sm shrink-0"
+              aria-hidden="true"
+            >
+              <DairyLeafIcon className="w-6 h-6" />
+            </span>
+            <div className="min-w-0">
+              <div className="font-extrabold tracking-tight text-xl sm:text-2xl text-[#193b31] dark:text-emerald-400 flex items-center gap-1.5 leading-none">
+                <span>Dairy</span>
+                <span className="text-[#647c5d] dark:text-emerald-300">2.0</span>
               </div>
-              <div className="min-w-0">
-                <h2 className="text-base sm:text-lg font-black tracking-tight truncate">
-                  {lang === 'en' ? 'Dairy ERP 2.0 Sign In' : 'डेरी ईआरपी २.० लगइन'}
-                </h2>
-              </div>
+              {activeTenant && (
+                <p className="text-[11px] sm:text-xs font-semibold text-[#526b5b] dark:text-slate-400 truncate mt-1">
+                  {cooperativeName}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Story Copy */}
+          <div className="mt-6 sm:mt-8 max-w-lg">
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#4e765b] dark:text-emerald-400 mb-2">
+              {t('storyEyebrow')}
+            </p>
+            <h1
+              id="headline"
+              className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-extrabold tracking-tight text-[#193b31] dark:text-white leading-[1.12]"
+            >
+              {t('storyHeadline')}
+            </h1>
+            <p className="text-sm sm:text-base text-[#526b5b] dark:text-slate-300 leading-relaxed mt-3 max-w-md">
+              {t('storyIntro')}
+            </p>
+          </div>
+        </div>
+
+        {/* Pastoral Dairy Artwork */}
+        <div className={`my-auto flex items-center justify-center ${isFull ? 'py-4 lg:py-8' : 'py-4'}`}>
+          <DairyPastoralArt className={`w-full h-auto drop-shadow-xs ${isFull ? 'max-w-[360px] sm:max-w-[440px] lg:max-w-[480px]' : 'max-w-[340px] sm:max-w-[400px]'}`} />
+        </div>
+
+        {/* Story Footer Note */}
+        <div className="pt-3 text-xs font-semibold text-[#66806b] dark:text-slate-400 flex items-center justify-between border-t border-[#d8e2d4] dark:border-slate-800/80">
+          <span>{t('storyFoot')}</span>
+          <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#285d49]/10 dark:bg-emerald-950 text-[#285d49] dark:text-emerald-300 font-bold">
+            v2.0
+          </span>
+        </div>
+      </section>
+
+      {/* ========================================================
+          RIGHT COLUMN (Interactive Sign-in Panel & Anaya Craft Branding)
+          ======================================================== */}
+      <section
+        aria-labelledby="signin-title"
+        className={`lg:col-span-6 xl:col-span-6 flex flex-col bg-white dark:bg-slate-900 overflow-y-auto ${
+          isFull ? 'p-6 sm:p-10 lg:p-12 xl:p-16 h-full justify-center items-center' : 'p-6 sm:p-8 md:p-9 justify-between'
+        }`}
+      >
+        <div className={`w-full max-w-md mx-auto space-y-4 ${isFull ? 'my-auto' : ''}`}>
+          
+          {/* Top Bar: Language Switcher & Optional Close Button */}
+          <div className="flex items-center justify-between gap-2 pb-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 select-none">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Dairy ERP Cloud</span>
             </div>
 
-            {/* Language Switcher & Optional Close Button */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleLang}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-xs font-bold text-white transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer select-none"
                 title={lang === 'en' ? 'नेपालीमा परिवर्तन गर्नुहोस्' : 'Switch to English'}
               >
-                <Globe className="w-3.5 h-3.5" />
+                <Globe className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>{lang === 'en' ? 'नेपाली' : 'English'}</span>
               </button>
 
-              {currentUser && typeof onClose === 'function' && (
+              {!isFull && currentUser && typeof onClose === 'function' && (
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
@@ -149,18 +286,30 @@ export default function LoginModal({
               )}
             </div>
           </div>
-        </div>
 
-        {/* Body */}
-        <div className="p-5 space-y-4 overflow-y-auto">
+          {/* Panel Heading */}
+          <div>
+            <h2
+              id="signin-title"
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white"
+            >
+              {t('welcomeTitle')}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              {t('welcomeSubtitle')}
+            </p>
+          </div>
+
+          {/* Error Banner */}
           {error && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs animate-in fade-in">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleFormSubmit} className="space-y-3.5">
+          {/* Interactive Sign-in Form */}
+          <form onSubmit={handleFormSubmit} className="space-y-3.5 pt-1">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 {t('username')}
@@ -171,11 +320,11 @@ export default function LoginModal({
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="e.g. sfacl.admin or admin"
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition font-medium"
+                  className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#285d49] focus:bg-white dark:focus:bg-slate-800 outline-none transition font-medium text-slate-900 dark:text-slate-100"
                   autoFocus
                   autoComplete="username"
                 />
-                <User className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
               </div>
             </div>
 
@@ -189,14 +338,14 @@ export default function LoginModal({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-9 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition font-mono"
+                  className="w-full pl-9 pr-9 py-2.5 text-sm bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#285d49] focus:bg-white dark:focus:bg-slate-800 outline-none transition font-mono text-slate-900 dark:text-slate-100"
                   autoComplete="current-password"
                 />
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -207,32 +356,32 @@ export default function LoginModal({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              className="w-full py-3 bg-[#285d49] hover:bg-[#1f4838] dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-[#285d49]/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer select-none"
             >
-              {loading ? (lang === 'en' ? 'Authenticating...' : 'प्रमाणीकरण हुँदैछ...') : t('login')}
+              {loading ? (lang === 'en' ? 'Authenticating...' : 'प्रमाणीकरण हुँदैछ...') : t('signIn')}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          {/* Customer Support & Helpdesk Section */}
-          <div className="pt-3 border-t border-slate-200/90 dark:border-slate-800 space-y-3">
-            <div className="bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/30 dark:from-slate-800/80 dark:via-slate-800/50 dark:to-slate-900 rounded-2xl p-3 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs space-y-2.5">
-              {/* Support Header */}
+          {/* Customer Support & Helpdesk Card */}
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
+            <div className="bg-gradient-to-br from-slate-50 via-emerald-50/30 to-slate-50 dark:from-slate-800/70 dark:via-slate-800/40 dark:to-slate-800/60 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs space-y-2">
+              {/* Support Card Header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs flex-shrink-0">
+                  <div className="w-6 h-6 rounded-lg bg-[#285d49] text-white flex items-center justify-center shadow-xs shrink-0">
                     <Headphones className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-1.5">
-                      <span>{lang === 'en' ? 'Customer Support & Helpdesk' : 'ग्राहक सहायता र हेल्पलाइन'}</span>
-                      <span className="text-[9px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>{t('helpdesk')}</span>
+                      <span className="text-[9px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold px-1.5 py-0.2 rounded-full border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <span>{lang === 'en' ? 'Online' : 'अनलाइन'}</span>
                       </span>
                     </h4>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-                      {lang === 'en' ? 'Need help with sign in or credentials?' : 'लगइन वा पासवर्डमा समस्या भयो?'}
+                      {t('needHelp')}
                     </p>
                   </div>
                 </div>
@@ -246,12 +395,12 @@ export default function LoginModal({
                   {copied ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                      <span className="text-emerald-700 dark:text-emerald-400">{lang === 'en' ? 'Copied!' : 'प्रतिलिपि भयो!'}</span>
+                      <span className="text-emerald-700 dark:text-emerald-400">{t('copied')}</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3 h-3 text-slate-500 dark:text-slate-400" />
-                      <span>{lang === 'en' ? 'Copy Info' : 'प्रतिलिपि'}</span>
+                      <span>{t('copyInfo')}</span>
                     </>
                   )}
                 </button>
@@ -259,81 +408,83 @@ export default function LoginModal({
 
               {/* 3 Contact Action Cards: Phone, WhatsApp, Email */}
               <div className="grid grid-cols-3 gap-2">
-                {/* 1. Direct Phone Call */}
+                {/* 1. Phone */}
                 <a
                   href={`tel:${supportPhoneClean}`}
-                  className="p-2 rounded-xl bg-white dark:bg-slate-800/90 hover:bg-blue-50/90 dark:hover:bg-blue-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-blue-400 dark:hover:border-blue-500 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
+                  className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-50/80 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-300 dark:hover:border-emerald-600 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
                   title={`Call Support: ${supportPhone}`}
                 >
-                  <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/40 group-hover:bg-blue-600 text-blue-600 dark:text-blue-400 group-hover:text-white flex items-center justify-center transition mb-1">
-                    <Phone className="w-3.5 h-3.5" />
+                  <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 group-hover:bg-[#285d49] text-[#285d49] dark:text-emerald-400 group-hover:text-white flex items-center justify-center transition mb-1">
+                    <Phone className="w-3 h-3" />
                   </div>
-                  <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 leading-tight">
-                    {lang === 'en' ? 'Phone Call' : 'फोन कल'}
+                  <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-300 leading-tight">
+                    {t('phoneCall')}
                   </span>
-                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 font-mono leading-tight mt-0.5 break-all w-full">
+                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 font-mono leading-tight mt-0.5 break-all w-full">
                     {supportPhone}
                   </span>
                 </a>
 
-                {/* 2. WhatsApp Direct Live Chat */}
+                {/* 2. WhatsApp */}
                 <a
                   href={whatsAppLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-xl bg-white dark:bg-slate-800/90 hover:bg-emerald-50/90 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-400 dark:hover:border-emerald-500 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
+                  className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-50/80 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-300 dark:hover:border-emerald-600 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
                   title="Chat directly on WhatsApp"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 group-hover:bg-[#25D366] text-[#25D366] group-hover:text-white flex items-center justify-center transition mb-1">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 group-hover:bg-[#25D366] text-[#25D366] group-hover:text-white flex items-center justify-center transition mb-1">
                     <WhatsAppIcon className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 leading-tight">
-                    {lang === 'en' ? 'WhatsApp' : 'ह्वाट्सएप'}
+                  <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-300 leading-tight">
+                    {t('whatsApp')}
                   </span>
-                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold leading-tight mt-0.5">
-                    {lang === 'en' ? 'Live Chat ↗' : 'च्याट गर्नुहोस् ↗'}
+                  <span className="text-[8.5px] sm:text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold leading-tight mt-0.5">
+                    {t('liveChat')}
                   </span>
                 </a>
 
-                {/* 3. Email Support Desk */}
+                {/* 3. Email */}
                 <a
                   href={`mailto:${supportEmail}?subject=Dairy%20ERP%202.0%20Support%20Request`}
-                  className="p-2 rounded-xl bg-white dark:bg-slate-800/90 hover:bg-indigo-50/90 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-indigo-400 dark:hover:border-indigo-500 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
+                  className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-50/80 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-300 dark:hover:border-emerald-600 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
                   title={`Email Support: ${supportEmail}`}
                 >
-                  <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-900/40 group-hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 group-hover:text-white flex items-center justify-center transition mb-1">
-                    <Mail className="w-3.5 h-3.5" />
+                  <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 group-hover:bg-[#285d49] text-[#285d49] dark:text-emerald-400 group-hover:text-white flex items-center justify-center transition mb-1">
+                    <Mail className="w-3 h-3" />
                   </div>
-                  <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 leading-tight">
-                    {lang === 'en' ? 'Email Desk' : 'इमेल डेस्क'}
+                  <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-300 leading-tight">
+                    {t('emailDesk')}
                   </span>
-                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 font-mono leading-tight mt-0.5 break-all w-full">
+                  <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 font-mono leading-tight mt-0.5 break-all w-full">
                     {supportEmail}
                   </span>
                 </a>
               </div>
             </div>
 
-            {/* Official Anaya Craft Branding Footer */}
-            <div className="pt-0.5 flex flex-col items-center justify-center text-center select-none">
-              <AnayaCraftLogo variant="brand-card" size="sm" />
+            {/* Official Anaya Craft Branding Footer with High-Resolution Logo */}
+            <div className="pt-1 flex flex-col items-center justify-center text-center select-none">
+              <AnayaCraftLogo variant="brand-card" size="md" />
             </div>
           </div>
-        </div>
 
-        {/* Modal Footer */}
-        {currentUser && typeof onClose === 'function' && (
-          <div className="p-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 text-center shrink-0">
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
-            >
-              {t('close')}
-            </button>
+          {/* Panel Foot Copyright Note */}
+          <div className="pt-1 text-center text-[10.5px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 select-none">
+            © 2026 Dairy 2.0 · {t('builtFor')}
           </div>
-        )}
-      </div>
+        </div>
+      </section>
+    </div>
+  );
+
+  if (isFull) {
+    return modalShell;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 md:p-6 overflow-y-auto animate-in fade-in duration-200">
+      {modalShell}
     </div>
   );
 }

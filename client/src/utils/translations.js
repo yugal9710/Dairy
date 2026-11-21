@@ -70,6 +70,13 @@ export const translations = {
     whatsApp: 'ह्वाट्सएप',
     emailDesk: 'इमेल डेस्क',
     liveChat: 'च्याट गर्नुहोस् ↗',
+    storyEyebrow: 'स्मार्ट दुग्ध सहकारी प्रणाली',
+    storyHeadline: 'तपाईंको सम्पूर्ण डेरी, एकै साथ अघि बढ्दै ।',
+    storyIntro: 'दैनिक दूध संकलन, फ्याट/एसएनएफ परीक्षण, काउन्टर खुद्रा बिक्री तथा स्वचालित हिसाब मिलान प्रणाली ।',
+    storyFoot: 'आधुनिक डेरी टोलीहरूका लागि निर्मित · Powered by Anaya Craft',
+    welcomeTitle: 'डेरी ईआरपी २.० मा स्वागत छ',
+    welcomeSubtitle: 'आफ्नो प्रयोगकर्ता नाम र पासवर्ड प्रविष्ट गरी साइन इन गर्नुहोस्',
+    builtFor: 'अनाया क्राफ्ट्सद्वारा दुग्ध किसान तथा सहकारीका लागि निर्मित ।',
 
     // Sidebar Modules
     mod_dashboard: 'ड्यासबोर्ड',
@@ -375,6 +382,13 @@ export const translations = {
     whatsApp: 'WhatsApp',
     emailDesk: 'Email Desk',
     liveChat: 'Live Chat ↗',
+    storyEyebrow: 'A better day on the dairy',
+    storyHeadline: 'Your whole dairy, moving together.',
+    storyIntro: 'One clear view of your herd, your team, and the work that keeps every day running smoothly.',
+    storyFoot: 'Made for modern dairy teams · Powered by Anaya Craft',
+    welcomeTitle: 'Welcome to Dairy 2.0',
+    welcomeSubtitle: 'A fresh start for a more connected dairy.',
+    builtFor: 'Built by Anaya Craft for the people behind every pour.',
 
     // Sidebar Modules
     mod_dashboard: 'Dashboard',

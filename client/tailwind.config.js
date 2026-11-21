@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        exo: ['"Exo 2"', 'sans-serif'],
+        montserrat: ['"Montserrat"', 'sans-serif'],
+      },
       colors: {
         dairy: {
           50: '#f0fdf4',
