@@ -19,7 +19,8 @@ import {
   UserPlus,
   X,
   MessageCircle,
-  Zap
+  Zap,
+  PenTool
 } from 'lucide-react';
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
@@ -39,6 +40,7 @@ export default function InstantSalePOS({
   inventorySummary = [],
   customers = [],
   orders = [],
+  units = [],
   tenant,
   onRefresh,
   onPrintReceipt
@@ -63,6 +65,16 @@ export default function InstantSalePOS({
   const [unitFilter, setUnitFilter] = useState('all');
   const [historySearchQuery, setHistorySearchQuery] = useState('');
 
+  // Manual / Handwritten Item State
+  const [manualModalOpen, setManualModalOpen] = useState(false);
+  const [manualName, setManualName] = useState('');
+  const [manualPrice, setManualPrice] = useState('');
+  const [manualQty, setManualQty] = useState(1);
+  const [manualUnitId, setManualUnitId] = useState('');
+  const [manualUnitName, setManualUnitName] = useState('Unit');
+  const [manualSaveToInventory, setManualSaveToInventory] = useState(false);
+  const [manualSaving, setManualSaving] = useState(false);
+
   // Quick Customer Modal
   const [quickCustModalOpen, setQuickCustModalOpen] = useState(false);
   const [newCustName, setNewCustName] = useState('');
@@ -73,6 +85,91 @@ export default function InstantSalePOS({
   const [savingCust, setSavingCust] = useState(false);
 
   const nextQuickCustCode = useMemo(() => getNextCustomerCode(customers), [customers]);
+
+  // Manual / Handwritten Item Handlers
+  const handleOpenManualModal = (presetName = '') => {
+    setManualName(presetName || '');
+    setManualPrice('');
+    setManualQty(1);
+    const defaultUnit = units.length > 0 ? units[0] : null;
+    setManualUnitId(defaultUnit ? defaultUnit.id : 1);
+    setManualUnitName(defaultUnit ? defaultUnit.name : 'Unit');
+    setManualSaveToInventory(false);
+    setManualModalOpen(true);
+  };
+
+  const handleAddManualItem = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const trimmedName = manualName.trim();
+    if (!trimmedName) {
+      alert(lang === 'en' ? 'Please enter the item name.' : 'कृपया सामानको नाम प्रविष्ट गर्नुहोस् ।');
+      return;
+    }
+    const priceNum = Number(manualPrice);
+    if (!Number.isFinite(priceNum) || priceNum < 0) {
+      alert(lang === 'en' ? 'Please enter a valid price.' : 'कृपया मान्य दर/मूल्य प्रविष्ट गर्नुहोस् ।');
+      return;
+    }
+    const qtyNum = Number(manualQty);
+    if (!Number.isFinite(qtyNum) || qtyNum <= 0) {
+      alert(lang === 'en' ? 'Quantity must be greater than zero.' : 'परिमाण शून्यभन्दा बढी हुनुपर्दछ ।');
+      return;
+    }
+
+    const selectedUnitObj = units.find(u => u.id === Number(manualUnitId));
+    const finalUnitName = selectedUnitObj ? selectedUnitObj.name : (manualUnitName || 'Unit');
+
+    let assignedProductId = null;
+
+    if (manualSaveToInventory) {
+      setManualSaving(true);
+      try {
+        const prodPayload = {
+          nameInNepali: trimmedName,
+          nameInEnglish: trimmedName,
+          unitId: selectedUnitObj ? selectedUnitObj.id : 1,
+          unitName: finalUnitName,
+          sellingPrice: priceNum,
+          costPrice: Math.round(priceNum * 0.8),
+          reorderLevel: 5,
+          description: lang === 'en' ? 'Custom item saved to inventory from POS' : 'काउन्टर बिक्रीबाट मौज्दातमा सुरक्षित गरिएको सामान'
+        };
+        const res = await fetch('/api/Product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(prodPayload)
+        });
+        if (res.ok) {
+          const createdProd = await res.json();
+          assignedProductId = createdProd.id;
+          if (onRefresh) onRefresh();
+        }
+      } catch (err) {
+        console.error('Failed to save product to inventory:', err);
+      } finally {
+        setManualSaving(false);
+      }
+    }
+
+    const customId = assignedProductId || `custom_${Date.now()}`;
+    const newItem = {
+      productId: customId,
+      productName: trimmedName,
+      unitName: finalUnitName,
+      quantity: qtyNum,
+      unitPrice: priceNum,
+      totalPrice: Number((qtyNum * priceNum).toFixed(2)),
+      isCustom: true,
+      inStock: 999,
+      savedToInventory: Boolean(assignedProductId)
+    };
+
+    setCart(prev => [...prev, newItem]);
+    setManualModalOpen(false);
+    setManualName('');
+    setManualPrice('');
+    setManualQty(1);
+  };
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -207,9 +304,12 @@ export default function InstantSalePOS({
         OrderDateTimeUtms: orderTs,
         OrderDateUtms: orderTs,
         OrderProducts: cart.map(item => ({
-          ProductId: item.productId,
+          ProductId: item.isCustom && typeof item.productId === 'string' && item.productId.startsWith('custom_') ? null : item.productId,
+          ProductName: item.productName,
+          UnitName: item.unitName || 'Unit',
           Quantity: item.quantity,
-          UnitPrice: item.unitPrice
+          UnitPrice: item.unitPrice,
+          IsCustom: Boolean(item.isCustom)
         }))
       };
 
@@ -425,24 +525,36 @@ export default function InstantSalePOS({
                 </span>
               </div>
 
-              <div className="relative sm:w-60">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder={lang === 'en' ? 'Search product or unit...' : 'उत्पादन खोज्नुहोस्...'}
-                  value={searchProductQuery}
-                  onChange={(e) => setSearchProductQuery(e.target.value)}
-                  className="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 dark:text-white rounded-xl focus:ring-2 focus:ring-sky-500 outline-none"
-                />
-                {searchProductQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchProductQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenManualModal(searchProductQuery)}
+                  className="px-3 py-1.5 text-xs font-bold rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 text-amber-700 dark:text-amber-300 whitespace-nowrap cursor-pointer transition flex items-center gap-1.5 shadow-xs"
+                  title={lang === 'en' ? 'Add item manually by entering name and price' : 'क्याटलग बाहिरको सामान सिधै नाम र मूल्य प्रविष्ट गरी थप्नुहोस्'}
+                >
+                  <PenTool className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span>{lang === 'en' ? '+ Manual Item' : '+ म्यानुअल सामान'}</span>
+                </button>
+
+                <div className="relative sm:w-56">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder={lang === 'en' ? 'Search product or unit...' : 'उत्पादन खोज्नुहोस्...'}
+                    value={searchProductQuery}
+                    onChange={(e) => setSearchProductQuery(e.target.value)}
+                    className="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 dark:text-white rounded-xl focus:ring-2 focus:ring-sky-500 outline-none"
+                  />
+                  {searchProductQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchProductQuery('')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -583,8 +695,26 @@ export default function InstantSalePOS({
               })}
 
               {filteredProducts.length === 0 && (
-                <div className="col-span-full py-12 text-center text-xs text-slate-400">
-                  {lang === 'en' ? 'No matching products found.' : 'कुनै उत्पादन भेटिएन ।'}
+                <div className="col-span-full py-12 text-center space-y-3">
+                  <Package className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-1" />
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    {lang === 'en' ? 'No matching products found.' : 'कुनै उत्पादन भेटिएन ।'}
+                  </p>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl max-w-sm mx-auto text-center">
+                    <p className="text-xs text-amber-900 dark:text-amber-200 mb-2 font-medium">
+                      {searchProductQuery
+                        ? (lang === 'en' ? `Can't find "${searchProductQuery}" in catalog? Add it manually:` : `क्याटलगमा "${searchProductQuery}" फेला परेन? म्यानुअल थप्नुहोस्:`)
+                        : (lang === 'en' ? 'Want to sell a custom or unlisted item?' : 'क्याटलग बाहिरको सामान बिक्री गर्न चाहनुहुन्छ?')}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenManualModal(searchProductQuery)}
+                      className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer inline-flex items-center gap-1.5 transition"
+                    >
+                      <PenTool className="w-3.5 h-3.5" />
+                      <span>{searchProductQuery ? (lang === 'en' ? `Add "${searchProductQuery}" Manually` : `"${searchProductQuery}" म्यानुअल थप्नुहोस्`) : (lang === 'en' ? 'Add Manual Item' : 'म्यानुअल सामान थप्नुहोस्')}</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -688,11 +818,20 @@ export default function InstantSalePOS({
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <div className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-tight">
-                            {item.productName}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-tight">
+                              {item.productName}
+                            </span>
+                            {item.isCustom && (
+                              <span className="px-1.5 py-0.2 rounded-md text-[9px] font-extrabold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-700">
+                                {lang === 'en' ? 'Custom' : 'म्यानुअल'}
+                              </span>
+                            )}
                           </div>
                           <span className="text-[10px] text-slate-400">
-                            {lang === 'en' ? 'Stock:' : 'मौज्दात:'} {item.inStock?.toFixed(1)} {item.unitName}
+                            {item.isCustom
+                              ? (lang === 'en' ? `Custom unlisted item · ${item.unitName}` : `म्यानुअल हस्तलिखित सामान · ${item.unitName}`)
+                              : `${lang === 'en' ? 'Stock:' : 'मौज्दात:'} ${item.inStock?.toFixed(1)} ${item.unitName}`}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">

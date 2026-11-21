@@ -554,6 +554,7 @@ function DairyMainApp() {
                 inventorySummary={inventorySummary}
                 customers={customers}
                 orders={orders}
+                units={units}
                 tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintReceipt={(ord) => handleOpenPrintSlip('sale-slip', ord)}
@@ -565,6 +566,7 @@ function DairyMainApp() {
                 futureOrders={futureOrders}
                 customers={customers}
                 products={products}
+                units={units}
                 tenant={activeTenant}
                 onRefresh={fetchData}
                 onPrintSlip={(ord) => handleOpenPrintSlip('sale-slip', ord)}

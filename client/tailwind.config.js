@@ -8,6 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        jakarta: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         exo: ['"Exo 2"', 'sans-serif'],
         montserrat: ['"Montserrat"', 'sans-serif'],
       },

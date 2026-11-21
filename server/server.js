@@ -1303,48 +1303,54 @@ app.post('/api/Order', (req, res) => {
   let totalAmount = 0;
 
   const processedProducts = OrderProducts.map((p, idx) => {
-    const prodId = Number(p.ProductId);
+    const rawProdId = p.ProductId ? Number(p.ProductId) : null;
+    const prodId = Number.isFinite(rawProdId) && rawProdId > 0 ? rawProdId : null;
     const qty = round2(p.Quantity);
     const price = round2(p.UnitPrice);
     const lineTotal = round2(qty * price);
     totalAmount = round2(totalAmount + lineTotal);
 
-    // Deduct inventory stock across available batches (FIFO)
-    const prodStocks = (tData.productStocks || []).filter(s => s.productId === prodId);
-    let remainingToDeduct = qty;
     let usedBatch = 'POS';
-    for (const s of prodStocks) {
-      const avail = Math.max(0, (Number(s.quantity) || 0) - (Number(s.usedQuantity) || 0));
-      if (avail > 0 && remainingToDeduct > 0) {
-        const take = Math.min(avail, remainingToDeduct);
-        s.usedQuantity = round2((Number(s.usedQuantity) || 0) + take);
-        usedBatch = s.batchNumber || usedBatch;
-        remainingToDeduct = round2(remainingToDeduct - take);
-      }
-    }
-    if (remainingToDeduct > 0 && prodStocks.length > 0) {
-      prodStocks[0].usedQuantity = round2((Number(prodStocks[0].usedQuantity) || 0) + remainingToDeduct);
-      usedBatch = prodStocks[0].batchNumber || usedBatch;
-    }
+    const prod = prodId ? tData.products.find(pr => pr.id === prodId && !pr.isDeleted) : null;
 
-    // Log stock movement
-    const prod = tData.products.find(pr => pr.id === prodId);
-    tData.stockMovements.push({
-      id: orderId + 100 + idx,
-      productId: prodId,
-      productName: prod ? (prod.nameInEnglish || prod.nameInNepali) : 'Product',
-      movementType: 3, // Out / Sale
-      quantity: qty,
-      batchNumber: usedBatch,
-      location: 'Retail Counter',
-      reference: `SALE-${orderId}`,
-      remarks: Remarks || 'Counter Sale',
-      dateTimeUtms: orderTime
-    });
+    // Deduct inventory stock across available batches (FIFO) if catalog product
+    if (prodId && prod) {
+      const prodStocks = (tData.productStocks || []).filter(s => s.productId === prodId);
+      let remainingToDeduct = qty;
+      for (const s of prodStocks) {
+        const avail = Math.max(0, (Number(s.quantity) || 0) - (Number(s.usedQuantity) || 0));
+        if (avail > 0 && remainingToDeduct > 0) {
+          const take = Math.min(avail, remainingToDeduct);
+          s.usedQuantity = round2((Number(s.usedQuantity) || 0) + take);
+          usedBatch = s.batchNumber || usedBatch;
+          remainingToDeduct = round2(remainingToDeduct - take);
+        }
+      }
+      if (remainingToDeduct > 0 && prodStocks.length > 0) {
+        prodStocks[0].usedQuantity = round2((Number(prodStocks[0].usedQuantity) || 0) + remainingToDeduct);
+        usedBatch = prodStocks[0].batchNumber || usedBatch;
+      }
+
+      // Log stock movement
+      tData.stockMovements.push({
+        id: orderId + 100 + idx,
+        productId: prodId,
+        productName: prod.nameInEnglish || prod.nameInNepali || p.ProductName || 'Product',
+        movementType: 3, // Out / Sale
+        quantity: qty,
+        batchNumber: usedBatch,
+        location: 'Retail Counter',
+        reference: `SALE-${orderId}`,
+        remarks: Remarks || 'Counter Sale',
+        dateTimeUtms: orderTime
+      });
+    }
 
     return {
-      productId: prodId,
-      productName: prod ? (prod.nameInNepali || prod.nameInEnglish) : 'Item',
+      productId: prod ? prodId : null,
+      productName: p.ProductName || (prod ? (prod.nameInNepali || prod.nameInEnglish) : 'Item'),
+      unitName: p.UnitName || (prod ? prod.unitName : 'Unit'),
+      isCustom: !prod || Boolean(p.IsCustom),
       quantity: qty,
       unitPrice: price,
       totalPrice: lineTotal
