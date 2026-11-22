@@ -10,6 +10,9 @@ client/dist/
 .env
 .env.*
 
+# Backups
+server/data_backup_*/
+
 # Logs & OS artifacts
 *.log
 npm-debug.log*

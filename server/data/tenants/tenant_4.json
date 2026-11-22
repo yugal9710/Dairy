@@ -98,20 +98,47 @@
     {
       "id": 1,
       "productId": 1,
-      "batchNumber": "INIT-RAW-01",
+      "batchNumber": "INIT-LOT-01",
       "quantity": 0,
       "usedQuantity": 0,
-      "expiryDateUtms": 1795248546540,
-      "dateTimeUtms": 1794643746540
+      "expiryDateUtms": null,
+      "dateTimeUtms": 1795283175031
     },
     {
       "id": 2,
       "productId": 2,
-      "batchNumber": "INIT-PAS-01",
+      "batchNumber": "INIT-LOT-02",
       "quantity": 0,
       "usedQuantity": 0,
-      "expiryDateUtms": 1795248546540,
-      "dateTimeUtms": 1794643746540
+      "expiryDateUtms": null,
+      "dateTimeUtms": 1795283175031
+    },
+    {
+      "id": 3,
+      "productId": 3,
+      "batchNumber": "INIT-LOT-03",
+      "quantity": 0,
+      "usedQuantity": 0,
+      "expiryDateUtms": null,
+      "dateTimeUtms": 1795283175031
+    },
+    {
+      "id": 4,
+      "productId": 4,
+      "batchNumber": "INIT-LOT-04",
+      "quantity": 0,
+      "usedQuantity": 0,
+      "expiryDateUtms": null,
+      "dateTimeUtms": 1795283175031
+    },
+    {
+      "id": 5,
+      "productId": 5,
+      "batchNumber": "INIT-LOT-05",
+      "quantity": 0,
+      "usedQuantity": 0,
+      "expiryDateUtms": null,
+      "dateTimeUtms": 1795283175031
     }
   ],
   "customers": [],

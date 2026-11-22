@@ -18,9 +18,11 @@
       "organizationName": "हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र",
       "address": "हेटौंडा-८, मकवानपुर",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1810118441924,
+      "expirationDateTimeUtms": 1841222441924,
       "subscriptionAmount": 30000,
-      "isDeleted": false
+      "isDeleted": false,
+      "status": "Active",
+      "planId": "plan-professional"
     },
     {
       "id": 3,
@@ -295,27 +297,18 @@
       "creationDateTimeUtms": 1794566441933
     }
   ],
-  "billings": [
-    {
-      "id": 1,
-      "tenantId": 1,
-      "amount": 35000,
-      "remarks": "वार्षिक सफ्टवेयर सदस्यता नवीकरण शुल्क (पूर्ण भुक्तानी)",
-      "dateTimeUtms": 1791974441926,
-      "paymentMethod": 2,
-      "isDeleted": false
-    },
-    {
-      "id": 1794644901610,
-      "tenantId": 6,
-      "amount": 35000,
-      "remarks": "सफ्टवेयर स्थापना तथा सदस्यता पहिलो भुक्तानी",
-      "dateTimeUtms": 1794644901610,
-      "paymentMethod": 2,
-      "isDeleted": false
-    }
-  ],
+  "billings": [],
   "auditLogs": [
+    {
+      "id": "paudit-1795283705683-854",
+      "timestamp": "2026-11-21T17:55:05.683Z",
+      "action": "RENEWAL_APPROVED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 2,
+      "details": "Approved renewal ren-001 (Rs. 75000) for \"हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र\""
+    },
     {
       "id": "paudit-1794644901613-322",
       "timestamp": "2026-11-14T08:28:21.613Z",
@@ -499,10 +492,12 @@
       "userEmail": "",
       "transactionRef": "FONEPAY-981023",
       "submittedAt": "2026-11-11T10:40:41.926Z",
-      "status": "PENDING_VERIFICATION",
+      "status": "APPROVED",
       "receiptUrl": null,
       "receiptFileName": "fonepay-voucher-981023.pdf",
-      "notes": "वार्षिक सदस्यता नवीकरण (FonePay मार्फत भुक्तानी)"
+      "notes": "वार्षिक सदस्यता नवीकरण (FonePay मार्फत भुक्तानी)",
+      "reviewedAt": "2026-11-21T17:55:05.680Z",
+      "reviewedBy": "Platform Owner / Admin"
     }
   ],
   "paymentConfig": {

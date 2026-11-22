@@ -18,9 +18,7 @@ import {
   Trash2,
   Search,
   CheckSquare,
-  MessageCircle,
-  PenTool,
-  Tag
+  MessageCircle
 } from 'lucide-react';
 import { formatNepaliCurrency } from '../../utils/nepaliDate';
 import { useLanguage } from '../../context/LanguageContext';
@@ -62,16 +60,6 @@ export default function OrderManager({
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // Manual / Custom Item Modal State
-  const [manualModalOpen, setManualModalOpen] = useState(false);
-  const [manualName, setManualName] = useState('');
-  const [manualPrice, setManualPrice] = useState('');
-  const [manualQty, setManualQty] = useState(1);
-  const [manualUnitId, setManualUnitId] = useState('');
-  const [manualUnitName, setManualUnitName] = useState('Unit');
-  const [manualSaveToInventory, setManualSaveToInventory] = useState(false);
-  const [manualSaving, setManualSaving] = useState(false);
 
   // Product Picker Modal State with checkboxes
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -160,89 +148,6 @@ export default function OrderManager({
       });
       return next;
     });
-  };
-
-  const handleOpenManualModal = (presetName = '') => {
-    setManualName(presetName || '');
-    setManualPrice('');
-    setManualQty(1);
-    const defaultUnit = units.length > 0 ? units[0] : null;
-    setManualUnitId(defaultUnit ? defaultUnit.id : 1);
-    setManualUnitName(defaultUnit ? defaultUnit.name : 'Unit');
-    setManualSaveToInventory(false);
-    setManualModalOpen(true);
-  };
-
-  const handleAddManualItem = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    const trimmedName = manualName.trim();
-    if (!trimmedName) {
-      alert(lang === 'en' ? 'Please enter the item name.' : 'कृपया सामानको नाम प्रविष्ट गर्नुहोस् ।');
-      return;
-    }
-    const priceNum = Number(manualPrice);
-    if (!Number.isFinite(priceNum) || priceNum < 0) {
-      alert(lang === 'en' ? 'Please enter a valid price (greater than or equal to 0).' : 'कृपया मान्य दर/मूल्य प्रविष्ट गर्नुहोस् ।');
-      return;
-    }
-    const qtyNum = Number(manualQty);
-    if (!Number.isFinite(qtyNum) || qtyNum <= 0) {
-      alert(lang === 'en' ? 'Quantity must be greater than zero.' : 'परिमाण शून्यभन्दा बढी हुनुपर्दछ ।');
-      return;
-    }
-
-    const selectedUnitObj = units.find(u => u.id === Number(manualUnitId));
-    const finalUnitName = selectedUnitObj ? selectedUnitObj.name : (manualUnitName || 'Unit');
-
-    let assignedProductId = null;
-
-    if (manualSaveToInventory) {
-      setManualSaving(true);
-      try {
-        const prodPayload = {
-          nameInNepali: trimmedName,
-          nameInEnglish: trimmedName,
-          unitId: selectedUnitObj ? selectedUnitObj.id : 1,
-          unitName: finalUnitName,
-          sellingPrice: priceNum,
-          costPrice: Math.round(priceNum * 0.8),
-          reorderLevel: 5,
-          description: lang === 'en' ? 'Custom item saved to inventory from Order' : 'अर्डरबाट मौज्दातमा सुरक्षित गरिएको सामान'
-        };
-        const res = await fetch('/api/Product', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(prodPayload)
-        });
-        if (res.ok) {
-          const createdProd = await res.json();
-          assignedProductId = createdProd.id;
-          if (onRefresh) onRefresh();
-        }
-      } catch (err) {
-        console.error('Failed to save product to inventory:', err);
-      } finally {
-        setManualSaving(false);
-      }
-    }
-
-    const newItem = {
-      productId: assignedProductId,
-      productName: trimmedName,
-      unitName: finalUnitName,
-      quantity: qtyNum,
-      unitPrice: priceNum,
-      totalPrice: Number((qtyNum * priceNum).toFixed(2)),
-      isCustom: true,
-      savedToInventory: Boolean(assignedProductId)
-    };
-
-    setItems(prev => [...prev, newItem]);
-    setManualModalOpen(false);
-    setManualName('');
-    setManualPrice('');
-    setManualQty(1);
-    if (pickerOpen) setPickerOpen(false);
   };
 
   const handleConfirmAddSelected = () => {
@@ -997,17 +902,8 @@ export default function OrderManager({
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={() => handleOpenManualModal()}
-                      className="text-xs font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 hover:bg-amber-100 transition shadow-xs"
-                      title={lang === 'en' ? 'Add item manually by entering name and price' : 'क्याटलगमा नभएको सामान सिधै नाम र मूल्य प्रविष्ट गरी थप्नुहोस्'}
-                    >
-                      <PenTool className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                      <span>{lang === 'en' ? '+ Manual Item' : '+ म्यानुअल सामान'}</span>
-                    </button>
-                    <button
-                      type="button"
                       onClick={handleOpenPicker}
-                      className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/80 hover:bg-blue-100 transition shadow-xs"
+                      className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/80 hover:bg-blue-100 transition shadow-xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>{items.length > 0 ? (lang === 'en' ? 'Add / Edit Items' : 'सामान थप्नुहोस् / मिलाउनुहोस्') : (lang === 'en' ? 'Add Item' : 'सामान थप्नुहोस्')}</span>
@@ -1022,24 +918,16 @@ export default function OrderManager({
                       {lang === 'en' ? 'No products selected yet.' : 'हालसम्म कुनै उत्पादन छानिएको छैन ।'}
                     </p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      {lang === 'en' ? 'Select products from catalog or enter a manual handwritten item.' : 'क्याटलगबाट छान्नुहोस् वा हस्तलिखित म्यानुअल सामान थप्नुहोस् ।'}
+                      {lang === 'en' ? 'Select products from the catalog to add to this order.' : 'यो अर्डरमा थप्न क्याटलगबाट उत्पादनहरू छान्नुहोस् ।'}
                     </p>
-                    <div className="mt-3 flex items-center justify-center gap-2">
+                    <div className="mt-3 flex items-center justify-center">
                       <button
                         type="button"
                         onClick={handleOpenPicker}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-600/20 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-600/20 cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>{lang === 'en' ? 'Select Products' : 'उत्पादनहरू छान्नुहोस्'}</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenManualModal()}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded-xl text-xs font-bold transition cursor-pointer"
-                      >
-                        <PenTool className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>{lang === 'en' ? '+ Manual Item' : '+ म्यानुअल सामान'}</span>
                       </button>
                     </div>
                   </div>
@@ -1255,15 +1143,6 @@ export default function OrderManager({
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleOpenManualModal(pickerSearch)}
-                className="px-3 py-2 text-xs font-bold rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 text-amber-700 dark:text-amber-300 whitespace-nowrap cursor-pointer transition flex items-center gap-1.5 shadow-xs"
-                title={lang === 'en' ? 'Enter handwritten item manually' : 'म्यानुअल सामान प्रविष्ट गर्नुहोस्'}
-              >
-                <PenTool className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                <span>{lang === 'en' ? '+ Enter Item Manually' : '+ म्यानुअल सामान'}</span>
-              </button>
 
               <button
                 type="button"
@@ -1348,26 +1227,11 @@ export default function OrderManager({
               })}
 
               {filteredPickerProducts.length === 0 && (
-                <div className="text-center py-8 space-y-3">
+                <div className="text-center py-8 space-y-2">
                   <Package className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-1" />
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                     {lang === 'en' ? 'No products found in catalog.' : 'क्याटलगमा कुनै उत्पादन भेटिएन ।'}
                   </p>
-                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl max-w-sm mx-auto text-center">
-                    <p className="text-xs text-amber-900 dark:text-amber-200 mb-2 font-medium">
-                      {pickerSearch
-                        ? (lang === 'en' ? `Can't find "${pickerSearch}"? Add it directly as a manual item:` : `क्याटलगमा "${pickerSearch}" फेला परेन? म्यानुअल सामानको रूपमा थप्नुहोस्:`)
-                        : (lang === 'en' ? 'Want to add a custom or handwritten item?' : 'नयाँ वा हस्तलिखित सामान सिधै थप्न चाहनुहुन्छ?')}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenManualModal(pickerSearch)}
-                      className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer inline-flex items-center gap-1.5 transition"
-                    >
-                      <PenTool className="w-3.5 h-3.5" />
-                      <span>{pickerSearch ? (lang === 'en' ? `Add "${pickerSearch}" Manually` : `"${pickerSearch}" म्यानुअल थप्नुहोस्`) : (lang === 'en' ? 'Add Manual Item' : 'म्यानुअल सामान थप्नुहोस्')}</span>
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -1408,188 +1272,6 @@ export default function OrderManager({
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* 5c. Add Manual / Handwritten Item Modal */}
-      {manualModalOpen && (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setManualModalOpen(false);
-          }}
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[70]"
-        >
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 flex items-center justify-center font-black">
-                  <PenTool className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-base text-slate-800 dark:text-slate-100">
-                    {lang === 'en' ? 'Add Manual / Handwritten Item' : 'म्यानुअल / हस्तलिखित सामान थप्नुहोस्'}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    {lang === 'en' ? 'Enter item name, price and measurement unit' : 'क्याटलग बाहिरको सामानको नाम, दर र एकाइ खुलाउनुहोस्'}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setManualModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddManualItem} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  {lang === 'en' ? 'Item Name / Description *' : 'सामानको नाम / विवरण *'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder={lang === 'en' ? 'e.g. Khoya, Special Buffalo Ghee, Chhurpi...' : 'जस्तै: खोवा, छुर्पी, शुद्ध नौनी घिउ...'}
-                  value={manualName}
-                  onChange={(e) => setManualName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-amber-500 outline-none font-medium"
-                  autoFocus
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Price per Unit (रू) *' : 'दर / मूल्य (प्रति एकाइ रू) *'}
-                  </label>
-                  <input
-                    type="number"
-                    step="1"
-                    min="0"
-                    required
-                    placeholder="0.00"
-                    value={manualPrice}
-                    onKeyDown={preventNegativeKey}
-                    onChange={(e) => setManualPrice(nonNegativeValue(e.target.value))}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-amber-500 outline-none font-mono font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Quantity *' : 'परिमाण *'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    min="0.5"
-                    required
-                    value={manualQty}
-                    onKeyDown={preventNegativeKey}
-                    onChange={(e) => setManualQty(Math.max(0.1, Number(nonNegativeValue(e.target.value)) || 1))}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-amber-500 outline-none font-mono font-bold"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  {lang === 'en' ? 'Unit of Measure' : 'मापन एकाइ'}
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <select
-                    value={manualUnitId}
-                    onChange={(e) => {
-                      const uId = e.target.value;
-                      setManualUnitId(uId);
-                      const uObj = units.find(u => String(u.id) === String(uId));
-                      if (uObj) setManualUnitName(uObj.name);
-                    }}
-                    className="px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl font-bold outline-none"
-                  >
-                    {units.map(u => (
-                      <option key={u.id} value={u.id}>{u.name}</option>
-                    ))}
-                    {units.length === 0 && (
-                      <>
-                        <option value="1">{lang === 'en' ? 'Litre' : 'लिटर'}</option>
-                        <option value="2">{lang === 'en' ? 'Kg' : 'किलोग्राम'}</option>
-                        <option value="3">{lang === 'en' ? 'Pouch / Packet' : 'प्याकेट'}</option>
-                        <option value="4">{lang === 'en' ? 'Piece' : 'गोटा / पिस'}</option>
-                      </>
-                    )}
-                  </select>
-
-                  <input
-                    type="text"
-                    placeholder={lang === 'en' ? 'Or custom unit (e.g. Can)' : 'वा अन्य एकाइ'}
-                    value={manualUnitName}
-                    onChange={(e) => setManualUnitName(e.target.value)}
-                    className="px-3 py-2 text-xs border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Calculated Line Total Preview */}
-              <div className="p-3 bg-amber-50/70 dark:bg-amber-950/30 rounded-2xl border border-amber-200 dark:border-amber-800/60 flex items-center justify-between">
-                <div>
-                  <span className="text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase block">
-                    {lang === 'en' ? 'Line Total:' : 'सामान जम्मा रकम:'}
-                  </span>
-                  <span className="text-[11px] text-slate-500 font-mono">
-                    {manualQty} x {formatNepaliCurrency(Number(manualPrice) || 0)}
-                  </span>
-                </div>
-                <div className="text-base font-black font-mono text-amber-700 dark:text-amber-300">
-                  {formatNepaliCurrency((Number(manualQty) || 1) * (Number(manualPrice) || 0))}
-                </div>
-              </div>
-
-              {/* Save to Inventory Checkbox */}
-              <label className="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={manualSaveToInventory}
-                  onChange={(e) => setManualSaveToInventory(e.target.checked)}
-                  className="w-4 h-4 mt-0.5 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
-                />
-                <div>
-                  <div className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                    {lang === 'en' ? 'Save this item to cooperative inventory & catalog' : 'यो सामान सहकारीको मौज्दात र क्याटलगमा पनि सुरक्षित गर्नुहोस्'}
-                  </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    {lang === 'en'
-                      ? 'Creates a permanent product record in inventory for future orders and stock tracking'
-                      : 'भविष्यका अर्डर तथा मौज्दात ट्र्याकिङका लागि उत्पादन सूचीमा सधैं सुरक्षित रहन्छ'}
-                  </div>
-                </div>
-              </label>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setManualModalOpen(false)}
-                  className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-                >
-                  {lang === 'en' ? 'Cancel' : 'रद्द'}
-                </button>
-                <button
-                  type="submit"
-                  disabled={manualSaving}
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-600/20 cursor-pointer flex items-center gap-1.5"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>
-                    {manualSaving
-                      ? (lang === 'en' ? 'Saving...' : 'सुरक्षित गर्दै...')
-                      : (lang === 'en' ? 'Add to Order' : 'अर्डरमा थप्नुहोस्')}
-                  </span>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

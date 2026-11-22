@@ -222,21 +222,6 @@ export const translations = {
     lblAdvanceDeposit: 'अग्रिम भुक्तानी रकम',
     lblSpecialNotes: 'कैफियत / निर्देशन',
 
-    // Manual / Custom Items
-    manualItemTitle: 'म्यानुअल / हस्तलिखित सामान थप्नुहोस्',
-    manualItemSubtitle: 'क्याटलगमा नभएको सामानको नाम र मूल्य प्रविष्ट गरी अर्डर वा बिक्रीमा थप्नुहोस्',
-    addManualItem: '+ म्यानुअल सामान',
-    enterItemManually: '+ सामान म्यानुअल प्रविष्ट गर्नुहोस्',
-    itemNameLabel: 'सामानको नाम',
-    itemNamePlaceholder: 'जस्तै: खोवा, छुर्पी, शुद्ध नौनी घिउ...',
-    itemPriceLabel: 'दर / मूल्य (प्रति एकाइ रू)',
-    itemQtyLabel: 'परिमाण',
-    itemUnitLabel: 'मापन एकाइ',
-    saveToCatalogLabel: 'यो सामान सहकारीको मौज्दात/क्याटलगमा पनि सुरक्षित गर्नुहोस्',
-    saveToCatalogHint: 'चेक गर्दा यो सामान सधैंको लागि उत्पादन सूची र मौज्दातमा समावेश हुनेछ',
-    customItemBadge: 'म्यानुअल',
-    cantFindProductPrompt: 'खोजेको सामान फेला परेन? सिधै म्यानुअल सामानको रूपमा थप्नुहोस्:',
-
     // Inventory
     inventoryTitle: 'उत्पादन तथा मौज्दात व्यवस्थापन',
     inventorySubtitle: 'दुग्ध उत्पादनहरूको सूची, लाइभ स्टक मौज्दात, ब्याच लट र मौज्दात घटबढ ट्र्याकिङ',
@@ -548,21 +533,6 @@ export const translations = {
     modalNewOrderTitle: 'New Advance Order',
     lblAdvanceDeposit: 'Advance Deposit Amount',
     lblSpecialNotes: 'Special Instructions',
-
-    // Manual / Custom Items
-    manualItemTitle: 'Add Manual / Custom Item',
-    manualItemSubtitle: 'Enter the item name and price when not available in the item list',
-    addManualItem: '+ Manual Item',
-    enterItemManually: '+ Enter Item Manually',
-    itemNameLabel: 'Item Name',
-    itemNamePlaceholder: 'e.g. Khoya, Chhurpi, Special Buffalo Ghee...',
-    itemPriceLabel: 'Unit Price (Rs.)',
-    itemQtyLabel: 'Quantity',
-    itemUnitLabel: 'Unit of Measure',
-    saveToCatalogLabel: 'Save this item to cooperative inventory & product catalog',
-    saveToCatalogHint: 'When checked, this item is permanently linked with tenant inventory & catalog',
-    customItemBadge: 'Custom',
-    cantFindProductPrompt: "Can't find what you are looking for? Add it directly as a manual item:",
 
     // Inventory
     inventoryTitle: 'Inventory & Stock POS',
