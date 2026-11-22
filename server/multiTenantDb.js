@@ -1180,8 +1180,8 @@ class MultiTenantDatabase {
 
   getCashBankSummary(tenantId) {
     const tData = this.getTenantData(tenantId);
-    let cashBalance = 25000; // Standard base cash float
-    let bankBalance = 75000; // Standard base bank float
+    let cashBalance = Number(tData.openingCashBalance) || 0;
+    let bankBalance = Number(tData.openingBankBalance) || 0;
 
     tData.cashBankLedgers.filter(l => !l.isDeleted).forEach(entry => {
       const amt = Number(entry.amount) || 0;

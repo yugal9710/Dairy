@@ -111,7 +111,7 @@ function DairyMainApp() {
 
   // Core Data States
   const [analytics, setAnalytics] = useState(null);
-  const [cashBank, setCashBank] = useState({ cashBalance: 25000, bankBalance: 75000, totalBalance: 100000 });
+  const [cashBank, setCashBank] = useState({ cashBalance: 0, bankBalance: 0, totalBalance: 0 });
   const [collections, setCollections] = useState([]);
   const [orders, setOrders] = useState([]);
   const [futureOrders, setFutureOrders] = useState([]);

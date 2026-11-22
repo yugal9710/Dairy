@@ -2468,8 +2468,8 @@ app.get('/api/Finance/ledger', (req, res) => {
   const allActive = [...(tData.cashBankLedgers || [])].filter(l => !l.isDeleted);
 
   // Calculate accurate chronological running balances across ALL ledger entries first
-  let runningCash = 25000;
-  let runningBank = 75000;
+  let runningCash = Number(tData.openingCashBalance) || 0;
+  let runningBank = Number(tData.openingBankBalance) || 0;
   const ascendingAll = [...allActive].sort((a, b) => (a.transactionDateUtms - b.transactionDateUtms) || (a.id - b.id));
   ascendingAll.forEach(item => {
     const amt = Number(item.amount) || 0;
