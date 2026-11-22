@@ -2,27 +2,67 @@
   "tenants": [
     {
       "id": 1,
-      "name": "sfacl",
-      "host": "sfacl.dairynepal.com",
-      "organizationName": "साना किसान कृषि सहकारी सस्था लि.",
-      "address": "गौशाला-१२, काठमाडौं",
+      "name": "anaya",
+      "host": "anaya.dairynepal.com",
+      "organizationName": "Anaya Craft",
+      "address": "गौशाला-१२, Mahottari",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1826102441924,
+      "expirationDateTimeUtms": 1826064000000,
       "subscriptionAmount": 35000,
-      "isDeleted": false
+      "isDeleted": false,
+      "phone": "9801197710",
+      "managerName": "Platform Owner / Admin",
+      "status": "Active",
+      "planId": "plan-starter",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": false,
+        "futureOrders": false,
+        "dairyProcessing": false,
+        "nepaliBS": true,
+        "smsAlerts": false
+      },
+      "subscription": {
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "totalAmountDue": 35000,
+        "expiryDate": "2027-11-13T00:00:00.000Z"
+      }
     },
     {
       "id": 2,
-      "name": "himali",
-      "host": "himali.dairynepal.com",
-      "organizationName": "हिमाली गाई फार्म तथा दुग्ध संकलन केन्द्र",
-      "address": "हेटौंडा-८, मकवानपुर",
+      "name": "sfacl",
+      "host": "sfacl.dairynepal.com",
+      "organizationName": "साना किसान कृषि सहकारी सस्था लि.",
+      "address": "गौशाला-१२ महोत्तरी नेपाल ",
       "timezone": "Asia/Kathmandu",
-      "expirationDateTimeUtms": 1841222441924,
+      "expirationDateTimeUtms": 1841184000000,
       "subscriptionAmount": 30000,
       "isDeleted": false,
       "status": "Active",
-      "planId": "plan-professional"
+      "planId": "plan-professional",
+      "phone": "9841000000",
+      "managerName": "Himali Admin",
+      "modules": {
+        "milkCollection": true,
+        "fatSnfPricing": true,
+        "farmerLedger": true,
+        "basicReports": true,
+        "pos": true,
+        "futureOrders": true,
+        "dairyProcessing": true,
+        "nepaliBS": true,
+        "smsAlerts": true
+      },
+      "subscription": {
+        "status": "Active",
+        "billingCycle": "Yearly",
+        "totalAmountDue": 30000,
+        "expiryDate": "2028-05-06T00:00:00.000Z"
+      }
     },
     {
       "id": 3,
@@ -198,10 +238,10 @@
     {
       "id": 4,
       "tenantId": 2,
-      "username": "himali.admin",
-      "email": "admin@himali.dairynepal.com",
-      "name": "Himali Admin",
-      "passwordHash": "a10850be00bb8e0c5095495a030e8d0f88eef127f027e612eda940fe0da8b9e90f1af7003a50ad237b0af8276f7fb40ea1c6dec04da9b07a8a838460d4ec8a8c",
+      "username": "ramdayal",
+      "email": "ramdayal@123fmial.com",
+      "name": "Ramdayal Mahato",
+      "passwordHash": "49445f5968a8917a92bd924a0a94016329934c90a5d13e05e1aef82bb47aa59e875b3bbbd0aa4c90e0f696136ef31e6b872048a6ba0a757cfdaec1a03704e8cd",
       "roles": [
         "Admin"
       ],
@@ -295,10 +335,44 @@
       "isActive": true,
       "isDeleted": false,
       "creationDateTimeUtms": 1794566441933
+    },
+    {
+      "id": 1795347132458,
+      "tenantId": 1,
+      "username": "developer",
+      "email": "developer@dairynepal.com",
+      "name": "Developer Admin",
+      "passwordHash": "e49e12bc0378a9aaeb61508efe6963ad231823d66c050410d7da7de53d8c5814dd853fab50e4bb60ca06de9fceec7810b7c85c6956ac7be0ea3a0888788ed09a",
+      "roles": [
+        "SuperAdmin"
+      ],
+      "isActive": true,
+      "isDeleted": false,
+      "creationDateTimeUtms": 1795347132459
     }
   ],
   "billings": [],
   "auditLogs": [
+    {
+      "id": "paudit-1795347651811-795",
+      "timestamp": "2026-11-22T11:40:51.811Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 2,
+      "details": "Updated cooperative profile \"साना किसान कृषि सहकारी सस्था लि.\" (Plan: plan-professional, Status: Active)"
+    },
+    {
+      "id": "paudit-1795345289845-448",
+      "timestamp": "2026-11-22T11:01:29.846Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 1,
+      "details": "Updated cooperative profile \"Anaya Craft\" (Plan: plan-starter, Status: Active)"
+    },
     {
       "id": "paudit-1795283705683-854",
       "timestamp": "2026-11-21T17:55:05.683Z",
@@ -423,7 +497,7 @@
     {
       "id": "dom-1",
       "tenantId": 1,
-      "domain": "sfacl.dairynepal.com",
+      "domain": "anaya.dairynepal.com",
       "type": "subdomain",
       "isPrimary": true,
       "verified": true,
@@ -432,7 +506,7 @@
     {
       "id": "dom-2",
       "tenantId": 2,
-      "domain": "himali.dairynepal.com",
+      "domain": "sfacl.dairynepal.com",
       "type": "subdomain",
       "isPrimary": true,
       "verified": true,

@@ -53,7 +53,7 @@ function DairyMainApp() {
     try {
       const saved = localStorage.getItem('dairy_user');
       const u = saved ? JSON.parse(saved) : null;
-      const isOwner = u ? isOwnerUser(u, { id: 1, name: 'sfacl' }) : true;
+      const isOwner = u ? isOwnerUser(u, { id: 1 }) : true;
       return isOwner ? 'platform' : 'dashboard';
     } catch {
       return 'platform';

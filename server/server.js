@@ -2525,7 +2525,7 @@ app.use('/api/platform', (req, res, next) => {
   const tenantId = tidHeader !== undefined && !isNaN(Number(tidHeader)) ? Number(tidHeader) : 1;
   const username = decodeURIComponent(req.headers['x-username'] || '').toLowerCase();
   
-  const isOwnerUser = ['admin', 'sfacl.admin'].includes(username);
+  const isOwnerUser = ['admin', 'sfacl.admin', 'developer'].includes(username);
   if (tenantId !== 1 && !isOwnerUser) {
     return res.status(403).json({
       error: 'Forbidden',

@@ -202,15 +202,20 @@ export const SYSTEM_MODULES = [
 export function isOwnerUser(user, activeTenant) {
   if (!user) return false;
   const roles = user.roles || [];
-  if (!roles.includes('SuperAdmin')) return false;
+  const username = (user.username || '').toLowerCase();
+  
+  // Developer user or SuperAdmin on Platform Owner Tenant 1
+  const hasDevPrivilege = roles.includes('SuperAdmin') || roles.includes('Developer');
+  if (!hasDevPrivilege) return false;
 
   const userTenantId = Number(user.tenantId);
   const activeTid = activeTenant ? Number(activeTenant.id) : userTenantId;
 
-  // The Developer Console is strictly the owner page for Tenant 1 (sfacl - साना किसान कृषि सहकारी सस्था लि.)
+  // Recognized developer usernames or tenant 1 owner
+  const isDevUsername = ['developer', 'admin', 'sfacl.admin'].includes(username);
   const isTenant1 = (userTenantId === 1 || !userTenantId) && (activeTid === 1);
-  const isOwnerTenantName = (!activeTenant || activeTenant.name === 'sfacl');
-  return isTenant1 && isOwnerTenantName;
+
+  return isDevUsername || isTenant1;
 }
 
 export function getModuleLabel(module, lang = 'ne') {
@@ -224,7 +229,7 @@ export function isTabAllowed(tabId, userRoles = ['User'], activeTenant = null, c
       return isOwnerUser(currentUser, activeTenant);
     }
     const tid = activeTenant ? Number(activeTenant.id) : 1;
-    return userRoles.includes('SuperAdmin') && tid === 1 && (!activeTenant || activeTenant.name === 'sfacl');
+    return (userRoles.includes('SuperAdmin') || userRoles.includes('Developer')) && tid === 1;
   }
   if (userRoles.includes('SuperAdmin')) return true;
   const mod = SYSTEM_MODULES.find(m => m.id === tabId);

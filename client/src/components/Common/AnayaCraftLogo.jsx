@@ -239,69 +239,55 @@ export function AnayaBottomRightDecor({ className = 'w-24 h-24', idPrefix = 'ac_
 
 /**
  * Anaya Craft Complete Brand Lockup
- * Exact typography from provided HTML:
- * - Exo 2 font for brand wordmark (Anaya in gradient, Craft in #0b1b32)
- * - Montserrat font for Primary Tagline (ALL KINDS OF IT SOLUTIONS)
- * - Montserrat font for Secondary Tagline (TECHNOLOGY • BUILT AROUND YOU)
+ * Renders the authentic official high-resolution logo graphic provided by Anaya Craft
+ * (Folded Ribbon AC Monogram + Anaya Craft + ALL KINDS OF IT SOLUTIONS + TECHNOLOGY • BUILT AROUND YOU)
  */
 export function AnayaCraftBrandLockup({
   size = 'md',
   className = '',
-  idPrefix = 'ac_brand'
+  href = 'https://anacraft.com'
 }) {
   const isSm = size === 'sm';
   const isLg = size === 'lg';
+  const isXs = size === 'xs';
 
-  const monogramSize = isSm ? 'w-12 h-auto' : isLg ? 'w-24 h-auto' : 'w-16 sm:w-20 h-auto';
-  const titleSize = isSm ? 'text-base sm:text-lg' : isLg ? 'text-3xl' : 'text-xl sm:text-2xl';
-  const tagMainSize = isSm ? 'text-[9.5px]' : isLg ? 'text-[15px]' : 'text-[11px] sm:text-[12px]';
-  const tagSubSize = isSm ? 'text-[7.5px]' : isLg ? 'text-[11px]' : 'text-[8.5px] sm:text-[9.5px]';
+  const widthClass = isXs
+    ? 'w-28 sm:w-32'
+    : isSm
+    ? 'w-36 sm:w-40'
+    : isLg
+    ? 'w-60 sm:w-72'
+    : 'w-44 sm:w-48'; // md default
 
-  return (
-    <div className={`flex flex-col items-center justify-center text-center select-none ${className}`}>
-      {/* Folded Ribbon AC Monogram SVG */}
-      <div className="mb-1 flex items-center justify-center">
-        <AnayaCraftMonogram className={monogramSize} idPrefix={idPrefix} />
+  const imageElement = (
+    <div className={`inline-flex flex-col items-center justify-center text-center select-none transition-all duration-200 hover:opacity-95 ${className}`}>
+      <div className="bg-transparent dark:bg-white dark:p-2.5 dark:rounded-2xl dark:shadow-md transition-colors">
+        <img
+          src="/anaya-craft-logo.png"
+          alt="Anaya Craft - All Kinds of IT Solutions - Technology Built Around You"
+          className={`${widthClass} h-auto object-contain block mx-auto`}
+          loading="eager"
+          decoding="async"
+        />
       </div>
-
-      {/* Brand Title: Anaya Craft in Exo 2 font */}
-      <div
-        style={{ fontFamily: "'Exo 2', sans-serif" }}
-        className={`font-extrabold flex items-center justify-center gap-1.5 leading-none ${titleSize}`}
-      >
-        <span
-          style={{
-            background: 'linear-gradient(180deg, #1b65b8 0%, #104282 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}
-        >
-          Anaya
-        </span>
-        <span className="text-[#0b1b32] dark:text-slate-100">
-          Craft
-        </span>
-      </div>
-
-      {/* Primary Tagline in Montserrat font */}
-      <p
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
-        className={`font-extrabold uppercase text-[#111827] dark:text-slate-200 tracking-[0.4px] mt-1.5 leading-tight ${tagMainSize}`}
-      >
-        ALL KINDS OF IT SOLUTIONS
-      </p>
-
-      {/* Secondary Tagline in Montserrat font */}
-      <p
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
-        className={`font-bold uppercase text-[#1f2937] dark:text-slate-400 tracking-[0.5px] flex items-center justify-center gap-1.5 mt-0.5 ${tagSubSize}`}
-      >
-        <span>TECHNOLOGY</span>
-        <span className="text-[#0b1b32] dark:text-slate-300 font-extrabold">&bull;</span>
-        <span>BUILT AROUND YOU</span>
-      </p>
     </div>
   );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Anaya Craft - All Kinds of IT Solutions (https://anacraft.com)"
+        className="inline-block cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-2xl"
+      >
+        {imageElement}
+      </a>
+    );
+  }
+
+  return imageElement;
 }
 
 /**

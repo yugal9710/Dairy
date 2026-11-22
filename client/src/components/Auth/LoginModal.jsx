@@ -102,11 +102,11 @@ export default function LoginModal({
   // When rendered as the primary login page (no currentUser and full screen requested or no close handler)
   const isFull = isFullScreen || (!currentUser && !onClose);
 
-  // Customer Support Contact Details
-  const supportPhone = activeTenant?.supportPhone || activeTenant?.phone || '+977 98012 34567';
-  const supportPhoneClean = supportPhone.replace(/[^0-9+]/g, '');
+  // Customer Support Contact Details (Anaya Craft Support Desk)
+  const supportPhone = '+977 98011 97710';
+  const supportPhoneClean = '+9779801197710';
   const supportEmail = activeTenant?.supportEmail || activeTenant?.email || 'support@anacraft.com';
-  const whatsAppDigits = supportPhoneClean.replace(/[^0-9]/g, '') || '9779801234567';
+  const whatsAppDigits = '9779801197710';
   const whatsAppLink = `https://wa.me/${whatsAppDigits}?text=${encodeURIComponent(
     lang === 'en'
       ? 'Hello Anaya Craft Support, I need assistance with Dairy ERP 2.0.'
@@ -431,7 +431,7 @@ export default function LoginModal({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-50/80 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-300 dark:hover:border-emerald-600 transition group shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer"
-                  title="Chat directly on WhatsApp"
+                  title="Chat directly on WhatsApp (+977 98011 97710)"
                 >
                   <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 group-hover:bg-[#25D366] text-[#25D366] group-hover:text-white flex items-center justify-center transition mb-1">
                     <WhatsAppIcon className="w-3.5 h-3.5" />
