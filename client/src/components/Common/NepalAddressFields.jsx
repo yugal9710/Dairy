@@ -18,7 +18,8 @@ export const EMPTY_NEPAL_LOCATION = {
   districtName: '',
   municipalityId: '',
   municipalityName: '',
-  ward: ''
+  ward: '',
+  tole: ''
 };
 
 export { composeNepalAddress };
@@ -109,7 +110,8 @@ export default function NepalAddressFields({
     const nextLoc = {
       ...EMPTY_NEPAL_LOCATION,
       provinceId: provName,
-      provinceName: provName
+      provinceName: provName,
+      tole: value?.tole || ''
     };
     emitChange(nextLoc);
   };
@@ -125,7 +127,8 @@ export default function NepalAddressFields({
       districtName: distName,
       municipalityId: '',
       municipalityName: '',
-      ward: ''
+      ward: '',
+      tole: value?.tole || ''
     };
     emitChange(nextLoc);
   };
@@ -145,7 +148,8 @@ export default function NepalAddressFields({
       districtName: selectedDistrictName,
       municipalityId: target ? String(target.sn) : localLevelVal,
       municipalityName: target ? target.fullTitle : localLevelVal,
-      ward: ''
+      ward: '',
+      tole: value?.tole || ''
     };
     emitChange(nextLoc);
   };
@@ -159,9 +163,27 @@ export default function NepalAddressFields({
       provinceName: selectedProvinceName,
       districtId: selectedDistrictName,
       districtName: selectedDistrictName,
-      municipalityId: selectedLocalLevel ? String(selectedLocalLevel.sn) : (value.municipalityId || ''),
-      municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : (value.municipalityName || ''),
-      ward: wardVal
+      municipalityId: selectedLocalLevel ? String(selectedLocalLevel.sn) : (value?.municipalityId || ''),
+      municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : (value?.municipalityName || ''),
+      ward: wardVal,
+      tole: value?.tole || ''
+    };
+    emitChange(nextLoc);
+  };
+
+  // Tole / Street / Locality Change
+  const handleToleChange = (e) => {
+    const toleVal = e.target.value;
+    const nextLoc = {
+      ...value,
+      provinceId: selectedProvinceName,
+      provinceName: selectedProvinceName,
+      districtId: selectedDistrictName,
+      districtName: selectedDistrictName,
+      municipalityId: selectedLocalLevel ? String(selectedLocalLevel.sn) : (value?.municipalityId || ''),
+      municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : (value?.municipalityName || ''),
+      ward: value?.ward || '',
+      tole: toleVal
     };
     emitChange(nextLoc);
   };
@@ -280,8 +302,29 @@ export default function NepalAddressFields({
         </div>
       </div>
 
+      {/* 5. Tole / Street / Locality (Optional) */}
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            {lang === 'en' ? 'TOLE / STREET / LOCALITY' : 'टोल / सडक / बस्ती'}
+          </label>
+          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+            {lang === 'en' ? 'Optional' : 'ऐच्छिक'}
+          </span>
+        </div>
+        <input
+          type="text"
+          value={value?.tole || ''}
+          onChange={handleToleChange}
+          placeholder={lang === 'en'
+            ? 'e.g. New Road, Traffic Chowk, Maitighar, Lakeside, Hospital Chowk...'
+            : 'उदा: न्यू रोड, ट्राफिक चोक, माइतीघर, लेकसाइड, हस्पिटल चोक...'}
+          className={`w-full px-3 ${compact ? 'py-1.5' : 'py-2'} text-xs border rounded-xl outline-none font-medium transition ${activeClass} placeholder:text-slate-400`}
+        />
+      </div>
+
       {/* Composed Address Preview Pill */}
-      {(selectedLocalLevel || value?.ward) && (
+      {(selectedLocalLevel || value?.ward || value?.tole) && (
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-semibold">
           <span className="shrink-0 font-bold">📍 {lang === 'en' ? 'Location:' : 'ठेगाना:'}</span>
           <span className="truncate">
@@ -290,7 +333,8 @@ export default function NepalAddressFields({
                 provinceName: selectedProvinceName,
                 districtName: selectedDistrictName,
                 municipalityName: selectedLocalLevel ? selectedLocalLevel.fullTitle : value?.municipalityName,
-                ward: value?.ward
+                ward: value?.ward,
+                tole: value?.tole
               },
               lang
             )}

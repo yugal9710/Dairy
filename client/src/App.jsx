@@ -180,7 +180,7 @@ function DairyMainApp() {
         fetch('/api/Inventory/summary', { headers: tenantHeaders }),
         fetch('/api/Inventory/movements', { headers: tenantHeaders }),
         fetch('/api/Unit', { headers: tenantHeaders }),
-        fetch('/api/Customer', { headers: tenantHeaders }),
+        fetch('/api/Customer?maxResultCount=10000', { headers: tenantHeaders }),
         fetch('/api/MilkCollectionPayment', { headers: tenantHeaders }),
         fetch('/api/Purchase', { headers: tenantHeaders }),
         fetch('/api/Production', { headers: tenantHeaders }),

@@ -1146,7 +1146,7 @@ export default function InstantSalePOS({
                 />
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {lang === 'en' ? 'Address (Tole / Full)' : 'ठेगाना (टोल / पूरा)'}
+                    {lang === 'en' ? 'Address (Full Composed Address)' : 'ठेगाना (पूरा ठेगाना)'}
                   </label>
                   <input
                     type="text"

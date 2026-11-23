@@ -28,7 +28,9 @@ import {
   Sparkles,
   ArrowRight,
   Sliders,
-  Database
+  Database,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -48,6 +50,7 @@ export default function TenantProfileModal({
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [downloadingBackup, setDownloadingBackup] = useState(false);
 
   // Subscription Edit / Extension Form State
   const [subForm, setSubForm] = useState({
@@ -164,6 +167,42 @@ export default function TenantProfileModal({
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleDownloadExcelBackup = async () => {
+    if (!profile?.tenant) return;
+    const t = profile.tenant;
+    try {
+      setDownloadingBackup(true);
+      showToast(lang === 'en' ? 'Preparing Excel backup...' : 'एक्सेल ब्याकअप तयार हुँदैछ...', 'info');
+      const res = await fetch(`/api/platform/tenants/${t.id}/backup/excel`, {
+        headers
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to download backup');
+      }
+      const blob = await res.blob();
+      const cleanSlug = (t.name || `tenant_${t.id}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const dateStamp = new Date().toISOString().split('T')[0];
+      const fileName = `DairyERP_Backup_Tenant_${t.id}_${cleanSlug}_${dateStamp}.xlsx`;
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+
+      showToast(lang === 'en' ? 'Excel backup downloaded successfully!' : 'एक्सेल ब्याकअप सफलतापूर्वक डाउनलोड भयो!');
+    } catch (err) {
+      console.error('Backup download error:', err);
+      alert('Failed to generate Excel backup: ' + err.message);
+    } finally {
+      setDownloadingBackup(false);
+    }
   };
 
   // Handle Extend / Update Subscription
@@ -446,6 +485,16 @@ export default function TenantProfileModal({
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadExcelBackup}
+              disabled={downloadingBackup}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer disabled:opacity-50"
+              title="Download complete Excel data backup"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>{downloadingBackup ? (lang === 'en' ? 'Exporting...' : 'तयार हुँदैछ...') : (lang === 'en' ? 'Excel Backup' : 'एक्सेल ब्याकअप')}</span>
+            </button>
             {onSwitchTenant && (
               <button
                 type="button"
@@ -574,6 +623,34 @@ export default function TenantProfileModal({
                         </p>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Data Backup & Recovery Card */}
+                  <div className="bg-emerald-50/70 dark:bg-emerald-950/30 rounded-2xl border border-emerald-200 dark:border-emerald-800/60 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2.5 rounded-xl bg-emerald-600 text-white shrink-0 shadow-xs">
+                        <FileSpreadsheet className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-slate-800 dark:text-slate-100 text-sm">
+                          {lang === 'en' ? 'Complete Data Backup (.xlsx)' : 'सम्पूर्ण सहकारी डाटा ब्याकअप (.xlsx)'}
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          {lang === 'en'
+                            ? 'Export all farmers, milk collections, sales, inventory, payments, ledger & audit logs into a unified multi-sheet Excel workbook.'
+                            : 'सबै कृषक, दूध संकलन, बिक्री, स्टक, भुक्तानी, खाता र अडिट लगहरू एकै मल्टि-सिट एक्सेल फाइलमा सुरक्षित डाउनलोड गर्नुहोस्।'}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleDownloadExcelBackup}
+                      disabled={downloadingBackup}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-black rounded-xl transition inline-flex items-center gap-2 shadow-2xs shrink-0 cursor-pointer disabled:opacity-50"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>{downloadingBackup ? (lang === 'en' ? 'Generating Excel...' : 'तयार हुँदैछ...') : (lang === 'en' ? 'Download Excel Backup' : 'एक्सेल ब्याकअप डाउनलोड')}</span>
+                    </button>
                   </div>
                 </div>
               )}

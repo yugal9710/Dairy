@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { multiTenantDb } from './multiTenantDb.js';
 import { authenticate, generateToken, resolveTenantId, hashPassword } from './auth.js';
+import { generateTenantExcelBackup } from './excelBackup.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -382,7 +383,7 @@ app.get('/api/Customer', (req, res) => {
   const tData = multiTenantDb.getTenantData(tid);
   let list = tData.customers.filter(c => !c.isDeleted);
 
-  const { customerTypes, filter, maxResultCount = 50, skipCount = 0 } = req.query;
+  const { customerTypes, filter, maxResultCount, skipCount = 0 } = req.query;
 
   if (customerTypes) {
     const types = Array.isArray(customerTypes)
@@ -405,7 +406,10 @@ app.get('/api/Customer', (req, res) => {
 
   const enrichedList = list.map(c => multiTenantDb.calculateCustomerKPIs(c, tData));
   const totalCount = enrichedList.length;
-  const items = enrichedList.slice(Number(skipCount), Number(skipCount) + Number(maxResultCount));
+  const limit = (maxResultCount !== undefined && maxResultCount !== null && maxResultCount !== '')
+    ? Number(maxResultCount)
+    : enrichedList.length;
+  const items = enrichedList.slice(Number(skipCount), Number(skipCount) + limit);
 
   res.json({ totalCount, items });
 });
@@ -529,6 +533,7 @@ app.post('/api/Customer', (req, res) => {
     municipalityId: req.body.municipalityId || '',
     municipalityName: req.body.municipalityName || '',
     ward: req.body.ward || '',
+    tole: req.body.tole || req.body.street || '',
     accountNumber: req.body.accountNumber || '',
     remarks: req.body.remarks || '',
     isDeleted: false,
@@ -2622,6 +2627,43 @@ app.get('/api/platform/tenants/:id', (req, res) => {
   const profile = multiTenantDb.getTenantProfile(req.params.id);
   if (!profile) return res.status(404).json({ error: 'Tenant not found' });
   res.json(profile);
+});
+
+// GET /api/platform/tenants/:id/backup/excel - Developer Console Data Backup in Excel
+app.get('/api/platform/tenants/:id/backup/excel', (req, res) => {
+  try {
+    const tenantId = Number(req.params.id);
+    const tenantMeta = (multiTenantDb.platform.tenants || []).find(t => t.id === tenantId);
+    if (!tenantMeta) {
+      return res.status(404).json({ error: 'Tenant cooperative not found' });
+    }
+
+    const tData = multiTenantDb.getTenantData(tenantId);
+    if (!tData) {
+      return res.status(404).json({ error: 'Tenant data not found' });
+    }
+
+    const buffer = generateTenantExcelBackup(tenantMeta, tData, multiTenantDb);
+    const cleanSlug = (tenantMeta.name || `tenant_${tenantId}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const dateStamp = new Date().toISOString().split('T')[0];
+    const fileName = `DairyERP_Backup_Tenant_${tenantId}_${cleanSlug}_${dateStamp}.xlsx`;
+
+    recordActivity(req, {
+      action: 'PLATFORM_TENANT_EXCEL_BACKUP',
+      category: 'Data Backup & Security',
+      actionLabelNe: `सहकारी डेटा ब्याकअप डाउनलोड (${tenantMeta.organizationName || tenantMeta.name})`,
+      actionLabelEn: `Downloaded complete Excel data backup for Tenant #${tenantId} (${tenantMeta.organizationName || tenantMeta.name})`,
+      details: { tenantId, tenantName: tenantMeta.organizationName || tenantMeta.name, fileName, fileSize: buffer.length }
+    });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Length', buffer.length);
+    res.end(buffer);
+  } catch (err) {
+    console.error('Error generating tenant Excel backup:', err);
+    res.status(500).json({ error: 'Failed to generate Excel backup: ' + err.message });
+  }
 });
 
 // Tenant Users

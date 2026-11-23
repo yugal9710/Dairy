@@ -64,7 +64,8 @@ export default function CustomerManager({
         districtName: cust.districtName || '',
         municipalityId: cust.municipalityId ? String(cust.municipalityId) : '',
         municipalityName: cust.municipalityName || '',
-        ward: cust.ward ? String(cust.ward) : ''
+        ward: cust.ward ? String(cust.ward) : '',
+        tole: cust.tole || cust.street || ''
       });
       setAddress(cust.address || '');
       setAccountNumber(cust.accountNumber || '');
@@ -170,9 +171,14 @@ export default function CustomerManager({
         <>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 lg:p-6 rounded-2xl border border-slate-200 shadow-2xs">
         <div>
-          <h2 className="text-xl font-black text-slate-800 leading-tight">
-            {t('directoryTitle')}
-          </h2>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl font-black text-slate-800 leading-tight">
+              {t('directoryTitle')}
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+              {filteredCustomers.length} {lang === 'en' ? 'Accounts' : 'खाताहरू'}
+            </span>
+          </div>
           <p className="text-xs text-slate-500 mt-1">
             {t('directorySubtitle')}
           </p>
@@ -312,6 +318,28 @@ export default function CustomerManager({
             </tbody>
           </table>
         </div>
+
+        {/* Table Footer with Total Count and Range */}
+        <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600 font-medium">
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>
+              {lang === 'en'
+                ? `Showing ${filteredCustomers.length} registered accounts`
+                : `कुल ${filteredCustomers.length} दर्ता भएका खाताहरू देखाइँदै`}
+              {filteredCustomers.length > 0 && (
+                <span className="text-slate-500 ml-1.5 font-mono">
+                  (Codes #{Math.min(...filteredCustomers.map(c => Number(c.code) || 0).filter(n => n > 0))} - #{Math.max(...filteredCustomers.map(c => Number(c.code) || 0))})
+                </span>
+              )}
+            </span>
+          </div>
+          {customers.length > filteredCustomers.length && (
+            <div className="text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+              {lang === 'en' ? `Filtered from ${customers.length} total accounts` : `कुल ${customers.length} खाताहरूबाट फिल्टर गरिएको`}
+            </div>
+          )}
+        </div>
       </div>
         </>
       )}
@@ -428,7 +456,7 @@ export default function CustomerManager({
                 />
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    {t('address')} {lang === 'en' ? '(Street / Tole / Full)' : '(टोल / पूरा ठेगाना)'}
+                    {lang === 'en' ? 'Address (Full Composed Address)' : 'ठेगाना (पूरा ठेगाना)'}
                   </label>
                   <input
                     type="text"

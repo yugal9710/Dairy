@@ -11,7 +11,8 @@ client/dist/
 .env.*
 
 # Backups
-server/data_backup_*/
+server/data_backup_*
+scratch/
 
 # Logs & OS artifacts
 *.log

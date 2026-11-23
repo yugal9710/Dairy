@@ -76,5 +76,8 @@ const cleanExit = () => {
   process.exit();
 };
 
+// Keep parent process alive indefinitely
+setInterval(() => {}, 60000);
+
 process.on('SIGINT', cleanExit);
 process.on('SIGTERM', cleanExit);

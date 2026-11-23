@@ -31,7 +31,9 @@ import {
   Milk,
   Landmark,
   Sliders,
-  AlertCircle
+  AlertCircle,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 
 const DAIRY_PLAN_MODULES = [
@@ -89,6 +91,7 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
   const [selectedTenantForProfile, setSelectedTenantForProfile] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [downloadingTenantId, setDownloadingTenantId] = useState(null);
 
   // Add Custom Domain State
   const [newDomainForm, setNewDomainForm] = useState({
@@ -415,6 +418,40 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
       fetchPlatformData();
     } catch (err) {
       alert(err.message);
+    }
+  };
+
+  const handleDownloadExcelBackup = async (t) => {
+    try {
+      setDownloadingTenantId(t.id);
+      notify(`Generating Excel data backup for ${t.organizationName || t.name}...`);
+      const res = await fetch(`/api/platform/tenants/${t.id}/backup/excel`, {
+        headers
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to download backup');
+      }
+      const blob = await res.blob();
+      const cleanSlug = (t.name || `tenant_${t.id}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const dateStamp = new Date().toISOString().split('T')[0];
+      const fileName = `DairyERP_Backup_Tenant_${t.id}_${cleanSlug}_${dateStamp}.xlsx`;
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+
+      notify(`Excel backup downloaded successfully for ${t.organizationName || t.name}`);
+    } catch (err) {
+      console.error('Backup download error:', err);
+      alert('Failed to generate Excel backup: ' + err.message);
+    } finally {
+      setDownloadingTenantId(null);
     }
   };
 
@@ -1341,6 +1378,16 @@ export default function DeveloperControlPanel({ authToken, onTenantUpdated, onSw
                               >
                                 <Eye className="w-3.5 h-3.5" />
                                 <span>View Profile</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDownloadExcelBackup(t)}
+                                disabled={downloadingTenantId === t.id}
+                                className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition inline-flex items-center gap-1 shadow-2xs cursor-pointer disabled:opacity-50"
+                                title={`Download complete Excel data backup for ${t.organizationName || t.name}`}
+                              >
+                                <FileSpreadsheet className="w-3.5 h-3.5" />
+                                <span>{downloadingTenantId === t.id ? 'Exporting...' : 'Excel Backup'}</span>
                               </button>
                               <button
                                 type="button"

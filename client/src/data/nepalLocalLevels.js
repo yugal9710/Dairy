@@ -5995,6 +5995,7 @@ export function findLocalLevel(localLevelNameOrSn, districtName = null) {
 // ADDRESS COMPOSER
 // ----------------------------------------------------
 export function composeNepalAddress(location = {}, lang = 'en') {
+  const tole = (location.tole || location.street || '').trim();
   const provName = location.provinceName || location.province || '';
   const distName = location.districtName || location.district || '';
   const munName = location.municipalityName || location.localLevelName || location.municipality || '';
@@ -6011,5 +6012,5 @@ export function composeNepalAddress(location = {}, lang = 'en') {
     ? (ward ? `${mLabel}-${ward}` : mLabel)
     : (ward ? (lang === 'ne' ? `वडा नं. ${ward}` : `Ward ${ward}`) : '');
 
-  return [munWithWard, dLabel, pLabel].filter(Boolean).join(', ');
+  return [tole, munWithWard, dLabel, pLabel].filter(Boolean).join(', ');
 }

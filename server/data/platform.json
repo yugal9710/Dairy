@@ -354,6 +354,16 @@
   "billings": [],
   "auditLogs": [
     {
+      "id": "paudit-1795431701988-241",
+      "timestamp": "2026-11-23T11:01:41.988Z",
+      "action": "TENANT_UPDATED",
+      "status": "SUCCESS",
+      "userEmail": "admin@dairy.local",
+      "userRole": "SuperAdmin",
+      "tenantId": 1,
+      "details": "Updated cooperative profile \"Anaya Craft\" (Plan: plan-starter, Status: Active)"
+    },
+    {
       "id": "paudit-1795347651811-795",
       "timestamp": "2026-11-22T11:40:51.811Z",
       "action": "TENANT_UPDATED",
